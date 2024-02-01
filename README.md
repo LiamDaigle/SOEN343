@@ -6,3 +6,4 @@
 - Gulnoor Kaur 40114998
 - Clara Gagnon 40208598
 - Vanessa DiPietrantonio 40189938
+- Jessica Beauchemin 40188873
