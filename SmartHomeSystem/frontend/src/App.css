@@ -1,42 +1,56 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+:root {
+  /* Primary colors */
+  --primary-color: #000000; /* Black */
+  --secondary-color: #0b3c5d; /* Navy Blue */
+  --accent-color: #fca311; /* Orange */
+
+  /* Additional colors */
+  --additional-color: #e5e5e5; /* Light Gray */
+  --additional-color2: #ffffff; /* White */
+
+  /* Background colors */
+  --background-color: #f8f9fa; /* Light Gray */
+  --content-background-color: #ffffff; /* White */
+
+  /* Text colors */
+  --text-color: #ffffff; /* Dark Gray */
+  --text-secondary-color: #6c757d; /* Gray */
+
+  /* Additional colors */
+  --warning-color: #ffc107; /* Yellow */
+  --error-color: #dc3545; /* Red */
+  --success-color: #28a745; /* Green */
+  --info-color: #17a2b8; /* Teal */
+  --accent-dark-color: #0056b3; /* Dark Blue */
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+body {
+  background-color: var(--secondary-color);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-color);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Paragraphs */
+p {
+  margin: 5px;
+  color: var(--text-color);
 }
 
-.card {
-  padding: 2em;
+/* Buttons */
+button {
+  background-color: var(--accent-color);
+  color: var(--additional-color2);
 }
 
-.read-the-docs {
-  color: #888;
+/* Links */
+a {
+  color: var(--accent-color);
 }
