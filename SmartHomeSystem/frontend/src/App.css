@@ -23,3 +23,29 @@
   --info-color: #17a2b8; /* Teal */
   --accent-dark-color: #0056b3; /* Dark Blue */
 }
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-color);
+}
+
+/* Paragraphs */
+p {
+  color: var(--secondary-color);
+}
+
+/* Buttons */
+button {
+  background-color: var(--accent-color);
+  color: var(--additional-color2);
+}
+
+/* Links */
+a {
+  color: var(--accent-color);
+}

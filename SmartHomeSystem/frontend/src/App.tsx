@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import DashboardLandingPage from "./Dashboard/DashboardLandingPage";
 import "./App.css";
 
 function App() {
   return (
-    <div>
-      <h1>SHS</h1>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<DashboardLandingPage />}>
+
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
