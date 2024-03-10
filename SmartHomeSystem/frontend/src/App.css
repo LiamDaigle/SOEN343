@@ -1,12 +1,12 @@
 :root {
   /* Primary colors */
   --primary-color: #000000; /* Black */
-  --secondary-color: #14213D; /* Navy Blue */
-  --accent-color: #FCA311; /* Orange */
-  
+  --secondary-color: #14213d; /* Navy Blue */
+  --accent-color: #fca311; /* Orange */
+
   /* Additional colors */
-  --additional-color: #E5E5E5; /* Light Gray */
-  --additional-color2: #FFFFFF; /* White */
+  --additional-color: #e5e5e5; /* Light Gray */
+  --additional-color2: #ffffff; /* White */
 
   /* Background colors */
   --background-color: #f8f9fa; /* Light Gray */
