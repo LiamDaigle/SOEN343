@@ -1,7 +1,7 @@
 :root {
   /* Primary colors */
   --primary-color: #000000; /* Black */
-  --secondary-color: #14213d; /* Navy Blue */
+  --secondary-color: #0b3c5d; /* Navy Blue */
   --accent-color: #fca311; /* Orange */
 
   /* Additional colors */
@@ -13,7 +13,7 @@
   --content-background-color: #ffffff; /* White */
 
   /* Text colors */
-  --text-color: #333333; /* Dark Gray */
+  --text-color: #ffffff; /* Dark Gray */
   --text-secondary-color: #6c757d; /* Gray */
 
   /* Additional colors */
@@ -22,6 +22,10 @@
   --success-color: #28a745; /* Green */
   --info-color: #17a2b8; /* Teal */
   --accent-dark-color: #0056b3; /* Dark Blue */
+}
+
+body {
+  background-color: var(--secondary-color);
 }
 
 /* Headings */
@@ -36,7 +40,8 @@ h6 {
 
 /* Paragraphs */
 p {
-  color: var(--secondary-color);
+  margin: 5px;
+  color: var(--text-color);
 }
 
 /* Buttons */

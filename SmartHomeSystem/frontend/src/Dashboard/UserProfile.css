@@ -1,5 +1,35 @@
 .user-profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid var(--accent-color);
+  padding: 20px;
+  border-radius: 10px;
   width: 200px;
-  border: 1px solid var(--secondary-color);
-  padding: 1rem;
+}
+
+.user-profile-picture {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.user-profile-picture p {
+  color: var(--text-color);
+}
+
+.user-location,
+.outside-temperature,
+.data-and-time {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.outside-temperature p,
+.data-and-time p {
+  color: var(--text-color);
+}
+
+/* Customize Avatar component */
+.Avatar {
+  border: 5px solid var(--secondary-color);
 }
