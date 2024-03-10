@@ -2,6 +2,7 @@ import React from "react";
 import UserProfile from "./UserProfile";
 import TabComponent from "./TabComponent";
 import "./DashboardLandingPage.css";
+import HouseLayout from "./HouseLayout";
 
 const DashboardLandingPage = () => {
   return (
@@ -11,6 +12,7 @@ const DashboardLandingPage = () => {
       <div className="dashboard-content-container">
         <UserProfile />
         <TabComponent />
+        <HouseLayout />
       </div>
     </div>
   );
