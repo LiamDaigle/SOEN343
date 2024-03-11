@@ -47,4 +47,5 @@
 
 .common-btn:hover {
   cursor: pointer;
+  color: var(--text-color);
 }

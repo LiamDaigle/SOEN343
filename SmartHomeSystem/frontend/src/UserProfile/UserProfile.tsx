@@ -3,11 +3,13 @@ import "./UserProfile.css";
 import Avatar from "../Common/Avatar";
 import Button from "../Common/Button";
 import RegisterModal from "./RegisterModal"; // Import the RegisterModal component
+import LoginModal from "./LoginModal";
 
 const UserProfile = () => {
   const [date, setData] = useState("");
   const [time, setTime] = useState("");
-  const [dialogOpen, setDialogOpen] = useState(false); // State to control dialog open/close
+  const [registrationModalOpen, setRegistrationModalOpen] = useState(false); // State to control dialog open/close
+  const [loginModalOpen, setLoginModalOpen] = useState(false); // State to control dialog open/close
 
   const fetchDate = () => {
     var currentdate = new Date();
@@ -41,8 +43,15 @@ const UserProfile = () => {
           altText="profile picture"
           size="100%"
         />
-        <button className="common-btn" onClick={() => setDialogOpen(true)}>
+        <button
+          className="common-btn"
+          onClick={() => setRegistrationModalOpen(true)}
+        >
           Register
+        </button>
+        <p>OR</p>
+        <button className="common-btn" onClick={() => setLoginModalOpen(true)}>
+          Login
         </button>
         <p>insert role here</p> {/* TODO: role here */}
       </div>
@@ -58,8 +67,14 @@ const UserProfile = () => {
         <p>{date}</p>
         <p>{time}</p>
       </div>
-      <RegisterModal open={dialogOpen} onClose={() => setDialogOpen(false)} />{" "}
-      {/* Render RegisterModal with open state */}
+      <RegisterModal
+        open={registrationModalOpen}
+        onClose={() => setRegistrationModalOpen(false)}
+      />{" "}
+      <LoginModal
+        open={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+      />{" "}
     </div>
   );
 };
