@@ -20,6 +20,8 @@ public class User {
 
     private String username;
 
+    private String email;
+
     private String password;    //Change this in the later stages to have salt + hash + pepper
 
 

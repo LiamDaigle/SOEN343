@@ -1,0 +1,56 @@
+.dialog-container.custom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border: 2px solid var(--accent-color);
+  box-shadow: 0 0px 20px 20px var(--accent-color);
+}
+
+.dialog-subheading.custom {
+  font-size: 20px;
+  color: var(--secondary-color);
+  font-weight: 700;
+}
+
+.form.custom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.button.custom {
+  background-color: var(--accent-color);
+  color: black;
+  margin: 5px;
+
+}
+
+.button.custom:hover {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+/* Add focus styles */
+.form.custom .Mui-focused .MuiOutlinedInput-notchedOutline,
+.form.custom
+  .MuiOutlinedInput-root.Mui-focused
+  .MuiOutlinedInput-notchedOutline {
+  border-color: var(--secondary-color) !important;
+}
+
+/* Add placeholder color */
+.form.custom .MuiFormLabel-root.Mui-focused {
+  color: var(--secondary-color) !important;
+}
+
+/* Add styles when input is clicked */
+.form.custom .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: var(--secondary-color) !important;
+}
+
+.dialog-actions.custom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

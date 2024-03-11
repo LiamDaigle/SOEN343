@@ -33,3 +33,18 @@
 .Avatar {
   border: 5px solid var(--secondary-color);
 }
+
+.common-btn {
+  background-color: var(--accent-color);
+  color: var(--primary-color);
+  width: 100px;
+  height: 40px;
+  font-weight: 700;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+}
+
+.common-btn:hover {
+  cursor: pointer;
+}
