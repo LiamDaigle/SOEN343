@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -6,6 +6,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import axios from "axios";
 import "./Form.css"; // Import the CSS file
 
 interface FormDialogProps {
@@ -14,27 +15,46 @@ interface FormDialogProps {
 }
 
 const RegisterModal: React.FC<FormDialogProps> = ({ open, onClose }) => {
+  const [userData, setUserData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const { username, email, password } = userData;
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUserData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      await axios.post("http://localhost:8080/api/users/register", {
+        username,
+        password,
+        email,
+      });
+      alert("User registered successfully!");
+      onClose()
+      // Handle redirection or any other action upon successful registration
+    } catch (error: any) {
+      console.error("Registration failed:", error.response.data);
+      alert("Registration failed! Please try again.");
+    }
+  };
+
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      PaperProps={{
-        component: "form",
-        onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-          event.preventDefault();
-          const formData = new FormData(event.currentTarget);
-          const formJson = Object.fromEntries((formData as any).entries());
-          const email = formJson.email;
-          console.log(email);
-          onClose();
-        },
-      }}
-    >
-      <DialogContent className="dialog-container">
-        <DialogContentText className="dialog-subheading">
+    <Dialog open={open} onClose={onClose}>
+      <DialogContent className="dialog-container custom">
+        <DialogContentText className="dialog-subheading custom">
           Register
-        </DialogContentText>{" "}
-        <form className="form">
+        </DialogContentText>
+        <form className="form custom" onSubmit={handleSubmit}>
           <TextField
             autoFocus
             required
@@ -42,12 +62,13 @@ const RegisterModal: React.FC<FormDialogProps> = ({ open, onClose }) => {
             id="username"
             name="username"
             label="Username"
-            type="username"
+            type="text"
             fullWidth
             variant="standard"
+            value={username}
+            onChange={handleChange}
           />
           <TextField
-            autoFocus
             required
             margin="dense"
             id="email"
@@ -56,9 +77,10 @@ const RegisterModal: React.FC<FormDialogProps> = ({ open, onClose }) => {
             type="email"
             fullWidth
             variant="standard"
+            value={email}
+            onChange={handleChange}
           />
           <TextField
-            autoFocus
             required
             margin="dense"
             id="password"
@@ -67,19 +89,31 @@ const RegisterModal: React.FC<FormDialogProps> = ({ open, onClose }) => {
             type="password"
             fullWidth
             variant="standard"
+            value={password}
+            onChange={handleChange}
           />
+
+          <DialogActions className="dialog-actions custom">
+            <Button className="button custom" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button className="button custom" type="submit">
+              Register
+            </Button>
+          </DialogActions>
         </form>
-        <DialogActions className="dialog-actions">
-          <Button className="button" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button className="button" type="submit">
-            Register
-          </Button>
-        </DialogActions>
       </DialogContent>
     </Dialog>
   );
 };
 
 export default RegisterModal;
+
+
+
+
+
+
+
+
+
