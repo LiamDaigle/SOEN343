@@ -41,6 +41,8 @@
   height: 40px;
   font-weight: 700;
   border-radius: 10px;
+  border: none;
+  outline: none;
 }
 
 .common-btn:hover {

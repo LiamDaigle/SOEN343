@@ -35,15 +35,15 @@ const UserProfile = () => {
   return (
     <div className="user-profile-container">
       <div className="user-profile-picture">
-        <button className="common-btn" onClick={() => setDialogOpen(true)}>
-          Register
-        </button>
         {/* Open dialog on button click */}
         <Avatar
           imageUrl="assets/defaultavatar.png"
           altText="profile picture"
           size="100%"
         />
+        <button className="common-btn" onClick={() => setDialogOpen(true)}>
+          Register
+        </button>
         <p>insert role here</p> {/* TODO: role here */}
       </div>
       <div className="user-location">

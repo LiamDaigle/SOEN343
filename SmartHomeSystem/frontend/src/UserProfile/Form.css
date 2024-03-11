@@ -23,6 +23,7 @@
   background-color: var(--accent-color);
   color: black;
   margin: 5px;
+
 }
 
 .button.custom:hover {
