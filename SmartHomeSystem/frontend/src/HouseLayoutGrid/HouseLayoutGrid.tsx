@@ -1,8 +1,8 @@
 import React from "react";
 import "./HouseLayoutGrid.css";
 import data from "../assets/exampleLayout.json";
-import HouseLayoutGridElement from "../HouseLayoutGridElement/HouseLayoutGridElement";
-import { HouseLayoutParser } from "../HouseLayoutParser";
+import HouseLayoutGridElement from "./HouseLayoutGridElement/HouseLayoutGridElement";
+import { HouseLayoutParser } from "./HouseLayoutParser";
 
 const HouseLayoutGrid = () => {
   HouseLayoutParser.parseJSON(data);
