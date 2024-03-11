@@ -1,5 +1,5 @@
 import React from "react";
-import UserProfile from "./UserProfile";
+import UserProfile from "../UserProfile/UserProfile";
 import TabComponent from "./TabComponent";
 import "./DashboardLandingPage.css";
 import HouseLayout from "./HouseLayout";
