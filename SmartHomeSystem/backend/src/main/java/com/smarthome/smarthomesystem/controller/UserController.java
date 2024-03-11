@@ -21,7 +21,7 @@ public class UserController {
         if (userRepository.findByUsername(user.getUsername()).isPresent() || userRepository.findByEmail(user.getEmail()).isPresent()) {
             return ResponseEntity.badRequest().body("Username or Password is already taken!");
         }
-        // You should hash the password before saving it
+        // should hash the password before saving it
         userRepository.save(user);
         return ResponseEntity.ok("User registered successfully!");
     }
