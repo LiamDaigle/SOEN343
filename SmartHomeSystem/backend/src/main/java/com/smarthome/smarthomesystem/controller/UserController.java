@@ -16,6 +16,18 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody User loginUser) {
+        User user = userRepository.findByEmail(loginUser.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!user.getPassword().equals(loginUser.getPassword())) {
+            return ResponseEntity.badRequest().body("Invalid email or password");
+        }
+
+        return ResponseEntity.ok("Login successful!");
+    }
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent() || userRepository.findByEmail(user.getEmail()).isPresent()) {
