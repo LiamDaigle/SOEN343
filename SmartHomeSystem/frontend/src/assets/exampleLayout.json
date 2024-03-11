@@ -1,0 +1,42 @@
+{
+    "layout": [
+        ["Backyard","Backyard","Backyard"],
+        ["Garage","LivingRoom","Bedroom"],
+        ["","Entrance",""]
+    ],
+    "Backyard":{
+        "name":"Backyard",
+        "windows":0,
+        "doors":0,
+        "lights":2,
+        "autoLockDoors":1
+    },
+    "Entrance":{
+        "name":"Entrance",
+        "windows":0,
+        "doors":0,
+        "lights":2,
+        "autoLockDoors":1
+    },
+    "Garage":{
+        "name":"Garage",
+        "windows":0,
+        "doors":0,
+        "lights":2,
+        "autoLockDoors":1
+    },
+    "LivingRoom":{
+        "name":"LivingRoom",
+        "windows":0,
+        "doors":0,
+        "lights":2,
+        "autoLockDoors":1
+    },
+    "Bedroom":{
+        "name":"Bedroom",
+        "windows":0,
+        "doors":0,
+        "lights":2,
+        "autoLockDoors":1
+    }
+}
