@@ -4,7 +4,7 @@ import DashboardLandingPage from "./Dashboard/DashboardLandingPage";
 import LoginModal from "../src/UserProfile/LoginModal";
 import "./App.css";
 import RegisterModal from "./UserProfile/RegisterModal";
-
+import { getUserData } from "../src/Common/userData";
 function App() {
   // Initialize isLoggedIn state with the value from localStorage, defaulting to false if no value is found
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -13,12 +13,14 @@ function App() {
   const [userAccount, setUserAccount] = useState(null);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const [userData, setUserData] = useState(getUserData());
 
   useEffect(() => {
     // Fetch user account from localStorage
     const storedUserAccount = localStorage.getItem("userAccount");
     if (storedUserAccount) {
       setUserAccount(JSON.parse(storedUserAccount));
+      setUserData(getUserData());
     }
   }, []);
 
@@ -35,6 +37,7 @@ function App() {
     // Clear login state from localStorage
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("userAccount");
+    localStorage.removeItem("selectedUserProfile");
   };
 
   return (
@@ -45,7 +48,7 @@ function App() {
           element={
             isLoggedIn ? (
               <DashboardLandingPage
-                userAccount={userAccount}
+                userData={userData}
                 onLogout={handleLogout}
               />
             ) : (

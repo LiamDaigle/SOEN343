@@ -5,12 +5,15 @@ import Button from "../Common/Button";
 import RegisterModal from "./RegisterModal"; // Import the RegisterModal component
 import LoginModal from "./LoginModal";
 import LogoutModal from "./Logout";
+import AddProfileModal from "./AddProfileModal";
+import RemoveProfileModal from "./RemoveProfileModal";
 
 const UserProfile = (props: any) => {
   const [date, setData] = useState("");
   const [time, setTime] = useState("");
-  const [dialogOpen, setDialogOpen] = useState(false); // State to control dialog open/close
-
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [addUserModalOpen, setAddUserModalOpen] = useState(false);
+  const [removeUserModalOpen, setRemoveUserModalOpen] = useState(false);
   const fetchDate = () => {
     var currentdate = new Date();
     setData(
@@ -33,6 +36,7 @@ const UserProfile = (props: any) => {
   useEffect(() => {
     fetchDate();
   }, []); // Run only once on mount
+  console.log(props.userData);
 
   return (
     <div className="user-profile-container">
@@ -43,9 +47,19 @@ const UserProfile = (props: any) => {
           altText="profile picture"
           size="100%"
         />
-        <button className="common-btn">Add User</button>
-        <button className="common-btn">Remove User</button>
-        <p>insert role here</p> {/* TODO: role here */}
+        <button
+          className="common-btn"
+          onClick={() => setAddUserModalOpen(true)}
+        >
+          Add User
+        </button>
+        <button
+          className="common-btn"
+          onClick={() => setRemoveUserModalOpen(true)}
+        >
+          Remove User
+        </button>
+        <p>{props.userData.profile.role}</p> {/* TODO: role here */}
       </div>
       <div className="user-location">
         <p>Location:</p>
@@ -59,8 +73,25 @@ const UserProfile = (props: any) => {
         <p>{date}</p>
         <p>{time}</p>
       </div>
-      <button className="common-btn" onClick={() => setDialogOpen(true)}>Logout</button>
-      <LogoutModal open={dialogOpen} onClose={() => setDialogOpen(false)} onLogout={props.onLogout}/>
+      <button className="common-btn" onClick={() => setDialogOpen(true)}>
+        Logout
+      </button>
+      <LogoutModal
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onLogout={props.onLogout}
+      />
+      <AddProfileModal
+        open={addUserModalOpen}
+        onClose={() => setAddUserModalOpen(false)}
+        userId={props.userData.id}
+      />
+      <RemoveProfileModal
+        open={removeUserModalOpen}
+        onClose={() => setRemoveUserModalOpen(false)}
+        userId={props.userData.id}
+        profileId={props.userData.profile.id}
+      />
     </div>
   );
 };

@@ -23,7 +23,6 @@
   background-color: var(--accent-color);
   color: black;
   margin: 5px;
-
 }
 
 .button.custom:hover {
@@ -53,4 +52,19 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.profile-btn {
+  width: 200px;
+  font-size: 14px;
+  color: var(--primary-color);
+  outline: none;
+  border: none;
+  border-radius: 5px;
+}
+.profile-btn:hover,
+.selected {
+  cursor: pointer;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
 }
