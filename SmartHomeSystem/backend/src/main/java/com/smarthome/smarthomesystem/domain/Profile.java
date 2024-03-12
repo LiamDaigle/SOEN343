@@ -22,7 +22,6 @@ public class Profile {
 
     private String role;
 
-    // Define other attributes of the profile as needed
 
     @ManyToOne
     @JoinColumn(name = "user_id")
