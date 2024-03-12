@@ -25,9 +25,11 @@ public class User {
 
     private String email;
 
-    private String password;    //Change this in the later stages to have salt + hash + pepper
+    private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Profile> profiles;
+
+
 }
