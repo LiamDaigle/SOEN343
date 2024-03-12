@@ -50,14 +50,14 @@ const RemoveProfileModal: React.FC<FormDialogProps> = ({
       const response = await axios.delete(
         `http://localhost:8080/api/users/${userId}/profiles/${name}`
       );
-      alert("User profile created successfully!");
+      alert("User profile removed successfully!");
       localStorage.setItem("userAccount", JSON.stringify(response.data));
       navigate("/");
       onClose();
       // Handle redirection or any other action upon successful registration
     } catch (error: any) {
-      console.error("User profile creation failed:", error.response.data);
-      alert("User profile creation failed! Please try again.");
+      console.error("User profile removed failed:", error.response.data);
+      alert("User profile removal failed! Please try again.");
     }
   };
 
