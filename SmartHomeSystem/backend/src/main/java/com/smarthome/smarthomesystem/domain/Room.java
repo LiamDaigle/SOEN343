@@ -21,14 +21,4 @@ public class Room {
     private Long id;
 
     private String name;
-
-    @OneToMany(mappedBy = "room")
-    private List<Window> windows;
-
-    @OneToMany(mappedBy = "room")
-    private List<Light> lights;
-
-    @OneToMany(mappedBy = "room")
-    private List<Door> doors;
-
 }
