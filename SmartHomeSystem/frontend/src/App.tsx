@@ -15,12 +15,12 @@ function App() {
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [userData, setUserData] = useState(getUserData());
 
-
   useEffect(() => {
     // Fetch user account from localStorage
     const storedUserAccount = localStorage.getItem("userAccount");
     if (storedUserAccount) {
       setUserAccount(JSON.parse(storedUserAccount));
+      setUserData(getUserData());
     }
   }, []);
 
@@ -37,6 +37,7 @@ function App() {
     // Clear login state from localStorage
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("userAccount");
+    localStorage.removeItem("selectedUserProfile");
   };
 
   return (

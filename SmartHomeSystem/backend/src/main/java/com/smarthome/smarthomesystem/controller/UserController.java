@@ -69,4 +69,19 @@ public class UserController {
         List<Profile> profiles = profileRepository.findByUser(user);
         return ResponseEntity.ok(profiles);
     }
+
+    @DeleteMapping("/{userId}/profiles/{username}")
+    public ResponseEntity<?> deleteProfileFromUserByUsername(@PathVariable Long userId, @PathVariable String username) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<Profile> profiles = profileRepository.findByUser(user);
+        Profile profileToDelete = profiles.stream()
+                .filter(profile -> profile.getName().equals(username))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Profile not found for the given username"));
+
+        profileRepository.delete(profileToDelete);
+        return ResponseEntity.ok("Profile deleted successfully");
+    }
 }
