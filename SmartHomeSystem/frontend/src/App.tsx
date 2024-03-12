@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import DashboardLandingPage from "./Dashboard/DashboardLandingPage";
-import LoginModal from "../src/UserProfile/LoginModal"; // Import the LoginModal component
+import LoginModal from "../src/UserProfile/LoginModal";
 import "./App.css";
 import RegisterModal from "./UserProfile/RegisterModal";
 
@@ -34,7 +34,7 @@ function App() {
     setUserAccount(null); // Clear userAccount state
     // Clear login state from localStorage
     localStorage.removeItem("isLoggedIn");
-    // Perform any other logout actions, such as clearing local storage
+    localStorage.removeItem("userAccount");
   };
 
   return (
@@ -44,7 +44,10 @@ function App() {
           path="/"
           element={
             isLoggedIn ? (
-              <DashboardLandingPage userAccount={userAccount} />
+              <DashboardLandingPage
+                userAccount={userAccount}
+                onLogout={handleLogout}
+              />
             ) : (
               <Navigate to="/login" />
             )
