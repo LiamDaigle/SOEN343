@@ -25,7 +25,7 @@ public class UserController {
             return ResponseEntity.badRequest().body("Invalid email or password");
         }
 
-        return ResponseEntity.ok("Login successful!");
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/register")
@@ -35,6 +35,6 @@ public class UserController {
         }
         // should hash the password before saving it
         userRepository.save(user);
-        return ResponseEntity.ok("User registered successfully!");
+        return ResponseEntity.ok(user);
     }
 }

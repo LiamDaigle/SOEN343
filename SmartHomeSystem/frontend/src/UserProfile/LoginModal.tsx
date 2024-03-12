@@ -13,16 +13,16 @@ import { Link, useNavigate } from "react-router-dom";
 interface FormDialogProps {
   open: boolean;
   onClose: () => void;
+  onLogin: () => void;
 }
 
-const RegisterModal: React.FC<FormDialogProps> = ({ open, onClose }) => {
+const LoginModal: React.FC<FormDialogProps> = ({ open, onClose, onLogin }) => {
   const [userData, setUserData] = useState({
-    username: "",
     email: "",
     password: "",
   });
   const navigate = useNavigate();
-  const { username, email, password } = userData;
+  const { email, password } = userData;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,13 +35,16 @@ const RegisterModal: React.FC<FormDialogProps> = ({ open, onClose }) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/api/users/register", {
-        username,
-        password,
-        email,
-      });
-      alert("User registered successfully!");
+      const response = await axios.post(
+        "http://localhost:8080/api/users/login",
+        {
+          password,
+          email,
+        }
+      );
+      console.log(response.data);
       localStorage.setItem("userAccount", JSON.stringify(response.data));
+      onLogin();
       navigate("/");
       onClose();
       // Handle redirection or any other action upon successful registration
@@ -55,22 +58,9 @@ const RegisterModal: React.FC<FormDialogProps> = ({ open, onClose }) => {
     <Dialog open={open} onClose={onClose}>
       <DialogContent className="dialog-container custom">
         <DialogContentText className="dialog-subheading custom">
-          Register
+          Login
         </DialogContentText>
         <form className="form custom" onSubmit={handleSubmit}>
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="username"
-            name="username"
-            label="Username"
-            type="text"
-            fullWidth
-            variant="standard"
-            value={username}
-            onChange={handleChange}
-          />
           <TextField
             required
             margin="dense"
@@ -101,16 +91,16 @@ const RegisterModal: React.FC<FormDialogProps> = ({ open, onClose }) => {
               Cancel
             </Button>
             <Button className="button custom" type="submit">
-              Register
+              Login
             </Button>
           </DialogActions>
         </form>
         <DialogContentText>
-          Don't have an account? <Link to="/login">Login Here</Link>
+          Don't have an account? <Link to="/register">Sign Up Here</Link>
         </DialogContentText>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default RegisterModal;
+export default LoginModal;

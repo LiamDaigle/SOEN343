@@ -5,7 +5,7 @@
   border: 2px solid var(--accent-color);
   padding: 20px;
   border-radius: 10px;
-  width: 200px;
+  width: 250px;
 }
 
 .user-profile-picture {
@@ -43,8 +43,10 @@
   border-radius: 10px;
   border: none;
   outline: none;
+  margin: 10px;
 }
 
 .common-btn:hover {
   cursor: pointer;
+  color: var(--text-color);
 }
