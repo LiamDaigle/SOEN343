@@ -35,12 +35,13 @@ const RegisterModal: React.FC<FormDialogProps> = ({ open, onClose }) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8080/api/users/register", {
+      const response = await axios.post("http://localhost:8080/api/users/register", {
         username,
         password,
         email,
       });
       alert("User registered successfully!");
+      localStorage.setItem("userAccount", JSON.stringify(response.data));
       navigate("/");
       onClose();
       // Handle redirection or any other action upon successful registration

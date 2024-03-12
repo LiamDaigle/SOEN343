@@ -35,6 +35,6 @@ public class UserController {
         }
         // should hash the password before saving it
         userRepository.save(user);
-        return ResponseEntity.ok("User registered successfully!");
+        return ResponseEntity.ok(user);
     }
 }
