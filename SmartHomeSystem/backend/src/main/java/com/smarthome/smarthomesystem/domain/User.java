@@ -1,5 +1,6 @@
 package com.smarthome.smarthomesystem.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,5 +28,6 @@ public class User {
     private String password;    //Change this in the later stages to have salt + hash + pepper
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Profile> profiles;
 }

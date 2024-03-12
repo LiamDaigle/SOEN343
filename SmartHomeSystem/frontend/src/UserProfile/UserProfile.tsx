@@ -6,12 +6,10 @@ import RegisterModal from "./RegisterModal"; // Import the RegisterModal compone
 import LoginModal from "./LoginModal";
 import LogoutModal from "./Logout";
 
-
 const UserProfile = (props: any) => {
   const [date, setData] = useState("");
   const [time, setTime] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false); // State to control dialog open/close
-
 
   const fetchDate = () => {
     var currentdate = new Date();
@@ -47,7 +45,7 @@ const UserProfile = (props: any) => {
         />
         <button className="common-btn">Add User</button>
         <button className="common-btn">Remove User</button>
-        <p>{props.userData.role}</p> {/* TODO: role here */}
+        <p>{props.userData.profile.role}</p> {/* TODO: role here */}
       </div>
       <div className="user-location">
         <p>Location:</p>

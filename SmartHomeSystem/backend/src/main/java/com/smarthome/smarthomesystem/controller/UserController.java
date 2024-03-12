@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.smarthome.smarthomesystem.domain.Profile;
-
+import org.springframework.http.ResponseEntity;
 import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -16,6 +17,8 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
     private ProfileRepository profileRepository;
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody User loginUser) {
@@ -37,7 +40,7 @@ public class UserController {
 
         // Create initial profile for the parent with the same role
         Profile parentProfile = Profile.builder()
-                .name("Parent Profile")
+                .name(user.getUsername())
                 .role("Parent")
                 .user(user)
                 .build();
@@ -56,5 +59,14 @@ public class UserController {
         profileRepository.save(profile);
 
         return ResponseEntity.ok(profile);
+    }
+
+    @GetMapping("/{userId}/profiles")
+    public ResponseEntity<List<Profile>> getUserProfiles(@PathVariable Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<Profile> profiles = profileRepository.findByUser(user);
+        return ResponseEntity.ok(profiles);
     }
 }
