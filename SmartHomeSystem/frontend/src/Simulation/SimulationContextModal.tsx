@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Button from "../Common/Button";
+import "./SimulationContextModal.css";
+
 
 interface SimulationContextModalProps {
   open: boolean;
@@ -20,6 +22,12 @@ enum Room {
   OUTSIDE = "Outside",
 }
 
+enum Item {
+  PLANT = "Plant",
+  TABLE = "Table",
+  CHAIR = "Chair",
+}
+
 const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
   open,
   onClose,
@@ -29,6 +37,9 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
   );
   const [selectedRoom, setSelectedRoom] = useState<Room>(Room.LIVING_ROOM);
   const [windowBlocked, setWindowBlocked] = useState<boolean>(false);
+  const [selectedWindowRoom, setSelectedWindowRoom] = useState<Room>(Room.LIVING_ROOM);
+  const [selectedWindowItem, setSelectedWindowItem] = useState<Item>(Item.PLANT);
+
 
   const handlePlaceInhabitant = () => {
     // Logic to place the selected inhabitant in the selected room
@@ -36,8 +47,10 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
   };
 
   const handleBlockWindow = () => {
-    setWindowBlocked(true);
-  };
+    // Logic to block the window in the selected room with the selected item
+    console.log(`Placing ${selectedInhabitant} in ${selectedRoom}`);
+  }
+
 
   if (!open) return null;
 
@@ -72,21 +85,58 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
           ))}
         </select>
       </div>
-      <Button onClick={handlePlaceInhabitant}>Place Inhabitant</Button>
-      <div>
-        <label>
-          Block Window:{" "}
+      <button
+        className="modal-buttons"
+        onClick={handlePlaceInhabitant}> 
+        Place Inhabitant
+      </button>
+      <label className="block-window">
+          Do you want to block a window?
           <input
             type="checkbox"
             checked={windowBlocked}
             onChange={() => setWindowBlocked(!windowBlocked)}
           />
-        </label>
+      </label>
+      <div className={`block-window-in ${windowBlocked ? '' : 'invisible'}`}>
+        <label>Block Window in the:</label>
+          <select
+            value={selectedWindowRoom}
+            onChange={(e) => setSelectedWindowRoom(e.target.value as Room)}
+          >
+            {Object.values(Room).map((room) => (
+              <option key={room} value={room}>
+                {room}
+              </option>
+            ))}
+          </select>
       </div>
-      <Button onClick={handleBlockWindow}>
-        {windowBlocked ? "Window Blocked" : "Block Window"}
-      </Button>
-      <Button onClick={onClose}>Close</Button>
+      <div className={`block-window-with ${windowBlocked ? '' : 'invisible'}`}>
+        <label>Block Window with :</label>
+          <select
+            value={selectedWindowItem}
+            onChange={(e) => setSelectedWindowItem(e.target.value as Item)}
+          >
+            {Object.values(Item).map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+      </div>
+      <button
+        className="modal-buttons"
+        onClick={onClose}
+        > 
+        Close
+      </button>
+      <button
+        className={`modal-buttons ${!windowBlocked ? "invisible" : ""}`}
+        onClick={handleBlockWindow}
+        disabled={!windowBlocked}
+        > 
+        {windowBlocked ? "Block Window" : ""}
+      </button>
     </div>
   );
 };
