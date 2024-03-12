@@ -33,6 +33,7 @@ public class UserController {
         if (userRepository.findByUsername(user.getUsername()).isPresent() || userRepository.findByEmail(user.getEmail()).isPresent()) {
             return ResponseEntity.badRequest().body("Username or Password is already taken!");
         }
+        user.setRole("Parent");
         // should hash the password before saving it
         userRepository.save(user);
         return ResponseEntity.ok(user);

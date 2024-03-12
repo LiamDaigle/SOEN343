@@ -24,5 +24,6 @@ public class User {
 
     private String password;    //Change this in the later stages to have salt + hash + pepper
 
+    private String role;
 
 }

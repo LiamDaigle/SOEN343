@@ -10,7 +10,7 @@ const DashboardLandingPage = (props: any) => {
       <h1>Smart Home Simulator</h1>
 
       <div className="dashboard-content-container">
-        <UserProfile onLogout={props.onLogout}/>
+        <UserProfile onLogout={props.onLogout} userData={props.userData}/>
         <TabComponent />
         <HouseLayoutGrid />
       </div>
