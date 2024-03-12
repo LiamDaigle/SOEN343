@@ -25,7 +25,7 @@ public class UserController {
             return ResponseEntity.badRequest().body("Invalid email or password");
         }
 
-        return ResponseEntity.ok("Login successful!");
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/register")

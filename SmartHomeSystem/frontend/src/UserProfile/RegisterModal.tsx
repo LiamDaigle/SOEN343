@@ -8,6 +8,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
 import "./Form.css"; // Import the CSS file
+import { Link, useNavigate } from "react-router-dom";
 
 interface FormDialogProps {
   open: boolean;
@@ -20,7 +21,7 @@ const RegisterModal: React.FC<FormDialogProps> = ({ open, onClose }) => {
     email: "",
     password: "",
   });
-
+  const navigate = useNavigate();
   const { username, email, password } = userData;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,7 +41,8 @@ const RegisterModal: React.FC<FormDialogProps> = ({ open, onClose }) => {
         email,
       });
       alert("User registered successfully!");
-      onClose()
+      navigate("/");
+      onClose();
       // Handle redirection or any other action upon successful registration
     } catch (error: any) {
       console.error("Registration failed:", error.response.data);
@@ -102,18 +104,12 @@ const RegisterModal: React.FC<FormDialogProps> = ({ open, onClose }) => {
             </Button>
           </DialogActions>
         </form>
+        <DialogContentText>
+          Don't have an account? <Link to="/login">Login Here</Link>
+        </DialogContentText>
       </DialogContent>
     </Dialog>
   );
 };
 
 export default RegisterModal;
-
-
-
-
-
-
-
-
-

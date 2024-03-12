@@ -8,20 +8,21 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
 import "./Form.css"; // Import the CSS file
+import { Link, useNavigate } from "react-router-dom";
 
 interface FormDialogProps {
   open: boolean;
   onClose: () => void;
+  onLogin: () => void;
 }
 
-const LoginModal: React.FC<FormDialogProps> = ({ open, onClose }) => {
+const LoginModal: React.FC<FormDialogProps> = ({ open, onClose, onLogin }) => {
   const [userData, setUserData] = useState({
-    username: "",
     email: "",
     password: "",
   });
-
-  const { username, email, password } = userData;
+  const navigate = useNavigate();
+  const { email, password } = userData;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -34,12 +35,18 @@ const LoginModal: React.FC<FormDialogProps> = ({ open, onClose }) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8080/api/users/register", {
-        password,
-        email,
-      });
-      alert("User registered successfully!");
-      onClose()
+      const response = await axios.post(
+        "http://localhost:8080/api/users/login",
+        {
+          password,
+          email,
+        }
+      );
+      console.log(response.data);
+      localStorage.setItem("userAccount", JSON.stringify(response.data));
+      onLogin();
+      navigate("/");
+      onClose();
       // Handle redirection or any other action upon successful registration
     } catch (error: any) {
       console.error("Registration failed:", error.response.data);
@@ -88,18 +95,12 @@ const LoginModal: React.FC<FormDialogProps> = ({ open, onClose }) => {
             </Button>
           </DialogActions>
         </form>
+        <DialogContentText>
+          Don't have an account? <Link to="/register">Sign Up Here</Link>
+        </DialogContentText>
       </DialogContent>
     </Dialog>
   );
 };
 
 export default LoginModal;
-
-
-
-
-
-
-
-
-
