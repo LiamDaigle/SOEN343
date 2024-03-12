@@ -16,6 +16,18 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody User loginUser) {
+        User user = userRepository.findByEmail(loginUser.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!user.getPassword().equals(loginUser.getPassword())) {
+            return ResponseEntity.badRequest().body("Invalid email or password");
+        }
+
+        return ResponseEntity.ok(user);
+    }
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent() || userRepository.findByEmail(user.getEmail()).isPresent()) {
@@ -23,6 +35,6 @@ public class UserController {
         }
         // should hash the password before saving it
         userRepository.save(user);
-        return ResponseEntity.ok("User registered successfully!");
+        return ResponseEntity.ok(user);
     }
 }
