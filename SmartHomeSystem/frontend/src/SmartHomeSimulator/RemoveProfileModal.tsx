@@ -11,10 +11,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
 import "./Form.css"; // Import the CSS file
 import { Link, useNavigate } from "react-router-dom";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import InputLabel from "@mui/material/InputLabel";
 
 interface FormDialogProps {
   open: boolean;
