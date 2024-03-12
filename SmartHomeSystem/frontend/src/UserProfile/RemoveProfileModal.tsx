@@ -23,7 +23,7 @@ interface FormDialogProps {
   profileId: any;
 }
 
-const AddProfileModal: React.FC<FormDialogProps> = ({
+const RemoveProfileModal: React.FC<FormDialogProps> = ({
   open,
   onClose,
   userId,
@@ -96,4 +96,4 @@ const AddProfileModal: React.FC<FormDialogProps> = ({
   );
 };
 
-export default AddProfileModal;
+export default RemoveProfileModal;
