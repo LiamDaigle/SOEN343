@@ -1,15 +1,16 @@
 import axios from "axios";
 
-class WindowCommands{
+class WindowReceiver{
 
     private static baseUrl:string = "http://localhost:8080/api/windows";
 
     private constructor(){}
 
-    static async fullUpdate(id:number, window:object){
+    static async fullUpdate(window:object){
+        const id:number = window.id;
         const result = await axios.put(this.baseUrl + `/${id}`, window);
         return result;
     }
 }
 
-export default WindowCommands;
+export default WindowReceiver;

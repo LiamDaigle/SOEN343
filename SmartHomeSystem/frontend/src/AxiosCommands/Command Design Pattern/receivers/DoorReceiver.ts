@@ -1,15 +1,16 @@
 import axios from "axios";
 
-class DoorCommands{
+class DoorReceiver{
 
     private static baseUrl:string = "http://localhost:8080/api/doors";
     
     private constructor(){}
 
-    static async fullUpdate(id:number, door:object){
+    static async fullUpdate(door:object){
+        const id:number = door.id;
         const result = await axios.put(this.baseUrl + `/${id}`, door);
         return result;
     }
 }
 
-export default DoorCommands;
+export default DoorReceiver;
