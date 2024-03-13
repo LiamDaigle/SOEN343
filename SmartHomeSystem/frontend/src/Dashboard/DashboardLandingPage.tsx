@@ -11,7 +11,7 @@ const DashboardLandingPage = (props: any) => {
     <div>
       <h1>Smart Home Simulator</h1>
       <div className="dashboard-content-container">
-        <Simulation userData={props.userData} />
+        <Simulation userData={props.userData} onLogin={props.onLogin}/>
         <TabComponent
           onLogout={props.onLogout}
           userData={props.userData}
