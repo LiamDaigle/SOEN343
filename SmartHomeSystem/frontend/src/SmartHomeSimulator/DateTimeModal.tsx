@@ -39,6 +39,7 @@ const DateTimeModal: React.FC<DateTimeModalProps> = ({ open, onClose }) => {
 
   const handleSubmit = () => {
     localStorage.setItem("dateTime", JSON.stringify({ storedDate: date, storedTime: time }));
+    location.reload();
     onClose();
   };
 

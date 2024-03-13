@@ -8,7 +8,7 @@ const Avatar = ({ imageUrl, altText, size }: any) => {
       style={{
         width: size,
         height: size,
-        borderRadius: '50%',
+        // borderRadius: '50%',
         objectFit: 'cover',
       }}
     />
