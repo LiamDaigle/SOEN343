@@ -1,6 +1,7 @@
 package com.smarthome.smarthomesystem.repositories;
 
 import com.smarthome.smarthomesystem.domain.Door;
+import com.smarthome.smarthomesystem.domain.Room;
 import com.smarthome.smarthomesystem.domain.Window;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -13,5 +14,5 @@ import java.util.Optional;
 public interface DoorRepository extends CrudRepository<Door, Long> {
 
     @Query("FROM Door d WHERE d.room=?1")
-    List<Optional<Door>> findByRoomId(int id);
+    List<Optional<Door>> findDoorsByRoom(Room room);
 }
