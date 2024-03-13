@@ -1,0 +1,37 @@
+.controls-modal {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .controls-modal h2 {
+    margin-bottom: 10px;
+    color: black;
+  }
+  
+  .controls-modal table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .controls-modal th, .controls-modal td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .controls-modal th {
+    background-color: #f2f2f2;
+  }
+  
+  .controls-modal button {
+    padding: 6px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+  }
+  
+  .controls-modal button:hover {
+    background-color: #ddd;
+  }
+  

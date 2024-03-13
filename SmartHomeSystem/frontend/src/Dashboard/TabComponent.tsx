@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./TabComponent.css";
 import SHSLandingPage from "../SmartHomeSimulator/SHSLandingPage";
+import SHCLandingPage from "../SmartHomeCore/SHCLandingPage";
 
 const TabComponent = (props: any) => {
   const [activeTab, setActiveTab] = useState(0);
@@ -28,7 +29,7 @@ const TabComponent = (props: any) => {
           <SHSLandingPage onLogout={props.onLogout} userData={props.userData} onLogin={props.onLogin}/>
         )}
         {activeTab === 1 && <p>Content of SHH Tab</p>}
-        {activeTab === 2 && <p>Content of SHC Tab</p>}
+        {activeTab === 2 && (<SHCLandingPage/>)}
         {activeTab === 3 && <p>Content of SHP Tab</p>}
       </div>
     </div>
