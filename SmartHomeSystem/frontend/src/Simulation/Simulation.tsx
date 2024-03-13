@@ -13,8 +13,11 @@ const Simulation = (props: any) => {
   const [isSimulationOn, setSimulationOn] = useState(false);
   const [timeSpeed, setTimeSpeed] = useState(1);
   const [contextDialogOpen, setContextDialogOpen] = useState(false); 
-  // const [selectedInhabitant] = props.userData.profile.role; // Default inhabitant set to "Parent"
   const [selectedRoom, setSelectedRoom] = useState("LivingRoom"); // Change the default room here
+
+  // Ensure props.userData and its properties are defined before accessing
+  const userId = props.userData?.user?.id || "";
+  const profileId = props.userData?.profile?.id || "";
 
   const toggleSimulation = () => {
     setSimulationOn(!isSimulationOn);
@@ -104,6 +107,8 @@ const Simulation = (props: any) => {
           inhabitant={props.userData.profile.role}
           currentRoom={selectedRoom}
           setCurrentRoom={setSelectedRoom}
+          userId={props.userData.id}
+          profileId={props.userData.profile.id}
         />
       </Modal>
     </div>

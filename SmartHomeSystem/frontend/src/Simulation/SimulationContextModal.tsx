@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material'; // Import necessary MUI components
 import "./SimulationContextModal.css";
-import exampleLayout from "../assets/exampleHouseLayout.json"
+import exampleLayout from "../assets/exampleHouseLayout.json";
+import axios from "axios";
 
 interface SimulationContextModalProps {
   open: boolean;
   onClose: () => void;
   inhabitant: string;
   currentRoom: string;
-  setCurrentRoom: React.Dispatch<React.SetStateAction<string>>;
+  setCurrentRoom: React.Dispatch<React.SetStateAction<string>>
+  userId: any;
+  profileId: any;
 }
-
-// interface LayoutData {
-//   layout: string[][];
-// }
 
 const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
   open,
@@ -20,24 +20,19 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
   inhabitant,
   currentRoom,
   setCurrentRoom,
+  userId,
+  profileId
 }) => {
   const [rooms, setRooms] = useState<string[]>([]);
   const [windowBlocked, setWindowBlocked] = useState<boolean>(false);
-  const [selectedWindowRoom, setSelectedWindowRoom] = useState<string>("");;
+  const [selectedWindowRoom, setSelectedWindowRoom] = useState<string>("");
 
   useEffect(() => {
     fetchLayout();
   }, []);
 
-  // const fetchLayout = async () => {
-  //   try {
-  //     const response = await fetch("../assets/exampleLayout.json");
-  //     const data: LayoutData = await response.json();
-  //     setRooms(getRoomsFromLayout(data.layout));
-  //   } catch (error) {
-  //     console.error("Error fetching layout:", error);
-  //   }
-  // };
+  console.log(currentRoom)
+
   const fetchLayout = () => {
     try {
       const layout = exampleLayout.layout;
@@ -45,7 +40,6 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
       setSelectedWindowRoom(getRoomsWithWindowsFromLayout(layout)[0] || "");
     } catch (error) {
       console.error("Error fetching layout:", error);
-
     }
   };
 
@@ -53,7 +47,7 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
     const rooms: string[] = [];
     layout.forEach((row) => {
       row.forEach((room) => {
-        if (room && !rooms.includes(room) && room !== currentRoom ) {
+        if (room && !rooms.includes(room)) {
           rooms.push(room);
         }
       });
@@ -77,13 +71,32 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
     const roomData = exampleLayout[room as keyof typeof exampleLayout];
     return roomData && 'windows' in roomData && roomData.windows > 0;
   };
-  
-  const handlePlaceInhabitant = () => {
-    console.log(`Placing ${inhabitant} in ${currentRoom}`);
-  };
+
+  // const handlePlaceInhabitant = () => {
+  //   console.log(`Placing ${inhabitant} in ${currentRoom}`);
+  // };
 
   const handleBlockWindow = () => {
     console.log(`Blocking window in ${selectedWindowRoom}`);
+  };
+
+  const handlePlaceInhabitant = async () => {
+    console.log(`Placing ${inhabitant} in ${currentRoom}`);
+  
+    try {
+      const response = await axios.patch(
+        `http://localhost:8080/api/users/${userId}/profiles/${profileId}`,
+        {
+          currentRoom
+        }
+      );
+      console.log(currentRoom)
+      console.log("Location updated successfully:", response.data);
+      onClose(); // Close the modal after updating the location
+    } catch (error: any) {
+      console.error("Error updating location:", error.response?.data || error.message);
+      alert("Failed to update location. Please try again.");
+    }
   };
 
   if (!open) return null;
@@ -95,17 +108,19 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
         <label>Inhabitant: {inhabitant}</label>
       </div>
       <div>
-        <label>Select Room:</label>
-        <select
-          value={currentRoom}
-          onChange={(e) => setCurrentRoom(e.target.value)}
-        >
-          {rooms.map((room) => (
-            <option key={room} value={room} disabled={room === currentRoom}>
-              {room}
-            </option>
-          ))}
-        </select>
+        <FormControl fullWidth variant="standard" margin="dense">
+          <InputLabel>Select Room:</InputLabel>
+          <Select
+            value={currentRoom}
+            onChange={(e) => setCurrentRoom(e.target.value as string)}
+          >
+            {rooms.map((room) => (
+              <MenuItem key={room} value={room} disabled={room === currentRoom}>
+                {room}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </div>
       <button className="modal-buttons" onClick={handlePlaceInhabitant}>
         Place Inhabitant
@@ -120,16 +135,19 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
       </label>
       <div className={`block-window-in ${windowBlocked ? "" : "invisible"}`}>
         <label>Block Window in the:</label>
-        <select
-          value={selectedWindowRoom}
-          onChange={(e) => setSelectedWindowRoom(e.target.value)}
-        >
-          {getRoomsWithWindowsFromLayout(exampleLayout.layout).map((room) => (
-            <option key={room} value={room}>
-              {room}
-            </option>
-          ))}
-        </select>
+        <FormControl fullWidth variant="standard" margin="dense">
+          <InputLabel>Select Room:</InputLabel>
+          <Select
+            value={selectedWindowRoom}
+            onChange={(e) => setSelectedWindowRoom(e.target.value as string)}
+          >
+            {getRoomsWithWindowsFromLayout(exampleLayout.layout).map((room) => (
+              <MenuItem key={room} value={room}>
+                {room}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </div>
       <button className="modal-buttons" onClick={onClose}>
         Close
