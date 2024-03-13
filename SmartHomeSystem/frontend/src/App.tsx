@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import DashboardLandingPage from "./Dashboard/DashboardLandingPage";
-import Simulation from "./Simulation/Simulation";
 import LoginModal from "../src/UserProfile/LoginModal";
+import Simulation from "./Simulation/Simulation";
 import "./App.css";
 import RegisterModal from "./UserProfile/RegisterModal";
 import { getUserData } from "../src/Common/userData";
@@ -77,7 +77,7 @@ function App() {
             />
           }
         />
-        <Route path="/simulation" element={<Simulation />}/>
+      <Route path="/simulation" element={<Simulation />}/>
       </Routes>
     </BrowserRouter>
   );

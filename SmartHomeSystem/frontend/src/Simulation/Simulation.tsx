@@ -5,14 +5,16 @@ import Button from "../Common/Button";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Switch from "@mui/material/Switch";
-import ModeEditIcon from "@mui/icons-material/ModeEdit"; // Import the ModeEditIcon component
-import Modal from "@mui/material/Modal"; // Import the Modal component
-import SimulationContextModal from "./SimulationContextModal"; // Import the SimulationContextModal component
+import ModeEditIcon from "@mui/icons-material/ModeEdit"; 
+import Modal from "@mui/material/Modal"; 
+import SimulationContextModal from "./SimulationContextModal"; 
 
 const Simulation = () => {
   const [isSimulationOn, setSimulationOn] = useState(false);
   const [timeSpeed, setTimeSpeed] = useState(1);
-  const [contextDialogOpen, setContextDialogOpen] = useState(false); // State to control context dialog open/close
+  const [contextDialogOpen, setContextDialogOpen] = useState(false); 
+  const [selectedInhabitant] = useState("Parent"); // Default inhabitant set to "Parent"
+  const [selectedRoom, setSelectedRoom] = useState("LivingRoom"); // Change the default room here
 
   const toggleSimulation = () => {
     setSimulationOn(!isSimulationOn);
@@ -77,11 +79,11 @@ const Simulation = () => {
             style={{ width: "100%", borderRadius: "50%", cursor: "pointer" }}
             onClick={openContextDialog}
           />
-          <p>Parent</p> {/* TODO: role here */}
+          <p>{selectedInhabitant}</p> {/* TODO: role here */}
         </div>
         <div className="user-location">
           <p>Location:</p>
-          <p>Kitchen</p> {/*  TODO: change location*/}
+          <p>{selectedRoom}</p> {/*  TODO: change location*/}
         </div>
         <div className="outside-temperature">
           <p>Outside Temperature: 15C </p>
@@ -105,7 +107,13 @@ const Simulation = () => {
         </div>
       </div>
       <Modal open={contextDialogOpen} onClose={closeContextDialog}>
-        <SimulationContextModal open={contextDialogOpen} onClose={closeContextDialog} />
+        <SimulationContextModal
+          open={contextDialogOpen}
+          onClose={closeContextDialog}
+          inhabitant={selectedInhabitant}
+          currentRoom={selectedRoom}
+          setCurrentRoom={setSelectedRoom}
+        />
       </Modal>
     </div>
   );
