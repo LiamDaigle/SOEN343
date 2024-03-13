@@ -17,6 +17,7 @@ const Simulation = (props: any) => {
 
   const toggleSimulation = () => {
     setSimulationOn(!isSimulationOn);
+    localStorage.setItem("simulationToggle", JSON.stringify(!isSimulationOn));
   };
 
   const handleTimeSpeedChange = (value: number) => {
@@ -35,6 +36,13 @@ const Simulation = (props: any) => {
   const [time, setTime] = useState<string>("");
 
   useEffect(() => {
+    // Retrieve stored simulation toggle state
+    const storedSimulationToggle = localStorage.getItem("simulationToggle");
+    if (storedSimulationToggle) {
+      const storedIsSimulationOn = JSON.parse(storedSimulationToggle);
+      setSimulationOn(storedIsSimulationOn);
+    }
+
     const storedDateTime = localStorage.getItem("dateTime");
     if (storedDateTime) {
       const { storedDate, storedTime } = JSON.parse(storedDateTime);
@@ -75,12 +83,12 @@ const Simulation = (props: any) => {
           <p>Location:</p>
           <p>{selectedRoom}</p>
         </div>
-        <div className="outside-temperature">
+        <div className="outside-temperature" style={{ display: isSimulationOn ? "block" : "none" }}>
           <p>Outside Temperature:</p>
           <p>15C</p>
         </div>{" "}
         {/* TODO: change temperature */}
-        <div className="data-and-time">
+        <div className="data-and-time" style={{ display: isSimulationOn ? "block" : "none" }}>
           <p>{date}</p>
           <p>{time}</p>
         </div>
