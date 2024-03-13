@@ -15,7 +15,3 @@ class FindRoomCommand implements Command{
 }
 
 export default FindRoomCommand;
-
-// {
-//     name:"Backyard"
-// }

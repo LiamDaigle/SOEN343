@@ -15,8 +15,3 @@ class GetAllLightsCommand implements Command{
 }
 
 export default GetAllLightsCommand;
-
-        // {
-        //     id:room_id,
-        //     name:room_name
-        // }

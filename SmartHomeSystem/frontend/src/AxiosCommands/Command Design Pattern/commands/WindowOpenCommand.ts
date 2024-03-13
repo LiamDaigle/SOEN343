@@ -16,14 +16,3 @@ class WindowOpenCommand implements Command{
 }
 
 export default WindowOpenCommand;
-
-//Example of type window:
-    //     {
-    //         "id":0,
-    //         "room": {
-    //             "id": 0,
-    //             "name": "Backyard"
-    //         },
-    //         "open": false
-    // }
-    //You make a window payload but omit the id, and put it into the id field in the parameters instead

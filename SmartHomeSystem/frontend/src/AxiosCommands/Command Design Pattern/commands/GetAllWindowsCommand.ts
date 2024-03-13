@@ -15,8 +15,3 @@ class GetAllWindowsCommand implements Command{
 }
 
 export default GetAllWindowsCommand;
-
-        // {
-        //     id:room_id,
-        //     name:room_name
-        // }

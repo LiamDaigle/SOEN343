@@ -1,4 +1,5 @@
 import DoorReceiver from "../receivers/DoorReceiver";
+import Command from "./interface/Command";
 
 class DoorOpenCommand implements Command{
 
@@ -16,15 +17,3 @@ class DoorOpenCommand implements Command{
 }
 
 export default DoorOpenCommand;
-
-        //example of type door:
-        // {
-        //     "id": 0, 
-        //     "room": {
-        //         "id": 0,
-        //         "name": "Backyard"
-        //     },
-        //     "open": true,
-        //     "autoLock": false
-        // }
-        //You basically just make a door payload, but omit the id in the body and instead put it into the id field for the method

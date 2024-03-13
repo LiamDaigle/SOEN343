@@ -15,8 +15,3 @@ class GetAllDoorsCommand implements Command{
 }
 
 export default GetAllDoorsCommand;
-
-        // {
-        //     id:room_id,
-        //     name:room_name
-        // }
