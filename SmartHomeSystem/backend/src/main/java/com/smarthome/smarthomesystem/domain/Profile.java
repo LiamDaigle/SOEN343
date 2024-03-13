@@ -22,6 +22,8 @@ public class Profile {
 
     private String role;
 
+    private String location;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
