@@ -3,11 +3,14 @@ import "./UserProfile.css";
 import Avatar from "../Common/Avatar";
 import Button from "../Common/Button";
 import RegisterModal from "./RegisterModal"; // Import the RegisterModal component
+import LoginModal from "./LoginModal";
+import LogoutModal from "../SmartHomeSimulator/Logout";
+import AddProfileModal from "../SmartHomeSimulator/AddProfileModal";
+import RemoveProfileModal from "../SmartHomeSimulator/RemoveProfileModal";
 
-const UserProfile = () => {
+const UserProfile = (props: any) => {
   const [date, setData] = useState("");
   const [time, setTime] = useState("");
-  const [dialogOpen, setDialogOpen] = useState(false); // State to control dialog open/close
 
   const fetchDate = () => {
     var currentdate = new Date();
@@ -31,6 +34,7 @@ const UserProfile = () => {
   useEffect(() => {
     fetchDate();
   }, []); // Run only once on mount
+  console.log(props.userData);
 
   return (
     <div className="user-profile-container">
@@ -41,10 +45,8 @@ const UserProfile = () => {
           altText="profile picture"
           size="100%"
         />
-        <button className="common-btn" onClick={() => setDialogOpen(true)}>
-          Register
-        </button>
-        <p>insert role here</p> {/* TODO: role here */}
+
+        <p>{props.userData.profile.role}</p>
       </div>
       <div className="user-location">
         <p>Location:</p>
@@ -58,8 +60,7 @@ const UserProfile = () => {
         <p>{date}</p>
         <p>{time}</p>
       </div>
-      <RegisterModal open={dialogOpen} onClose={() => setDialogOpen(false)} />{" "}
-      {/* Render RegisterModal with open state */}
+
     </div>
   );
 };

@@ -57,3 +57,12 @@ button {
 a {
   color: var(--accent-color);
 }
+
+input {
+  color: var(--primary-color);
+  border: 2px solid var(--accent-color);
+  outline: none;
+  border-radius: 5px;
+  margin: 5px 0;
+  height: 20px;
+}
