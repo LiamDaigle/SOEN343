@@ -3,6 +3,7 @@ package com.smarthome.smarthomesystem.controller;
 import com.smarthome.smarthomesystem.domain.User;
 import com.smarthome.smarthomesystem.repositories.ProfileRepository;
 import com.smarthome.smarthomesystem.repositories.UserRepository;
+import org.modelmapper.internal.bytebuddy.implementation.bind.MethodDelegationBinder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -104,6 +105,28 @@ public class UserController {
         profileToUpdate.setName(updatedProfile.getName());
         profileToUpdate.setRole(updatedProfile.getRole());
         profileToUpdate.setLocation(updatedProfile.getLocation());
+        profileRepository.save(profileToUpdate);
+
+        return ResponseEntity.ok(profileToUpdate);
+    }
+
+    @PatchMapping("/{userId}/profiles/{profileId}")
+    public ResponseEntity<?> updateProfileLocation(@PathVariable Long userId, @PathVariable Long profileId, @RequestBody String location) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Retrieve the profile to update
+        Profile profileToUpdate = profileRepository.findById(profileId)
+                .orElseThrow(() -> new RuntimeException("Profile not found"));
+
+        // Check if the profile belongs to the user
+        if (!profileToUpdate.getUser().equals(user)) {
+            return ResponseEntity.badRequest().body("Profile does not belong to the user");
+        }
+
+        // Update the profile location
+        profileToUpdate.setLocation(location);
+        System.out.print(location);
         profileRepository.save(profileToUpdate);
 
         return ResponseEntity.ok(profileToUpdate);

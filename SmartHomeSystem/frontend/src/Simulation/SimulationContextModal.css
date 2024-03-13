@@ -1,0 +1,51 @@
+.simulation-context-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 2px solid black;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px; /* Adjust width as needed */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+}
+
+.simulation-context-modal h2 {
+    margin-top: 0; 
+    color:black;
+}
+
+.simulation-context-modal > div {
+    margin-bottom: 10px; /* Add space between elements */
+}
+
+.simulation-context-modal label {
+    display: block; /* Ensure label takes full width */
+}
+
+.simulation-context-modal select {
+    width: 100%; /* Make form elements fill the width */
+}
+
+.simulation-context-modal button .common-btn {
+    margin-top: 10px; /* Add space between buttons */
+    color:black;
+}
+
+.block-window {
+    margin: 1rem 0;
+}
+
+.simulation-context-modal .modal-buttons {
+    padding: 0.5rem;
+    border-radius: 5px;
+    border-color: var(--secondary-color);
+    cursor: pointer;
+    margin: 0.2rem 0.2rem 0.2rem 0;
+}
+
+.invisible {
+    visibility: hidden;
+    pointer-events: none;
+  }
