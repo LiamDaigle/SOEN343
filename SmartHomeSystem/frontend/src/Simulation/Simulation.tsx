@@ -32,31 +32,22 @@ const Simulation = (props: any) => {
     setContextDialogOpen(false);
   };
 
-  const [date, setData] = useState("");
-  const [time, setTime] = useState("");
-
-  const fetchDate = () => {
-    var currentdate = new Date();
-    setData(
-      currentdate.getDate() +
-        "/" +
-        (currentdate.getMonth() + 1) +
-        "/" +
-        currentdate.getFullYear()
-    );
-
-    setTime(
-      currentdate.getHours() +
-        ":" +
-        currentdate.getMinutes() +
-        ":" +
-        currentdate.getSeconds()
-    );
-  };
+  const [date, setDate] = useState<string>("");
+  const [time, setTime] = useState<string>("");
 
   useEffect(() => {
-    fetchDate();
-  }, []); // Run only once on mount
+    const storedDateTime = localStorage.getItem("dateTime");
+    if (storedDateTime) {
+      const { storedDate, storedTime } = JSON.parse(storedDateTime);
+      setDate(storedDate);
+      setTime(storedTime);
+    } else {
+      const currentDate = new Date().toISOString().split("T")[0];
+      const currentTime = new Date().toISOString().split("T")[1].substring(0, 5);
+      setDate(currentDate);
+      setTime(currentTime);
+    }
+  }, [open]);
 
   return (
     <div className="simulation-container">
