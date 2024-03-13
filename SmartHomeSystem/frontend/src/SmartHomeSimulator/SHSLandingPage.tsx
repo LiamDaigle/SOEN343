@@ -6,6 +6,7 @@ import "./SHSLandingPage.css";
 import ProfileSelection from "./ProfileSelection";
 import axios from "axios";
 import EditProfileModal from "./EditProfileModal";
+import DateTimeModal from "./DateTimeModal";
 
 interface Profile {
   id: string;
@@ -21,7 +22,7 @@ const SHSLandingPage = (props: any) => {
   const handleEditProfile = () => {
     setEditProfileModalOpen(true);
   };
-  console.log(props);
+  const [dateTimeModalOpen, setDateTimeModalOpen] = useState(false); // State for DateTimeModal
 
   // Ensure props.userData and its properties are defined before accessing
   const userId = props.userData?.user?.id || "";
@@ -46,7 +47,12 @@ const SHSLandingPage = (props: any) => {
       <button className="common-btn" onClick={() => setSelectUserModal(true)}>
         Select Profile
       </button>
-      <button className="common-btn">Edit Date/Time</button>
+      <button
+        className="common-btn"
+        onClick={() => setDateTimeModalOpen(true)} // Open DateTimeModal
+      >
+        Edit Date/Time
+      </button>{" "}
       <button className="common-btn" onClick={() => setDialogOpen(true)}>
         Logout
       </button>
@@ -82,6 +88,10 @@ const SHSLandingPage = (props: any) => {
         profileRole={props.userData.profile.role}
         profileRoom={props.userData.profile.location}
         user={props.userData}
+      />
+      <DateTimeModal
+        open={dateTimeModalOpen} // Pass state to DateTimeModal
+        onClose={() => setDateTimeModalOpen(false)} // Close DateTimeModal
       />
     </div>
   );
