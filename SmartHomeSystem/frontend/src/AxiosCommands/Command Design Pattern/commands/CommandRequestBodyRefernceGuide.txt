@@ -1,0 +1,41 @@
+Door Open and Close Command Request Body Example:
+{
+    "id": 0,        
+    "room": {
+        "id": 0,
+        "name": "Backyard"
+    },
+    "open": true,
+    "autoLock": false
+}
+
+Window Open and Close Command Request Body Example:
+{
+    "id":0,
+    "room": {
+    "id": 0,
+    "name": "Backyard"
+    },
+    "open": false
+}
+
+Light On and Off Command Request Body Example:
+{
+     "id": 0,
+     "room": {
+         "id": 0,
+         "name": "Backyard"
+     },
+     "on": true
+}
+
+Find Room Command Request Body Example:
+{
+    name:"Backyard"
+}
+
+Get All Doors, Windows and Lights Request Body Example:
+{
+    id:room_id,
+    name:room_name
+}
