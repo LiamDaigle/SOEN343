@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./SimulationContextModal.css";
-import exampleLayout from "../assets/exampleLayout.json"
+import exampleLayout from "../assets/exampleHouseLayout.json"
 
 interface SimulationContextModalProps {
   open: boolean;

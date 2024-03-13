@@ -9,11 +9,11 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import Modal from "@mui/material/Modal"; 
 import SimulationContextModal from "./SimulationContextModal"; 
 
-const Simulation = () => {
+const Simulation = (props: any) => {
   const [isSimulationOn, setSimulationOn] = useState(false);
   const [timeSpeed, setTimeSpeed] = useState(1);
   const [contextDialogOpen, setContextDialogOpen] = useState(false); 
-  const [selectedInhabitant] = useState("Parent"); // Default inhabitant set to "Parent"
+  // const [selectedInhabitant] = props.userData.profile.role; // Default inhabitant set to "Parent"
   const [selectedRoom, setSelectedRoom] = useState("LivingRoom"); // Change the default room here
 
   const toggleSimulation = () => {
@@ -79,7 +79,7 @@ const Simulation = () => {
             style={{ width: "100%", borderRadius: "50%", cursor: "pointer" }}
             onClick={openContextDialog}
           />
-          <p>{selectedInhabitant}</p> {/* TODO: role here */}
+          <p>{props.userData.profile.role}</p>
         </div>
         <div className="user-location">
           <p>Location:</p>
@@ -110,7 +110,7 @@ const Simulation = () => {
         <SimulationContextModal
           open={contextDialogOpen}
           onClose={closeContextDialog}
-          inhabitant={selectedInhabitant}
+          inhabitant={props.userData.profile.role}
           currentRoom={selectedRoom}
           setCurrentRoom={setSelectedRoom}
         />
