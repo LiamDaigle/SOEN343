@@ -74,7 +74,7 @@ const SHSLandingPage = (props: any) => {
       />
       <ProfileSelection
         open={selectUserModal}
-        onClose={() => setAddUserModalOpen(false)}
+        onClose={() => setSelectUserModal(false)}
         user={props.userData}
         profile={props.userData.profile}
         onLogin={props.onLogin}

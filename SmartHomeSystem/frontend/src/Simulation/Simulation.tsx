@@ -8,6 +8,7 @@ import Switch from "@mui/material/Switch";
 import ModeEditIcon from "@mui/icons-material/ModeEdit"; 
 import Modal from "@mui/material/Modal"; 
 import SimulationContextModal from "./SimulationContextModal"; 
+import ProfileSelection from "../SmartHomeSimulator/ProfileSelection";
 
 const Simulation = (props: any) => {
   const [isSimulationOn, setSimulationOn] = useState(false);
@@ -117,6 +118,13 @@ const Simulation = (props: any) => {
           profileId={props.userData.profile.id}
         />
       </Modal>
+      <ProfileSelection
+        open={selectUserModal}
+        onClose={() => setSelectUserModal(false)}
+        user={props.userData}
+        profile={props.userData.profile}
+        onLogin={props.onLogin}
+      />
     </div>
   );
 };
