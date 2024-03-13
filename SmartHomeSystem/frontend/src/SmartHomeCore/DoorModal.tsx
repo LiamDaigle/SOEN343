@@ -19,10 +19,10 @@ const DoorModal: React.FC<FormDialogProps> = ({
 
     useEffect(() => {
         const fetchDoorsByRoom = async () => {
-        
+
             const fetchRoomsId = ["0", "1", "2", "3", "4"];
             const fetchRoomNames = ["Backyard", "Garage", "Entrance", "Bedroom", "LivingRoom"];
-    
+
             const finalRooms: { id: string; name: string }[] = fetchRoomsId.map((roomId, index) => ({
                 id: roomId,
                 name: fetchRoomNames[index],
@@ -61,38 +61,39 @@ const DoorModal: React.FC<FormDialogProps> = ({
         fetchDoorsByRoom();
     }, []);
 
-    const toggleDoor = async (roomId: string, doorId: number, newStatus: boolean) => {
+    const toggleDoor = async (roomId: string, doorId: number, newStatus: boolean, autoLock: boolean) => {
         try {
             const door = {
-                "room": {
-                    "id":roomId,
+                room: {
+                    id: roomId,
                 },
-                "open": newStatus
+                open: newStatus,
+                autoLock: autoLock
+            };
 
-              }
             const response = await axios.put(
                 `http://localhost:8080/api/doors/${doorId}`, door
-                
             );
 
-          // Update the state accordingly
-          const updatedRoomsDoors = roomsDoors.map(roomDoors => {
-            if (roomDoors.roomId === roomId) {
-              const updatedDoors = roomDoors.doors.map((door: any) => {
-                if (door.id === doorId) {
-                  return { ...door, open: newStatus };
+            // Update the state accordingly
+            const updatedRoomsDoors = roomsDoors.map(roomDoors => {
+                if (roomDoors.roomId === roomId) {
+                    const updatedDoors = roomDoors.doors.map((door: any) => {
+                        if (door.id === doorId) {
+                            return { ...door, open: newStatus, autoLock: autoLock };
+                        }
+                        return door;
+                    });
+                    return { ...roomDoors, doors: updatedDoors };
                 }
-                return door;
-              });
-              return { ...roomDoors, doors: updatedDoors };
-            }
-            return roomDoors;
-          });
-          setRoomsDoors(updatedRoomsDoors);
+                return roomDoors;
+            });
+            setRoomsDoors(updatedRoomsDoors);
         } catch (error) {
-          console.error('Error toggling door:', error);
+            console.error('Error toggling door:', error);
         }
     };
+
     return (
         <Dialog open={open} onClose={onClose}>
             <DialogContent className="dialog-container custom controls-modal">
@@ -109,6 +110,7 @@ const DoorModal: React.FC<FormDialogProps> = ({
                                         <th>Door ID</th>
                                         <th>Status</th>
                                         <th>Action</th>
+                                        <th>AutoLock</th> {/* Add AutoLock column */}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -117,9 +119,15 @@ const DoorModal: React.FC<FormDialogProps> = ({
                                             <td>{`Door ${door.id}`}</td>
                                             <td>{door.open ? 'Opened' : 'Closed'}</td>
                                             <td>
-                                                <button onClick={() => toggleDoor(roomDoors.roomId, door.id, !door.open)}>
+                                                <button onClick={() => toggleDoor(roomDoors.roomId, door.id, !door.open, door.autoLock)}>
                                                     {door.open ? 'Close Door' : 'Open Door'}
                                                 </button>
+                                            </td>
+                                            <td>
+                                                <label className="toggle">
+                                                    <input type="checkbox" checked={door.autoLock} onChange={() => toggleDoor(roomDoors.roomId, door.id, door.open, !door.autoLock)} />
+                                                    <span className="slider round"></span>
+                                                </label>
                                             </td>
                                         </tr>
                                     ))}
@@ -131,6 +139,7 @@ const DoorModal: React.FC<FormDialogProps> = ({
             </DialogContent>
         </Dialog>
     );
+
 };
 
 export default DoorModal;
