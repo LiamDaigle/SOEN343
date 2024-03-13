@@ -1,0 +1,42 @@
+td {
+    width: 10rem;
+    height: 10rem;
+    background-color: white;
+}
+.first-row-el-last{
+    border-style: solid;
+}
+
+.first-row-el{
+    border-left-style: solid;
+    border-top-style: solid;
+    border-bottom-style: solid;
+}
+
+.row-el{
+    border-left-style: solid;
+    border-bottom-style: solid;
+}
+
+.row-el-last{
+    border-left-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+}
+
+.icon-row{
+    color:black;
+    display:flex;
+    justify-content: center;
+    padding:0.5rem;
+}
+
+.icon{
+    display:flex;
+    margin-left:0.25rem;
+    margin-right:0.25rem;
+}
+
+.roomName{
+    color:black;
+}
