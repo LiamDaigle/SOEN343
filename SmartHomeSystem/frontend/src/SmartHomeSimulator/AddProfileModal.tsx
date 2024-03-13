@@ -30,9 +30,10 @@ const AddProfileModal: React.FC<FormDialogProps> = ({
   const [userData, setUserData] = useState({
     name: "",
     profiletype: "",
+    room: "",
   });
   const navigate = useNavigate();
-  const { name, profiletype } = userData;
+  const { name, profiletype, room } = userData;
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -50,6 +51,7 @@ const AddProfileModal: React.FC<FormDialogProps> = ({
         {
           name,
           role: profiletype,
+          location: room,
         }
       );
       alert("User profile created successfully!");
@@ -95,6 +97,22 @@ const AddProfileModal: React.FC<FormDialogProps> = ({
               <MenuItem value="Children">Children</MenuItem>
               <MenuItem value="Guest">Guest</MenuItem>
               <MenuItem value="Stranger">Stranger</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl fullWidth variant="standard" margin="dense">
+            <InputLabel id="room-label">Profile Location</InputLabel>
+            <Select
+              labelId="room-label"
+              id="room"
+              name="room"
+              value={room}
+              onChange={handleChange}
+            >
+              <MenuItem value="Backyard">Backyard</MenuItem>
+              <MenuItem value="Garage">Garage</MenuItem>
+              <MenuItem value="LivingRoom">Living Room</MenuItem>
+              <MenuItem value="Bedroom">Bedroom</MenuItem>
+              <MenuItem value="Entrance">Entrance</MenuItem>
             </Select>
           </FormControl>
 
