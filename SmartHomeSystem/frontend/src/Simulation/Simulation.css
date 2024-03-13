@@ -28,3 +28,7 @@
     cursor: pointer;
   }
   
+  .user-role-text:hover {
+    cursor: pointer;
+    color: var(--accent-color);
+  }

@@ -14,6 +14,7 @@ const Simulation = (props: any) => {
   const [timeSpeed, setTimeSpeed] = useState(1);
   const [contextDialogOpen, setContextDialogOpen] = useState(false); 
   const [selectedRoom, setSelectedRoom] = useState("LivingRoom"); // Change the default room here
+  const [selectUserModal, setSelectUserModal] = useState(false);
 
   const toggleSimulation = () => {
     setSimulationOn(!isSimulationOn);
@@ -77,7 +78,7 @@ const Simulation = (props: any) => {
             style={{ width: "100%", borderRadius: "50%", cursor: "pointer" }}
             onClick={openContextDialog}
           />
-          <p>{props.userData.profile.role}</p>
+          <p className= "user-role-text" onClick={() => setSelectUserModal(true)}>{props.userData.profile.role}</p>
         </div>
         <div className="user-location">
           <p>Location:</p>
