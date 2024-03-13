@@ -3,7 +3,7 @@ import { FormControl, InputLabel, Select, MenuItem } from '@mui/material'; // Im
 import "./SimulationContextModal.css";
 import exampleLayout from "../assets/exampleHouseLayout.json";
 import axios from "axios";
-import RoomCommands from "../AxiosCommands/RoomCommands";
+import RoomReceiver from "../AxiosCommands/Command Design Pattern/receivers/RoomReceiver";
 
 interface SimulationContextModalProps {
   open: boolean;
@@ -77,7 +77,7 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
     
     try {
       // Retrieve the window ID based on the selected room
-      const windowIdResponse = await RoomCommands.findByName(selectedWindowRoom);
+      const windowIdResponse = await RoomReceiver.findByName({ name: selectedWindowRoom });
       const windowId = windowIdResponse.id;
   
       // Make PATCH request to block the window
