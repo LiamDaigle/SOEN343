@@ -20,7 +20,6 @@ function App() {
     const storedUserAccount = localStorage.getItem("userAccount");
     if (storedUserAccount) {
       setUserAccount(JSON.parse(storedUserAccount));
-      setUserData(getUserData());
     }
   }, []);
 
@@ -29,7 +28,6 @@ function App() {
     setIsLoginModalOpen(false);
     // Save login state to localStorage
     localStorage.setItem("isLoggedIn", "true");
-
   };
 
   const handleLogout = () => {

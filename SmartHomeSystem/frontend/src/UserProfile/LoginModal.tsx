@@ -49,7 +49,6 @@ const LoginModal: React.FC<FormDialogProps> = ({ open, onClose, onLogin }) => {
           email,
         }
       );
-      console.log(response.data);
       localStorage.setItem("userAccount", JSON.stringify(response.data));
 
       const user = response.data;
@@ -74,6 +73,7 @@ const LoginModal: React.FC<FormDialogProps> = ({ open, onClose, onLogin }) => {
 
   const handleLoginWithProfile = () => {
     console.log("Logging in with profile:", selectedProfile);
+    console.log(selectedProfile);
     localStorage.setItem(
       "selectedUserProfile",
       JSON.stringify(selectedProfile)

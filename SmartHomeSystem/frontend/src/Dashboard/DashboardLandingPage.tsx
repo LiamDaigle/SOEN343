@@ -5,15 +5,17 @@ import "./DashboardLandingPage.css";
 import HouseLayoutGrid from "../HouseLayoutGrid/HouseLayoutGrid";
 
 const DashboardLandingPage = (props: any) => {
-  console.log(props);
 
   return (
     <div>
       <h1>Smart Home Simulator</h1>
-
       <div className="dashboard-content-container">
         <UserProfile userData={props.userData} />
-        <TabComponent onLogout={props.onLogout} userData={props.userData} onLogin={props.onLogin}/>
+        <TabComponent
+          onLogout={props.onLogout}
+          userData={props.userData}
+          onLogin={props.onLogin}
+        />
         <HouseLayoutGrid />
       </div>
     </div>

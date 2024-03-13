@@ -80,6 +80,7 @@ const SHSLandingPage = (props: any) => {
         profileId={props.userData.profile.id}
         profileName={props.userData.profile.name}
         profileRole={props.userData.profile.role}
+        user={props.userData}
       />
     </div>
   );

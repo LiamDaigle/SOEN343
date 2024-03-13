@@ -34,9 +34,8 @@ const ProfileSelection: React.FC<FormDialogProps> = ({
     const fetchData = async () => {
       try {
         const profilesResponse = await axios.get<Profile[]>(
-          `http://localhost:8080/api/users/${user.user.id}/profiles`
+          `http://localhost:8080/api/users/${user.id}/profiles`
         );
-        console.log(profilesResponse.data);
         setProfiles(profilesResponse.data);
       } catch (error) {
         console.error("Error fetching profiles:", error);

@@ -21,6 +21,7 @@ interface EditProfileModalProps {
   profileId: string;
   profileName: string;
   profileRole: string;
+  user: any;
 }
 
 const EditProfileModal: React.FC<EditProfileModalProps> = ({
@@ -30,6 +31,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   profileId,
   profileName,
   profileRole,
+  user,
 }) => {
   const [name, setName] = useState(profileName);
   const [role, setRole] = useState(profileRole);
@@ -52,7 +54,21 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         }
       );
       console.log("Profile updated successfully");
-      localStorage.setItem("selectedUserProfile",name)
+      localStorage.setItem(
+        "selectedUserProfile",
+        JSON.stringify({
+          id: profileId,
+          name: name,
+          role: role,
+          user: {
+            id: user.id,
+            username: user.username,
+            password: user.password,
+            email: user.email,
+          },
+        })
+      );
+
       onClose();
       location.reload();
     } catch (error) {
