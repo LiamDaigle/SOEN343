@@ -86,11 +86,13 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
     try {
       const response = await axios.patch(
         `http://localhost:8080/api/users/${userId}/profiles/${profileId}`,
-        {
-          currentRoom
+         currentRoom, 
+         {
+          headers: {
+            "Content-Type": "text/plain", //
+          }
         }
       );
-      console.log(currentRoom)
       console.log("Location updated successfully:", response.data);
       onClose(); // Close the modal after updating the location
     } catch (error: any) {
