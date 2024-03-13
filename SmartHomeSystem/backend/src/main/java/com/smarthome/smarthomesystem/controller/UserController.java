@@ -84,4 +84,28 @@ public class UserController {
         profileRepository.delete(profileToDelete);
         return ResponseEntity.ok("Profile deleted successfully");
     }
+
+    @PutMapping("/{userId}/profiles/{profileId}")
+    public ResponseEntity<?> updateProfile(@PathVariable Long userId, @PathVariable Long profileId, @RequestBody Profile updatedProfile) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Retrieve the profile to update
+        Profile profileToUpdate = profileRepository.findById(profileId)
+                .orElseThrow(() -> new RuntimeException("Profile not found"));
+
+        // Check if the profile belongs to the user
+        if (!profileToUpdate.getUser().equals(user)) {
+            return ResponseEntity.badRequest().body("Profile does not belong to the user");
+        }
+
+        // Update the profile details
+        profileToUpdate.setName(updatedProfile.getName());
+        profileToUpdate.setRole(updatedProfile.getRole());
+
+        profileRepository.save(profileToUpdate);
+
+        return ResponseEntity.ok(profileToUpdate);
+    }
+
 }
