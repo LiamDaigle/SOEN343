@@ -32,21 +32,21 @@ const SHSLandingPage = (props: any) => {
     <div className="SHS-container">
       {" "}
       <button className="common-btn" onClick={() => setAddUserModalOpen(true)}>
-        Add User
+        Add Profile
       </button>
       <button className="common-btn" onClick={handleEditProfile}>
-        Edit Profiles
+        Edit Profile
       </button>
       <button
         className="common-btn"
         onClick={() => setRemoveUserModalOpen(true)}
       >
-        Remove User
+        Remove Profile
       </button>
       <button className="common-btn" onClick={() => setSelectUserModal(true)}>
         Select Profile
       </button>
-      <button className="common-btn">Edit Data/Time</button>
+      <button className="common-btn">Edit Date/Time</button>
       <button className="common-btn" onClick={() => setDialogOpen(true)}>
         Logout
       </button>
@@ -80,6 +80,7 @@ const SHSLandingPage = (props: any) => {
         profileId={props.userData.profile.id}
         profileName={props.userData.profile.name}
         profileRole={props.userData.profile.role}
+        profileRoom={props.userData.profile.location}
         user={props.userData}
       />
     </div>

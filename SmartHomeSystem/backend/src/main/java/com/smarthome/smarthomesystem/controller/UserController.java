@@ -43,6 +43,7 @@ public class UserController {
                 .name(user.getUsername())
                 .role("Parent")
                 .user(user)
+                .location("Entrance")
                 .build();
         user.setProfiles(Collections.singletonList(parentProfile));
 
@@ -102,7 +103,7 @@ public class UserController {
         // Update the profile details
         profileToUpdate.setName(updatedProfile.getName());
         profileToUpdate.setRole(updatedProfile.getRole());
-
+        profileToUpdate.setLocation(updatedProfile.getLocation());
         profileRepository.save(profileToUpdate);
 
         return ResponseEntity.ok(profileToUpdate);

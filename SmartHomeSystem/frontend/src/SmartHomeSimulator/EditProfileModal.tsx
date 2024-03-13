@@ -21,6 +21,7 @@ interface EditProfileModalProps {
   profileId: string;
   profileName: string;
   profileRole: string;
+  profileRoom: string;
   user: any;
 }
 
@@ -31,11 +32,13 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   profileId,
   profileName,
   profileRole,
+  profileRoom,
   user,
 }) => {
   const [name, setName] = useState(profileName);
   const [role, setRole] = useState(profileRole);
-
+  const [room, setRoom] = useState(profileRoom);
+  console.log(room);
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
   };
@@ -43,6 +46,11 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   const handleRoleChange = (event: SelectChangeEvent<string>) => {
     setRole(event.target.value);
   };
+
+  const handleRoomChange = (event: SelectChangeEvent<string>) => {
+    setRoom(event.target.value);
+  };
+
   const handleSubmit = async () => {
     try {
       const response = await axios.put(
@@ -51,6 +59,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
           profileId,
           name,
           role,
+          location: room
         }
       );
       console.log("Profile updated successfully");
@@ -60,6 +69,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
           id: profileId,
           name: name,
           role: role,
+          location: room,
           user: {
             id: user.id,
             username: user.username,
@@ -108,6 +118,22 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             <MenuItem value="Children">Children</MenuItem>
             <MenuItem value="Guest">Guest</MenuItem>
             <MenuItem value="Stranger">Stranger</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl fullWidth variant="standard" margin="dense">
+          <InputLabel id="room-label">Profile Location</InputLabel>
+          <Select
+            labelId="room-label"
+            id="room"
+            name="room"
+            value={room}
+            onChange={handleRoomChange}
+          >
+            <MenuItem value="Backyard">Backyard</MenuItem>
+            <MenuItem value="Garage">Garage</MenuItem>
+            <MenuItem value="LivingRoom">Living Room</MenuItem>
+            <MenuItem value="Bedroom">Bedroom</MenuItem>
+            <MenuItem value="Entrance">Entrance</MenuItem>
           </Select>
         </FormControl>
       </DialogContent>
