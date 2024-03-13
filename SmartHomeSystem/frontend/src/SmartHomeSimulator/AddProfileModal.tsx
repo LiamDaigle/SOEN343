@@ -53,7 +53,6 @@ const AddProfileModal: React.FC<FormDialogProps> = ({
         }
       );
       alert("User profile created successfully!");
-      localStorage.setItem("userAccount", JSON.stringify(response.data));
       navigate("/");
       onClose();
       // Handle redirection or any other action upon successful registration

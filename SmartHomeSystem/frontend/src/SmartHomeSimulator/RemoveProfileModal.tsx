@@ -11,10 +11,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
 import "./Form.css"; // Import the CSS file
 import { Link, useNavigate } from "react-router-dom";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import InputLabel from "@mui/material/InputLabel";
 
 interface FormDialogProps {
   open: boolean;
@@ -51,7 +47,6 @@ const RemoveProfileModal: React.FC<FormDialogProps> = ({
         `http://localhost:8080/api/users/${userId}/profiles/${name}`
       );
       alert("User profile removed successfully!");
-      localStorage.setItem("userAccount", JSON.stringify(response.data));
       navigate("/");
       onClose();
       // Handle redirection or any other action upon successful registration

@@ -21,7 +21,6 @@ function App() {
     const storedUserAccount = localStorage.getItem("userAccount");
     if (storedUserAccount) {
       setUserAccount(JSON.parse(storedUserAccount));
-      setUserData(getUserData());
     }
   }, []);
 
@@ -51,6 +50,7 @@ function App() {
               <DashboardLandingPage
                 userData={userData}
                 onLogout={handleLogout}
+                onLogin={handleLogin}
               />
             ) : (
               <Navigate to="/login" />

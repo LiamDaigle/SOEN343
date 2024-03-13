@@ -1,2 +1,3 @@
 SmartHomeSystem/frontend/package-lock.json
 SmartHomeSystem/backend/src/main/resources/application.properties
+SmartHomeSystem/backend/src/main/resources/data.sql
