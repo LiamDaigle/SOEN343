@@ -13,7 +13,7 @@ const DashboardLandingPage = (props: any) => {
 
       <div className="dashboard-content-container">
         <UserProfile userData={props.userData} />
-        <TabComponent onLogout={props.onLogout} userData={props.userData} />
+        <TabComponent onLogout={props.onLogout} userData={props.userData} onLogin={props.onLogin}/>
         <HouseLayoutGrid />
       </div>
     </div>

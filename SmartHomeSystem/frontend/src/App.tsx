@@ -51,6 +51,7 @@ function App() {
               <DashboardLandingPage
                 userData={userData}
                 onLogout={handleLogout}
+                onLogin={handleLogin}
               />
             ) : (
               <Navigate to="/login" />
