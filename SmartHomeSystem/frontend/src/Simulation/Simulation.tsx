@@ -15,10 +15,6 @@ const Simulation = (props: any) => {
   const [contextDialogOpen, setContextDialogOpen] = useState(false); 
   const [selectedRoom, setSelectedRoom] = useState("LivingRoom"); // Change the default room here
 
-  // Ensure props.userData and its properties are defined before accessing
-  const userId = props.userData?.user?.id || "";
-  const profileId = props.userData?.profile?.id || "";
-
   const toggleSimulation = () => {
     setSimulationOn(!isSimulationOn);
   };
@@ -77,10 +73,11 @@ const Simulation = (props: any) => {
         </div>
         <div className="user-location">
           <p>Location:</p>
-          <p>{selectedRoom}</p> {/*  TODO: change location*/}
+          <p>{selectedRoom}</p>
         </div>
         <div className="outside-temperature">
-          <p>Outside Temperature: 15C </p>
+          <p>Outside Temperature:</p>
+          <p>15C</p>
         </div>{" "}
         {/* TODO: change temperature */}
         <div className="data-and-time">

@@ -3,6 +3,7 @@ import { FormControl, InputLabel, Select, MenuItem } from '@mui/material'; // Im
 import "./SimulationContextModal.css";
 import exampleLayout from "../assets/exampleHouseLayout.json";
 import axios from "axios";
+import RoomCommands from "../AxiosCommands/RoomCommands";
 
 interface SimulationContextModalProps {
   open: boolean;
@@ -26,12 +27,11 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
   const [rooms, setRooms] = useState<string[]>([]);
   const [windowBlocked, setWindowBlocked] = useState<boolean>(false);
   const [selectedWindowRoom, setSelectedWindowRoom] = useState<string>("");
+  const [selectedTempRoom, setSelectedTempRoom] = useState<string>(currentRoom); // Local state for room selection
 
   useEffect(() => {
     fetchLayout();
   }, []);
-
-  console.log(currentRoom)
 
   const fetchLayout = () => {
     try {
@@ -72,12 +72,25 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
     return roomData && 'windows' in roomData && roomData.windows > 0;
   };
 
-  // const handlePlaceInhabitant = () => {
-  //   console.log(`Placing ${inhabitant} in ${currentRoom}`);
-  // };
-
-  const handleBlockWindow = () => {
+  const handleBlockWindow = async () => {
     console.log(`Blocking window in ${selectedWindowRoom}`);
+    
+    try {
+      // Retrieve the window ID based on the selected room
+      const windowIdResponse = await RoomCommands.findByName(selectedWindowRoom);
+      const windowId = windowIdResponse.id;
+  
+      // Make PATCH request to block the window
+      await axios.patch(
+        `http://localhost:8080/api/windows/${windowId}`,
+        { isBlocked: true }
+      );
+  
+      console.log("Window blocked successfully");
+    } catch (error) {
+      console.error("Error blocking window:", error);
+      alert("Failed to block window. Please try again.");
+    }
   };
 
   const handlePlaceInhabitant = async () => {
@@ -86,14 +99,15 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
     try {
       const response = await axios.patch(
         `http://localhost:8080/api/users/${userId}/profiles/${profileId}`,
-         currentRoom, 
-         {
+        selectedTempRoom, 
+        {
           headers: {
-            "Content-Type": "text/plain", //
+            "Content-Type": "text/plain",
           }
         }
       );
       console.log("Location updated successfully:", response.data);
+      setCurrentRoom(selectedTempRoom); // Update parent state with selected room
       onClose(); // Close the modal after updating the location
     } catch (error: any) {
       console.error("Error updating location:", error.response?.data || error.message);
@@ -113,11 +127,11 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
         <FormControl fullWidth variant="standard" margin="dense">
           <InputLabel>Select Room:</InputLabel>
           <Select
-            value={currentRoom}
-            onChange={(e) => setCurrentRoom(e.target.value as string)}
+            value={selectedTempRoom}
+            onChange={(e) => setSelectedTempRoom(e.target.value as string)}
           >
             {rooms.map((room) => (
-              <MenuItem key={room} value={room} disabled={room === currentRoom}>
+              <MenuItem key={room} value={room} disabled={room === selectedTempRoom}>
                 {room}
               </MenuItem>
             ))}
