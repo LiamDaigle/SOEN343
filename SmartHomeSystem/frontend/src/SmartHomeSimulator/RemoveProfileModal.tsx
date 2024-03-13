@@ -47,7 +47,6 @@ const RemoveProfileModal: React.FC<FormDialogProps> = ({
         `http://localhost:8080/api/users/${userId}/profiles/${name}`
       );
       alert("User profile removed successfully!");
-      localStorage.setItem("userAccount", JSON.stringify(response.data));
       navigate("/");
       onClose();
       // Handle redirection or any other action upon successful registration

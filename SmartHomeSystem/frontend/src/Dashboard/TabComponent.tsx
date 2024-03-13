@@ -25,7 +25,7 @@ const TabComponent = (props: any) => {
       <div className="tab-content">
         {/*TODO: put the components for each tab here*/}
         {activeTab === 0 && (
-          <SHSLandingPage onLogout={props.onLogout} userData={props.userData} />
+          <SHSLandingPage onLogout={props.onLogout} userData={props.userData} onLogin={props.onLogin}/>
         )}
         {activeTab === 1 && <p>Content of SHH Tab</p>}
         {activeTab === 2 && <p>Content of SHC Tab</p>}

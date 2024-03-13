@@ -27,14 +27,6 @@ const HouseLayoutGridElement = (props: Props) => {
   const lights = props.lights;
   const autoLockDoors = props.autoLockDoors;
 
-  console.log("Created Grid Element: ", {
-    name: name,
-    windows: windows,
-    doors: doors,
-    lights: lights,
-    autoLockDoors: autoLockDoors,
-  });
-
   return (
     <td key={name} className={css}>
       <div className="icon-row">

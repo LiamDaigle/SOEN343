@@ -46,7 +46,7 @@ const UserProfile = (props: any) => {
           size="100%"
         />
 
-        <p>{props.userData.profile.role}</p> {/* TODO: role here */}
+        <p>{props.userData.profile.role}</p>
       </div>
       <div className="user-location">
         <p>Location:</p>
