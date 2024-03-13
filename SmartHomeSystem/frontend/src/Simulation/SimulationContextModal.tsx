@@ -87,6 +87,7 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
       );
   
       console.log("Window blocked successfully");
+      onClose();
     } catch (error) {
       console.error("Error blocking window:", error);
       alert("Failed to block window. Please try again.");
@@ -108,7 +109,7 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
       );
       console.log("Location updated successfully:", response.data);
       setCurrentRoom(selectedTempRoom); // Update parent state with selected room
-      onClose(); // Close the modal after updating the location
+      onClose();
     } catch (error: any) {
       console.error("Error updating location:", error.response?.data || error.message);
       alert("Failed to update location. Please try again.");

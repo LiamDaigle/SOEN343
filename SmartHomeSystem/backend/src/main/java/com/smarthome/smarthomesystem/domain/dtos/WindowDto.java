@@ -16,5 +16,11 @@ public class WindowDto {
 
     private boolean isOpen;
 
+    public boolean getIsBlocked() {
+        return isBlocked;
+    }
+
+    private boolean isBlocked;
+
     private Room room;
 }

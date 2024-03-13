@@ -45,9 +45,9 @@ public class WindowController {
         if (optionalWindow.isPresent()) {
             Window window = optionalWindow.get();
 
-            // Update specific properties
-            if (updatedWindow.getIsBlocked() != null) {
-                window.setBlocked(updatedWindow.getIsBlocked());
+            // Update isBlocked
+            if (!window.getIsBlocked() && updatedWindow.getIsBlocked()) {
+                window.setBlocked(true);
             }
 
             // Save the updated window
