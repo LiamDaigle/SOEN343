@@ -1,12 +1,17 @@
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
+
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
+import data from "../assets/exampleHouseLayout.json";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./ControlsModalStyle.css";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import SHCInvoker from "../AxiosCommands/Command Design Pattern/SHCInvoker";
+import GetAllLightsCommand from "../AxiosCommands/Command Design Pattern/commands/GetAllLightsCommand";
+
+
 
 interface FormDialogProps {
     open: boolean;
@@ -19,77 +24,91 @@ const LightModal: React.FC<FormDialogProps> = ({
 }) => {
 
     const [roomsLights, setRoomsLights] = useState<any[]>([]);
+    const [autoToggle, setAutoToggle] = useState<boolean>(false);
 
     useEffect(() => {
-        const fetchLightsByRoom = async () => {
-    
-            const fetchRooms = ["0", "1", "2"];
-            const roomsLights: any[] = [];
+        fetchLightsByRoom();
+    }, []); 
 
-            for (const roomId of fetchRooms) {
-                try {
-                    const lightsResponse = await axios.post(
-                        "http://localhost:8080/api/rooms/findAllLights",
-                        {
-                            id: roomId,
-                        }
-                    );
+    const fetchLightsByRoom = async () => {
 
-                    const roomName = lightsResponse.data.length > 0 ? lightsResponse.data[0].room.name : "";
+        const fetchRoomsId = ["0", "1", "2", "3", "4"];
+            const fetchRoomNames = ["Backyard", "Garage", "Entrance", "Bedroom", "LivingRoom"];
 
-                    roomsLights.push({
-                        roomId: roomId,
-                        roomName: roomName,
-                        lights: lightsResponse.data.map((light: any) => ({
-                            id: light.id,
-                            on: light.on
-                        }))
-                    });
+        const finalRooms: { id: string; name: string }[] = fetchRoomsId.map((roomId, index) => ({
+            id: roomId,
+            name: fetchRoomNames[index],
+        }));
 
-                } catch (error) {
-                    console.error(`Error fetching lights for room ${roomId}:`, error);
-                }
+        const roomsLights: any[] = [];
+
+        for (const room of finalRooms) {
+            try {
+                const lightsResponse = await axios.post(
+                    "http://localhost:8080/api/rooms/findAllLights",
+                    {
+                        id: room.id,
+                        name: room.name,
+                       
+                    }
+                );
+
+                const roomName = room.name;
+
+                roomsLights.push({
+                    roomId: room.id,
+                    roomName: roomName,
+                    lights: lightsResponse.data.map((light: any) => ({
+                        id: light.id,
+                        on: light.on
+                    }))
+                });
+
+            } catch (error) {
+                console.error(`Error fetching lights for room ${room}:`, error);
             }
-
-            setRoomsLights(roomsLights);
         }
 
-        fetchLightsByRoom();
-    }, []); // Empty dependency array to execute only once when component mounts
+        setRoomsLights(roomsLights);
+    }
 
-    //TODO: implement toggle functionality
-    // const toggleLight = async (roomId: string, lightId: number, newStatus: boolean) => {
-    //     try {
-    //         const light = {
-    //             "room": {
-    //                 "id":0,
-    //                 "name": "backyard"
-    //             },
-    //             "on": true
+    const toggleLight = async (roomId: string, lightId: number, newStatus: boolean) => {
+        try {
+            const light = {
+                "room": {
+                    "id": roomId,
+                },
+                "on": newStatus
 
-    //           }
-    //         const response = await axios.put(
-    //             `http://localhost:8080/api/lights/${id}/${light}`,
-                
-    //         );
-    //       // Assuming successful toggling, update the state accordingly
-    //       const updatedRoomsLights = roomsLights.map(roomLights => {
-    //         if (roomLights.roomId === roomId) {
-    //           const updatedLights = roomLights.lights.map((light: any) => {
-    //             if (light.id === lightId) {
-    //               return { ...light, on: newStatus };
-    //             }
-    //             return light;
-    //           });
-    //           return { ...roomLights, lights: updatedLights };
-    //         }
-    //         return roomLights;
-    //       });
-    //       setRoomsLights(updatedRoomsLights);
-    //     } catch (error) {
-    //       console.error('Error toggling light:', error);
-    //     }
-    // };
+            }
+            const response = await axios.put(
+                `http://localhost:8080/api/lights/${lightId}`, light
+
+            );
+
+            // Update the state accordingly
+            const updatedRoomsLights = roomsLights.map(roomLights => {
+                if (roomLights.roomId === roomId) {
+                    const updatedLights = roomLights.lights.map((light: any) => {
+                        if (light.id === lightId) {
+                            return { ...light, on: newStatus };
+                        }
+                        return light;
+                    });
+                    return { ...roomLights, lights: updatedLights };
+                }
+                return roomLights;
+            });
+            setRoomsLights(updatedRoomsLights);
+        } catch (error) {
+            console.error('Error toggling light:', error);
+        }
+    };
+
+    // Handler function for auto toggle
+    const handleAutoToggle = () => {
+        setAutoToggle(prevState => !prevState); 
+    };
 
     return (
         <Dialog open={open} onClose={onClose}>
@@ -97,6 +116,10 @@ const LightModal: React.FC<FormDialogProps> = ({
                 <DialogContentText className="dialog-subheading custom">
                     All Lights
                 </DialogContentText>
+                <ToggleButtonGroup value={autoToggle ? "auto" : "manual"} exclusive onChange={handleAutoToggle}>
+                    <ToggleButton value="auto">Auto</ToggleButton>
+                    <ToggleButton value="manual">Manual</ToggleButton>
+                </ToggleButtonGroup>
                 <div>
                     {roomsLights.map(roomLights => (
                         <div key={roomLights.roomId}>
@@ -115,7 +138,7 @@ const LightModal: React.FC<FormDialogProps> = ({
                                             <td>{`Light ${light.id}`}</td>
                                             <td>{light.on ? 'On' : 'Off'}</td>
                                             <td>
-                                                <button>
+                                                <button onClick={() => toggleLight(roomLights.roomId, light.id, !light.on)}>
                                                     {light.on ? 'Turn Off' : 'Turn On'}
                                                 </button>
                                             </td>

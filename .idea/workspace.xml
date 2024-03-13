@@ -5,11 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6f275f44-f123-47f2-8315-7b7753044174" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SmartHomeSystem/backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/SmartHomeSystem/backend/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartHomeSystem/frontend/src/Dashboard/TabComponent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/SmartHomeSystem/frontend/src/Dashboard/TabComponent.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartHomeSystem/frontend/src/SmartHomeSimulator/SHSLandingPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/SmartHomeSystem/frontend/src/SmartHomeSimulator/SHSLandingPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SmartHomeSystem/frontend/src/UserProfile/UserProfile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/SmartHomeSystem/frontend/src/UserProfile/UserProfile.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartHomeSystem/frontend/src/SmartHomeCore/DoorModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/SmartHomeSystem/frontend/src/SmartHomeCore/DoorModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartHomeSystem/frontend/src/SmartHomeCore/LightModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/SmartHomeSystem/frontend/src/SmartHomeCore/LightModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartHomeSystem/frontend/src/SmartHomeCore/WindowModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/SmartHomeSystem/frontend/src/SmartHomeCore/WindowModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmartHomeSystem/frontend/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/SmartHomeSystem/frontend/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,10 +23,10 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 4
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 4
+}</component>
   <component name="ProjectId" id="2dcavOiaQDdwQOxofa1a43tMjNJ" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -38,9 +39,27 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "CG-SmartHomeCoreFrontend",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/clara/SOEN343/SOEN343"
+    "last_opened_file_path": "C:/Users/clara/SOEN343/SOEN343/SmartHomeSystem",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.0"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="SOEN343" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="SOEN343" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>

@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import LightModal from "./LightModal";
 import DoorModal from "./DoorModal";
 import WindowModal from "./WindowModal";
 
 
 const SHCLandingPage = (props: any) => {
-    const [dialogOpen, setDialogOpen] = useState(false);
     const [lightModalOpen, setLightModalOpen] = useState(false);
     const [doorModalOpen, setDoorModalOpen] = useState(false);
     const [windowModalOpen, setWindowModalOpen] = useState(false);

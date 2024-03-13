@@ -21,42 +21,80 @@ const WindowModal: React.FC<FormDialogProps> = ({
     const [roomsWindows, setRoomsWindows] = useState<any[]>([]);
 
     useEffect(() => {
-        const fetchWindowsByRoom = async () => {
-            
-            const fetchWindows = ["0", "1", "2"];
-            const roomsWindows: any[] = [];
-
-            for (const roomId of fetchWindows) {
-                try {
-                    const WindowsResponse = await axios.post(
-                        "http://localhost:8080/api/rooms/findAllWindows",
-                        {
-                            id: roomId,
-                        }
-                    );
-
-                    const roomName = WindowsResponse.data.length > 0 ? WindowsResponse.data[0].room.name : "";
-
-                    roomsWindows.push({
-                        roomId: roomId,
-                        roomName: roomName,
-                        Windows: WindowsResponse.data.map((window: any) => ({
-                            id: window.id,
-                            open: window.open
-                        }))
-                    });
-
-                    console.log(`Windows for room ${roomId}:`, WindowsResponse.data);
-                } catch (error) {
-                    console.error(`Error fetching Windows for room ${roomId}:`, error);
-                }
-            }
-
-            setRoomsWindows(roomsWindows);
-        }
-
         fetchWindowsByRoom();
-    }, []); // Empty dependency array to execute only once when component mounts
+    }, []);
+
+    const fetchWindowsByRoom = async () => {
+
+        const fetchRoomsId = ["0", "1", "2", "3", "4"];
+        const fetchRoomNames = ["Backyard", "Garage", "Entrance", "Bedroom", "LivingRoom"];
+        const finalRooms: { id: string; name: string }[] = fetchRoomsId.map((roomId, index) => ({
+            id: roomId,
+            name: fetchRoomNames[index],
+        }));
+
+        const roomsWindows: any[] = [];
+
+        for (const room of finalRooms) {
+            try {
+                const WindowsResponse = await axios.post(
+                    "http://localhost:8080/api/rooms/findAllWindows",
+                    {
+                        id: room.id,
+                    }
+                );
+
+                const roomName = room.name;
+
+                roomsWindows.push({
+                    roomId: room.id,
+                    roomName: roomName,
+                    Windows: WindowsResponse.data.map((window: any) => ({
+                        id: window.id,
+                        open: window.open
+                    }))
+                });
+
+            } catch (error) {
+                console.error(`Error fetching Windows for room ${room}:`, error);
+            }
+        }
+        setRoomsWindows(roomsWindows);
+    }
+
+    const toggleWindow = async (roomId: string, windowId: number, newStatus: boolean) => {
+        try {
+            const window = {
+                "room": {
+                    "id": roomId,
+                },
+                "open": newStatus
+
+            }
+            const response = await axios.put(
+                `http://localhost:8080/api/windows/${windowId}`, window
+
+            );
+
+
+            // update the state accordingly
+            const updatedRoomsWindows = roomsWindows.map(roomWindows => {
+                if (roomWindows.roomId === roomId) {
+                    const updatedWindows = roomWindows.Windows.map((window: any) => {
+                        if (window.id === windowId) {
+                            return { ...window, open: newStatus };
+                        }
+                        return window;
+                    });
+                    return { ...roomWindows, Windows: updatedWindows };
+                }
+                return roomWindows;
+            });
+            setRoomsWindows(updatedRoomsWindows);
+        } catch (error) {
+            console.error('Error toggling window:', error);
+        }
+    };
 
     return (
         <Dialog open={open} onClose={onClose}>
@@ -82,8 +120,8 @@ const WindowModal: React.FC<FormDialogProps> = ({
                                             <td>{`window ${window.id}`}</td>
                                             <td>{window.open ? 'Opened' : 'Closed'}</td>
                                             <td>
-                                                <button>
-                                                    {window.on ? 'Open window' : 'Close window'}
+                                                <button onClick={() => toggleWindow(roomWindows.roomId, window.id, !window.open)}>
+                                                    {window.open ? 'Open window' : 'Close window'}
                                                 </button>
                                             </td>
                                         </tr>
