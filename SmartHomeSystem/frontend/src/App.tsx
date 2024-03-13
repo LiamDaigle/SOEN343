@@ -29,6 +29,7 @@ function App() {
     setIsLoginModalOpen(false);
     // Save login state to localStorage
     localStorage.setItem("isLoggedIn", "true");
+
   };
 
   const handleLogout = () => {

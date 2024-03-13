@@ -81,6 +81,7 @@ const LoginModal: React.FC<FormDialogProps> = ({ open, onClose, onLogin }) => {
     onLogin();
     navigate("/");
     onClose();
+    window.location.reload();
   };
 
   return (
