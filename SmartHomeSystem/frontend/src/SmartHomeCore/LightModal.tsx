@@ -21,6 +21,7 @@ const LightModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
   const [autoToggle, setAutoToggle] = useState<boolean>(false);
 
   useEffect(() => {
+
     fetchLightsByRoom();
   }, []);
 
@@ -28,10 +29,10 @@ const LightModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
     const fetchRoomsId = ["0", "1", "2", "3", "4"];
     const fetchRoomNames = [
       "Backyard",
-      "Garage",
       "Entrance",
-      "Bedroom",
+      "Garage",
       "LivingRoom",
+      "Bedroom",
     ];
 
     const finalRooms: { id: string; name: string }[] = fetchRoomsId.map(

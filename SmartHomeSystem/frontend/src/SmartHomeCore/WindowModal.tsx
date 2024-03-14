@@ -29,10 +29,10 @@ const WindowModal: React.FC<FormDialogProps> = ({
     const fetchRoomsId = ["0", "1", "2", "3", "4"];
     const fetchRoomNames = [
       "Backyard",
-      "Garage",
       "Entrance",
-      "Bedroom",
+      "Garage",
       "LivingRoom",
+      "Bedroom",
     ];
     const finalRooms: { id: string; name: string }[] = fetchRoomsId.map(
       (roomId, index) => ({
@@ -105,6 +105,7 @@ const WindowModal: React.FC<FormDialogProps> = ({
     }
   };
 
+  console.log(roomsWindows);
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogContent className="dialog-container custom controls-modal">
