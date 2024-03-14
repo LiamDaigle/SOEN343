@@ -134,6 +134,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             <MenuItem value="LivingRoom">Living Room</MenuItem>
             <MenuItem value="Bedroom">Bedroom</MenuItem>
             <MenuItem value="Entrance">Entrance</MenuItem>
+            <MenuItem value="Not In House">Not In House</MenuItem>
           </Select>
         </FormControl>
       </DialogContent>

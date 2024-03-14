@@ -32,30 +32,37 @@ const SHSLandingPage = (props: any) => {
   return (
     <div className="SHS-container">
       {" "}
-      <button className="common-btn" onClick={() => setAddUserModalOpen(true)}>
-        Add Profile
-      </button>
-      <button className="common-btn" onClick={handleEditProfile}>
-        Edit Profile
-      </button>
-      <button
-        className="common-btn"
-        onClick={() => setRemoveUserModalOpen(true)}
-      >
-        Remove Profile
-      </button>
-      <button className="common-btn" onClick={() => setSelectUserModal(true)}>
-        Select Profile
-      </button>
-      <button
-        className="common-btn"
-        onClick={() => setDateTimeModalOpen(true)} // Open DateTimeModal
-      >
-        Edit Date/Time
-      </button>{" "}
-      <button className="common-btn" onClick={() => setDialogOpen(true)}>
-        Logout
-      </button>
+      <div>
+        <button
+          className="common-btn"
+          onClick={() => setAddUserModalOpen(true)}
+        >
+          Add Profile
+        </button>
+        <button className="common-btn" onClick={handleEditProfile}>
+          Edit Profile
+        </button>
+        <button
+          className="common-btn"
+          onClick={() => setRemoveUserModalOpen(true)}
+        >
+          Remove Profile
+        </button>
+      </div>
+      <div>
+        <button className="common-btn" onClick={() => setSelectUserModal(true)}>
+          Select Profile
+        </button>
+        <button
+          className="common-btn"
+          onClick={() => setDateTimeModalOpen(true)} // Open DateTimeModal
+        >
+          Edit Date/Time
+        </button>{" "}
+        <button className="common-btn" onClick={() => setDialogOpen(true)}>
+          Logout
+        </button>
+      </div>
       <LogoutModal
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
