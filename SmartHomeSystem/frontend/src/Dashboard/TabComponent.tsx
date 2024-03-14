@@ -9,7 +9,7 @@ const TabComponent = (props: any) => {
   const handleTabClick = (index: number) => {
     setActiveTab(index);
   };
-
+  
   return (
     <div className="tab-container">
       <div className="tab-header">
@@ -29,7 +29,7 @@ const TabComponent = (props: any) => {
           <SHSLandingPage onLogout={props.onLogout} userData={props.userData} onLogin={props.onLogin}/>
         )}
         {activeTab === 1 && <p>Content of SHH Tab</p>}
-        {activeTab === 2 && (<SHCLandingPage/>)}
+        {activeTab === 2 && (<SHCLandingPage userData={props.userData}/>)}
         {activeTab === 3 && <p>Content of SHP Tab</p>}
       </div>
     </div>
