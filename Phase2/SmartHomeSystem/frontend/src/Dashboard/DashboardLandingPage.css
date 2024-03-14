@@ -1,0 +1,9 @@
+.dashboard-content-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dashboard-content-container > * {
+  margin: 20px;
+}

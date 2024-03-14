@@ -1,0 +1,68 @@
+:root {
+  /* Primary colors */
+  --primary-color: #000000; /* Black */
+  --secondary-color: #0b3c5d; /* Navy Blue */
+  --accent-color: #fca311; /* Orange */
+
+  /* Additional colors */
+  --additional-color: #e5e5e5; /* Light Gray */
+  --additional-color2: #ffffff; /* White */
+
+  /* Background colors */
+  --background-color: #f8f9fa; /* Light Gray */
+  --content-background-color: #ffffff; /* White */
+
+  /* Text colors */
+  --text-color: #ffffff; /* Dark Gray */
+  --text-secondary-color: #6c757d; /* Gray */
+
+  /* Additional colors */
+  --warning-color: #ffc107; /* Yellow */
+  --error-color: #dc3545; /* Red */
+  --success-color: #28a745; /* Green */
+  --info-color: #17a2b8; /* Teal */
+  --accent-dark-color: #0056b3; /* Dark Blue */
+}
+
+body {
+  background-color: var(--secondary-color);
+  font-size: 14;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-color);
+}
+
+/* Paragraphs */
+p {
+  margin: 5px;
+  color: var(--text-color);
+}
+
+/* Buttons */
+button {
+  background-color: var(--accent-color);
+  color: var(--additional-color2);
+}
+
+/* Links */
+a {
+  color: var(--accent-color);
+}
+
+input {
+  color: var(--primary-color);
+  border: 2px solid var(--accent-color);
+  outline: none;
+  border-radius: 5px;
+  margin: 5px 0;
+  height: 20px;
+}
