@@ -112,7 +112,7 @@ const LightModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
   const handleAutoToggle = () => {
     setAutoToggle((prevState) => !prevState);
   };
-  console.log(roomsLights);
+  
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogContent className="dialog-container custom controls-modal">

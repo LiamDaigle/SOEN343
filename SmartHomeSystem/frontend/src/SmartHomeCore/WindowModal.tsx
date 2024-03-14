@@ -105,7 +105,6 @@ const WindowModal: React.FC<FormDialogProps> = ({
     }
   };
 
-  console.log(roomsWindows);
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogContent className="dialog-container custom controls-modal">
