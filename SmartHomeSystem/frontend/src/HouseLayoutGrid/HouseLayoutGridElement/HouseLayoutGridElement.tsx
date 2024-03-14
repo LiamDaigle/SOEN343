@@ -11,6 +11,15 @@ import { BsFillPeopleFill } from "react-icons/bs"; // people for if there is mor
 import { GiGrass } from "react-icons/gi"; //Grass for representing outside
 import SHCInvoker from "../../AxiosCommands/Command Design Pattern/SHCInvoker";
 import LightOffCommand from "../../AxiosCommands/Command Design Pattern/commands/LightOffCommand";
+import FindRoomCommand from "../../AxiosCommands/Command Design Pattern/commands/FindRoomCommand";
+import DoorCloseCommand from "../../AxiosCommands/Command Design Pattern/commands/DoorCloseCommand";
+import GetAllDoorsCommand from "../../AxiosCommands/Command Design Pattern/commands/GetAllDoorsCommand";
+import DoorOpenCommand from "../../AxiosCommands/Command Design Pattern/commands/DoorOpenCommand";
+import GetAllWindowsCommand from "../../AxiosCommands/Command Design Pattern/commands/GetAllWindowsCommand";
+import WindowCloseCommand from "../../AxiosCommands/Command Design Pattern/commands/WindowCloseCommand";
+import WindowOpenCommand from "../../AxiosCommands/Command Design Pattern/commands/WindowOpenCommand";
+import GetAllLightsCommand from "../../AxiosCommands/Command Design Pattern/commands/GetAllLightsCommand";
+import LightOnCommand from "../../AxiosCommands/Command Design Pattern/commands/LightOnCommand";
 
 interface Props {
   isEmpty: boolean;
@@ -49,18 +58,50 @@ const HouseLayoutGridElement = (props: Props) => {
           <div className="icon-row">
             {doorOpen ? (
               <FaDoorOpen
-                onClick={() => {
+                onClick={async () => {
                   console.log("Door Closed");
                   setDoorOpen(false);
+
+                  const findRoomCommand = new FindRoomCommand({ name: name });
+                  const invoker = new SHCInvoker(findRoomCommand);
+                  const room = await invoker.executeCommand();
+
+                  const getAllDoorsCommand = new GetAllDoorsCommand(room);
+                  invoker.setCommand(getAllDoorsCommand);
+                  const doorList: Array<object> =
+                    await invoker.executeCommand();
+
+                  doorList.forEach((door) => {
+                    console.log(door);
+                    const updateDoor = new DoorCloseCommand(door);
+                    invoker.setCommand(updateDoor);
+                    invoker.executeCommand();
+                  });
                 }}
                 size={50}
                 className="icon"
               />
             ) : (
               <FaDoorClosed
-                onClick={() => {
+                onClick={async () => {
                   console.log("Door Opened");
                   setDoorOpen(true);
+
+                  const findRoomCommand = new FindRoomCommand({ name: name });
+                  const invoker = new SHCInvoker(findRoomCommand);
+                  const room = await invoker.executeCommand();
+
+                  const getAllDoorsCommand = new GetAllDoorsCommand(room);
+                  invoker.setCommand(getAllDoorsCommand);
+                  const doorList: Array<object> =
+                    await invoker.executeCommand();
+
+                  doorList.forEach((door) => {
+                    console.log(door);
+                    const updateDoor = new DoorOpenCommand(door);
+                    invoker.setCommand(updateDoor);
+                    invoker.executeCommand();
+                  });
                 }}
                 size={50}
                 className="icon"
@@ -68,18 +109,50 @@ const HouseLayoutGridElement = (props: Props) => {
             )}
             {windowOpen ? (
               <GiWindow
-                onClick={() => {
+                onClick={async () => {
                   console.log("Window Closed");
                   setWindowOpen(false);
+
+                  const findRoomCommand = new FindRoomCommand({ name: name });
+                  const invoker = new SHCInvoker(findRoomCommand);
+                  const room = await invoker.executeCommand();
+
+                  const getAllWindowsCommand = new GetAllWindowsCommand(room);
+                  invoker.setCommand(getAllWindowsCommand);
+                  const windowList: Array<object> =
+                    await invoker.executeCommand();
+
+                  windowList.forEach((window) => {
+                    console.log(window);
+                    const updateWindow = new WindowCloseCommand(window);
+                    invoker.setCommand(updateWindow);
+                    invoker.executeCommand();
+                  });
                 }}
                 size={50}
                 className="icon"
               />
             ) : (
               <GiWindowBars
-                onClick={() => {
+                onClick={async () => {
                   console.log("Window Opened");
                   setWindowOpen(true);
+
+                  const findRoomCommand = new FindRoomCommand({ name: name });
+                  const invoker = new SHCInvoker(findRoomCommand);
+                  const room = await invoker.executeCommand();
+
+                  const getAllWindowsCommand = new GetAllWindowsCommand(room);
+                  invoker.setCommand(getAllWindowsCommand);
+                  const windowList: Array<object> =
+                    await invoker.executeCommand();
+
+                  windowList.forEach((window) => {
+                    console.log(window);
+                    const updateWindow = new WindowOpenCommand(window);
+                    invoker.setCommand(updateWindow);
+                    invoker.executeCommand();
+                  });
                 }}
                 size={50}
                 className="icon"
@@ -89,18 +162,50 @@ const HouseLayoutGridElement = (props: Props) => {
           <div className="icon-row">
             {lightOn ? (
               <FaRegLightbulb
-                onClick={() => {
+                onClick={async () => {
                   console.log("Turned Light Off");
                   setLightOn(false);
+
+                  const findRoomCommand = new FindRoomCommand({ name: name });
+                  const invoker = new SHCInvoker(findRoomCommand);
+                  const room = await invoker.executeCommand();
+
+                  const getAllLightsCommand = new GetAllLightsCommand(room);
+                  invoker.setCommand(getAllLightsCommand);
+                  const lightList: Array<object> =
+                    await invoker.executeCommand();
+
+                  lightList.forEach((light) => {
+                    console.log(light);
+                    const updateLight = new LightOffCommand(light);
+                    invoker.setCommand(updateLight);
+                    invoker.executeCommand();
+                  });
                 }}
                 size={50}
                 className="icon"
               />
             ) : (
               <FaLightbulb
-                onClick={() => {
+                onClick={async () => {
                   console.log("Turned Light On");
                   setLightOn(true);
+
+                  const findRoomCommand = new FindRoomCommand({ name: name });
+                  const invoker = new SHCInvoker(findRoomCommand);
+                  const room = await invoker.executeCommand();
+
+                  const getAllLightsCommand = new GetAllLightsCommand(room);
+                  invoker.setCommand(getAllLightsCommand);
+                  const lightList: Array<object> =
+                    await invoker.executeCommand();
+
+                  lightList.forEach((light) => {
+                    console.log(light);
+                    const updateLight = new LightOnCommand(light);
+                    invoker.setCommand(updateLight);
+                    invoker.executeCommand();
+                  });
                 }}
                 size={50}
                 className="icon"
