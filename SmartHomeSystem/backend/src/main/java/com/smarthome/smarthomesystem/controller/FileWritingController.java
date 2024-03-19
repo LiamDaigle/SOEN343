@@ -1,6 +1,4 @@
-// FileWritingController.java
-
-package com.example.demo;
+package com.smarthome.smarthomesystem.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,13 +6,16 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/api/files")
 public class FileWritingController {
 
     @PostMapping("/write")
-    public ResponseEntity<String> writeToFile(@RequestBody String data) {
+    public ResponseEntity<String> writeToFile(@RequestBody JsonNode requestBody) {
+        String data = requestBody.get("data").asText();
         String filename = "data.txt";
         String filePath = System.getProperty("user.dir") + File.separator + filename;
 
