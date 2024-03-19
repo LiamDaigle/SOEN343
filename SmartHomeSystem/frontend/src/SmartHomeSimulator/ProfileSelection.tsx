@@ -58,7 +58,7 @@ const ProfileSelection: React.FC<FormDialogProps> = ({
       const response = await axios.post(
         "http://localhost:8080/api/files/write",
         {
-          data: `Timestamp: ${timestamp} \nProfile ID: ${profile.id}\nProfile Name: ${profile.name}\nRole: ${profile.role}\nEvent Type: Logging In\nEvent Description: User Just Logged In With this Profile\n`, // Convert the profile object to a string
+          data: `Timestamp: ${timestamp} \nProfile ID: ${profile.id}\nProfile Name: ${profile.name}\nRole: ${profile.role}\nEvent Type: Logging In\nEvent Description: User Just Logged In With this Profile\nend`, // Convert the profile object to a string
         }
       );
       if (response.status !== 200) {
