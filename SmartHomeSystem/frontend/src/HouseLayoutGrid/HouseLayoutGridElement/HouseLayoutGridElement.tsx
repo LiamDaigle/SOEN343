@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaDoorClosed } from "react-icons/fa"; //closed door
 import { FaDoorOpen } from "react-icons/fa"; //open door
 import { GiWindow } from "react-icons/gi"; //open window
@@ -20,6 +20,7 @@ import WindowCloseCommand from "../../AxiosCommands/Command Design Pattern/comma
 import WindowOpenCommand from "../../AxiosCommands/Command Design Pattern/commands/WindowOpenCommand";
 import GetAllLightsCommand from "../../AxiosCommands/Command Design Pattern/commands/GetAllLightsCommand";
 import LightOnCommand from "../../AxiosCommands/Command Design Pattern/commands/LightOnCommand";
+import axios from "axios";
 
 interface Props {
   isEmpty: boolean;
@@ -29,6 +30,13 @@ interface Props {
   doors: number;
   lights: number;
   autoLockDoors: 1;
+  user: any;
+}
+
+interface Profile {
+  id: string;
+  name: string;
+  location: string;
 }
 
 const HouseLayoutGridElement = (props: Props) => {
@@ -43,6 +51,80 @@ const HouseLayoutGridElement = (props: Props) => {
   const [windowOpen, setWindowOpen] = useState(false);
   const [doorOpen, setDoorOpen] = useState(false);
   const [lightOn, setLightOn] = useState(false);
+  const [isOccupied, setIsOccupied] = useState(false); // New state to indicate if the room is occupied
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [roomsDoors, setRoomsDoors] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const profilesResponse = await axios.get<Profile[]>(
+          `http://localhost:8080/api/users/${props.user.id}/profiles`
+        );
+        setProfiles(profilesResponse.data);
+        // Check if any profile's location matches the room name
+        const occupied = profilesResponse.data.some(
+          (profile) => profile.location === name
+        );
+        setIsOccupied(occupied);
+      } catch (error) {
+        console.error("Error fetching profiles:", error);
+        // Handle error if necessary
+      }
+    };
+
+    fetchData();
+  }, [props.user.id]);
+
+  useEffect(() => {
+    const fetchDoorsByRoom = async () => {
+      const fetchRoomsId = ["0", "1", "2", "3", "4"];
+      const fetchRoomNames = [
+        "Backyard",
+        "Entrance",
+        "Garage",
+        "LivingRoom",
+        "Bedroom",
+      ];
+
+      const finalRooms: { id: string; name: string }[] = fetchRoomsId.map(
+        (roomId, index) => ({
+          id: roomId,
+          name: fetchRoomNames[index],
+        })
+      );
+
+      const roomsDoors: any[] = [];
+
+      for (const room of finalRooms) {
+        try {
+          const doorsResponse = await axios.post(
+            "http://localhost:8080/api/rooms/findAllDoors",
+            {
+              id: room.id,
+            }
+          );
+
+          const roomName = room.name;
+
+          roomsDoors.push({
+            roomId: room.id,
+            roomName: roomName,
+            doors: doorsResponse.data.map((door: any) => ({
+              id: door.id,
+              open: door.open,
+            })),
+          });
+        } catch (error) {
+          console.error(`Error fetching doors for room ${room}:`, error);
+        }
+      }
+
+      setRoomsDoors(roomsDoors);
+    };
+
+    fetchDoorsByRoom();
+  }, []);
 
   return (
     <td key={name} className={css}>
@@ -211,7 +293,11 @@ const HouseLayoutGridElement = (props: Props) => {
                 className="icon"
               />
             )}
-            <BsPerson size={50} className="icon" />
+            {isOccupied ? (
+              <BsPersonFill size={50} className="icon" /> // Using BsPersonFill when room is occupied
+            ) : (
+              <BsPerson size={50} className="icon" />
+            )}
           </div>
         </>
       )}

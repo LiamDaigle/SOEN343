@@ -6,7 +6,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Switch from "@mui/material/Switch";
 import ModeEditIcon from "@mui/icons-material/ModeEdit"; 
-import Modal from "@mui/material/Modal"; 
+import Modal from "@mui/material/Modal";
 import SimulationContextModal from "./SimulationContextModal"; 
 import ProfileSelection from "../SmartHomeSimulator/ProfileSelection";
 
@@ -14,7 +14,7 @@ const Simulation = (props: any) => {
   const [isSimulationOn, setSimulationOn] = useState(false);
   const [timeSpeed, setTimeSpeed] = useState(1);
   const [contextDialogOpen, setContextDialogOpen] = useState(false); 
-  const [selectedRoom, setSelectedRoom] = useState("LivingRoom"); // Change the default room here
+  const [selectedRoom, setSelectedRoom] = useState(props.userData.profile.location);
   const [selectUserModal, setSelectUserModal] = useState(false);
 
   const toggleSimulation = () => {
@@ -36,6 +36,15 @@ const Simulation = (props: any) => {
 
   const [date, setDate] = useState<string>("");
   const [time, setTime] = useState<string>("");
+  const [temperature, setTemperature] = useState<string>(() => {
+    const storedTemperature = localStorage.getItem("temperature");
+    if (storedTemperature) {
+      const storedTemp = JSON.parse(storedTemperature);
+      return storedTemp;
+    } else {
+      return "15";
+    }
+  });
 
   useEffect(() => {
     // Retrieve stored simulation toggle state
@@ -45,6 +54,19 @@ const Simulation = (props: any) => {
       setSimulationOn(storedIsSimulationOn);
     }
 
+    // Retrieve stored current location
+    const storedCurrentLocation = localStorage.getItem("currentLocation");
+    if (storedCurrentLocation) {
+      const storedSelectedRoom = JSON.parse(storedCurrentLocation);
+      setSelectedRoom(storedSelectedRoom);
+    }
+
+    const storedTemperature = localStorage.getItem("temperature");
+    if (storedTemperature) {
+      const storedTemp = JSON.parse(storedTemperature);
+      setTemperature(storedTemp);
+    }
+    
     const storedDateTime = localStorage.getItem("dateTime");
     if (storedDateTime) {
       const { storedDate, storedTime } = JSON.parse(storedDateTime);
@@ -87,7 +109,7 @@ const Simulation = (props: any) => {
         </div>
         <div className="outside-temperature" style={{ display: isSimulationOn ? "block" : "none" }}>
           <p>Outside Temperature:</p>
-          <p>15C</p>
+          <p>{temperature}</p>
         </div>{" "}
         {/* TODO: change temperature */}
         <div className="data-and-time" style={{ display: isSimulationOn ? "block" : "none" }}>
@@ -116,6 +138,7 @@ const Simulation = (props: any) => {
           setCurrentRoom={setSelectedRoom}
           userId={props.userData.id}
           profileId={props.userData.profile.id}
+          temperature={temperature}
         />
       </Modal>
       <ProfileSelection

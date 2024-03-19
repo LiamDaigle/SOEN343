@@ -17,7 +17,7 @@ const DashboardLandingPage = (props: any) => {
           userData={props.userData}
           onLogin={props.onLogin}
         />
-        <HouseLayoutGrid />
+        <HouseLayoutGrid user={props.userData} />
       </div>
     </div>
   );

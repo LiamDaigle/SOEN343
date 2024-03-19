@@ -49,6 +49,7 @@ const RemoveProfileModal: React.FC<FormDialogProps> = ({
       alert("User profile removed successfully!");
       navigate("/");
       onClose();
+      location.reload()
       // Handle redirection or any other action upon successful registration
     } catch (error: any) {
       console.error("User profile removed failed:", error.response.data);

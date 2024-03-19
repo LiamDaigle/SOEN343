@@ -57,6 +57,7 @@ const AddProfileModal: React.FC<FormDialogProps> = ({
       alert("User profile created successfully!");
       navigate("/");
       onClose();
+      location.reload()
       // Handle redirection or any other action upon successful registration
     } catch (error: any) {
       console.error("User profile creation failed:", error.response.data);

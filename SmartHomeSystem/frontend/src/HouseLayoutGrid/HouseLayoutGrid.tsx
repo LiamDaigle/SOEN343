@@ -4,7 +4,7 @@ import data from "../assets/exampleHouseLayout.json";
 import HouseLayoutGridElement from "./HouseLayoutGridElement/HouseLayoutGridElement";
 import { HouseLayoutParser } from "./HouseLayoutParser";
 
-const HouseLayoutGrid = () => {
+const HouseLayoutGrid = (props: any) => {
   HouseLayoutParser.parseJSON(data);
   const houseLayout: string[][] = HouseLayoutParser.getLayout();
   const rows: JSX.Element[] = [];
@@ -18,6 +18,7 @@ const HouseLayoutGrid = () => {
         {houseRow.map((element, index) =>
           index == rowSize - 1 ? (
             <HouseLayoutGridElement
+              user={props.user}
               key={key++}
               isEmpty={!element ? true : false}
               name={element}
@@ -39,6 +40,7 @@ const HouseLayoutGrid = () => {
             />
           ) : (
             <HouseLayoutGridElement
+              user={props.user}
               key={key++}
               isEmpty={!element}
               name={element}

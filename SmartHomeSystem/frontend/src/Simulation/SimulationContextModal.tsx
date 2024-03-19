@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FormControl, InputLabel, Select, MenuItem } from '@mui/material'; // Import necessary MUI components
+import { FormControl, InputLabel, Select, MenuItem, TextField } from '@mui/material';
 import "./SimulationContextModal.css";
 import exampleLayout from "../assets/exampleHouseLayout.json";
 import axios from "axios";
@@ -13,6 +13,7 @@ interface SimulationContextModalProps {
   setCurrentRoom: React.Dispatch<React.SetStateAction<string>>
   userId: any;
   profileId: any;
+  temperature: string
 }
 
 const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
@@ -22,12 +23,14 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
   currentRoom,
   setCurrentRoom,
   userId,
-  profileId
+  profileId,
+  temperature
 }) => {
   const [rooms, setRooms] = useState<string[]>([]);
   const [windowBlocked, setWindowBlocked] = useState<boolean>(false);
   const [selectedWindowRoom, setSelectedWindowRoom] = useState<string>("");
   const [selectedTempRoom, setSelectedTempRoom] = useState<string>(currentRoom); // Local state for room selection
+  const [temperatureVal, setTemperature] = useState<string>("");
 
   useEffect(() => {
     fetchLayout();
@@ -94,8 +97,23 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
     }
   };
 
+  const handleEditTemperature = () => {
+    // Perform validation to ensure temperature is a double value
+    const parsedTemperature = parseFloat(temperatureVal);
+    if (!isNaN(parsedTemperature)) {
+      // Update the state with the entered temperature
+      setTemperature(parsedTemperature.toString());
+      localStorage.setItem("temperature", JSON.stringify(parsedTemperature));
+    } else {
+      // Alert user if the entered temperature is not a valid double value
+      alert("Please enter a valid temperature value.");
+    }
+    location.reload()
+  };
+
   const handlePlaceInhabitant = async () => {
-    console.log(`Placing ${inhabitant} in ${currentRoom}`);
+    console.log(`Placing ${inhabitant} in ${selectedTempRoom}`);
+    localStorage.setItem("currentLocation", JSON.stringify(selectedTempRoom));
   
     try {
       const response = await axios.patch(
@@ -114,6 +132,7 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
       console.error("Error updating location:", error.response?.data || error.message);
       alert("Failed to update location. Please try again.");
     }
+    location.reload();
   };
 
   if (!open) return null;
@@ -123,6 +142,21 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
       <h2>Edit Simulation Context</h2>
       <div>
         <label>Inhabitant: {inhabitant}</label>
+      </div>
+      <div>
+      <label>Edit Temperature</label>
+      <TextField
+        type="number"
+        value={temperatureVal}
+        onChange={(e) => setTemperature(e.target.value)}
+        placeholder="Enter temperature"
+        variant="outlined"
+        fullWidth
+        margin="dense"
+      />
+      <button  className="modal-buttons" onClick={handleEditTemperature}>
+        Submit
+      </button>
       </div>
       <div>
         <FormControl fullWidth variant="standard" margin="dense">
