@@ -5,16 +5,18 @@ import Button from "../Common/Button";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Switch from "@mui/material/Switch";
-import ModeEditIcon from "@mui/icons-material/ModeEdit"; 
-import Modal from "@mui/material/Modal"; 
-import SimulationContextModal from "./SimulationContextModal"; 
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import Modal from "@mui/material/Modal";
+import SimulationContextModal from "./SimulationContextModal";
 import ProfileSelection from "../SmartHomeSimulator/ProfileSelection";
 
 const Simulation = (props: any) => {
   const [isSimulationOn, setSimulationOn] = useState(false);
   const [timeSpeed, setTimeSpeed] = useState(1);
-  const [contextDialogOpen, setContextDialogOpen] = useState(false); 
-  const [selectedRoom, setSelectedRoom] = useState("LivingRoom"); // Change the default room here
+  const [contextDialogOpen, setContextDialogOpen] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState(
+    props.userData.profile.location
+  ); // Change the default room here
   const [selectUserModal, setSelectUserModal] = useState(false);
 
   const toggleSimulation = () => {
@@ -52,7 +54,10 @@ const Simulation = (props: any) => {
       setTime(storedTime);
     } else {
       const currentDate = new Date().toISOString().split("T")[0];
-      const currentTime = new Date().toISOString().split("T")[1].substring(0, 5);
+      const currentTime = new Date()
+        .toISOString()
+        .split("T")[1]
+        .substring(0, 5);
       setDate(currentDate);
       setTime(currentTime);
     }
@@ -70,7 +75,10 @@ const Simulation = (props: any) => {
           />
           <Typography>On</Typography>
         </Stack>
-        <ModeEditIcon style={{ cursor: "pointer" }} onClick={openContextDialog} />
+        <ModeEditIcon
+          style={{ cursor: "pointer" }}
+          onClick={openContextDialog}
+        />
         <div className="user-profile-picture">
           {/* Open dialog on button click */}
           <img
@@ -79,18 +87,29 @@ const Simulation = (props: any) => {
             style={{ width: "100%", borderRadius: "50%", cursor: "pointer" }}
             onClick={openContextDialog}
           />
-          <p className= "user-role-text" onClick={() => setSelectUserModal(true)}>{props.userData.profile.role}</p>
+          <p
+            className="user-role-text"
+            onClick={() => setSelectUserModal(true)}
+          >
+            {props.userData.profile.role}
+          </p>
         </div>
         <div className="user-location">
           <p>Location:</p>
           <p>{selectedRoom}</p>
         </div>
-        <div className="outside-temperature" style={{ display: isSimulationOn ? "block" : "none" }}>
+        <div
+          className="outside-temperature"
+          style={{ display: isSimulationOn ? "block" : "none" }}
+        >
           <p>Outside Temperature:</p>
           <p>15C</p>
         </div>{" "}
         {/* TODO: change temperature */}
-        <div className="data-and-time" style={{ display: isSimulationOn ? "block" : "none" }}>
+        <div
+          className="data-and-time"
+          style={{ display: isSimulationOn ? "block" : "none" }}
+        >
           <p>{date}</p>
           <p>{time}</p>
         </div>
