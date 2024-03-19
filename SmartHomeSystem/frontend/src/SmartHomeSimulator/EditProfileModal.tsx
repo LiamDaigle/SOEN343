@@ -87,7 +87,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         const response = await axios.post(
           "http://localhost:8080/api/files/write",
           {
-            data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${user.name}\nRole: ${user.role}\nEvent Type: Edit User Details\nEvent Description: User Just Changed Information Details of The Profile\nend`, // Convert the profile object to a string
+            data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${name}\nRole: ${role}\nEvent Type: Edit User Details\nEvent Description: User Just Changed Information Details of The Profile\nend`, // Convert the profile object to a string
           }
         );
         if (response.status !== 200) {
