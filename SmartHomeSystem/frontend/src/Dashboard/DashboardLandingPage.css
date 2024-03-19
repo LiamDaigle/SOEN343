@@ -7,3 +7,7 @@
 .dashboard-content-container > * {
   margin: 20px;
 }
+
+.tab-and-output > * {
+  margin: 16px 0px;
+}
