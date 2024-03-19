@@ -43,20 +43,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   const handleNameChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/api/files/write",
-        {
-          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${user.name}\nRole: ${user.role}\nEvent Type: Edit User Details\nEvent Description: User Just Changed Name From ${user.name} to ${event.target.value}\nend`, // Convert the profile object to a string
-        }
-      );
-      if (response.status !== 200) {
-        throw new Error("Failed to write profile data to file");
-      }
-      console.log("Profile data written to file successfully");
-    } catch (error) {
-      console.error("Error writing profile data to file:", error);
-    }
     setName(event.target.value);
   };
 
@@ -97,6 +83,20 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       );
 
       onClose();
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/api/files/write",
+          {
+            data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${user.name}\nRole: ${user.role}\nEvent Type: Edit User Details\nEvent Description: User Just Changed Information Details of The Profile\nend`, // Convert the profile object to a string
+          }
+        );
+        if (response.status !== 200) {
+          throw new Error("Failed to write profile data to file");
+        }
+        console.log("Profile data written to file successfully");
+      } catch (error) {
+        console.error("Error writing profile data to file:", error);
+      }
       location.reload();
     } catch (error) {
       console.error("Error updating profile: ", error);
