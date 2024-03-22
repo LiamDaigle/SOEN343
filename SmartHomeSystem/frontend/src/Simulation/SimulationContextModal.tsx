@@ -30,7 +30,7 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
   const [windowBlocked, setWindowBlocked] = useState<boolean>(false);
   const [selectedWindowRoom, setSelectedWindowRoom] = useState<string>("");
   const [selectedTempRoom, setSelectedTempRoom] = useState<string>(currentRoom); // Local state for room selection
-  const [temperatureVal, setTemperature] = useState<string>("");
+  const [temperatureVal, setTemperature] = useState<string>(temperature);
 
   useEffect(() => {
     fetchLayout();
