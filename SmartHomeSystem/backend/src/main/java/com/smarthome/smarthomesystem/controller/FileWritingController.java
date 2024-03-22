@@ -23,7 +23,7 @@ import java.io.IOException;
 @RequestMapping("/api/files")
 public class FileWritingController {
 
-    private static final String FILENAME = "temperature_data.csv";
+    private static final String FILENAME = "exampleTemperature.csv";
     private static final String CSV_FILE_PATH = System.getProperty("user.dir") + File.separator + FILENAME;
 
     @PostMapping("/write")

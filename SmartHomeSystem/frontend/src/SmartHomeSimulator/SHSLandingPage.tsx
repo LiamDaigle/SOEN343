@@ -55,12 +55,12 @@ const SHSLandingPage = (props: any) => {
         <button className="common-btn" onClick={() => setSelectUserModal(true)}>
           Select Profile
         </button>
-        <button
+        {/* <button
           className="common-btn"
           onClick={() => setDateTimeModalOpen(true)} // Open DateTimeModal
         >
           Edit Date/Time
-        </button>{" "}
+        </button>{" "} */}
         <button className="common-btn" onClick={() => setDialogOpen(true)}>
           Logout
         </button>
