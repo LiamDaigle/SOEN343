@@ -1,4 +1,4 @@
-package observer;
+package com.smarthome.smarthomesystem.observer;
 
 
 // Define the Observer interface

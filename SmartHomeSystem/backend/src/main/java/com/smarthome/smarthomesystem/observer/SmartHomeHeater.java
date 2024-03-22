@@ -1,4 +1,4 @@
-package observer;
+package com.smarthome.smarthomesystem.observer;
 
 import org.springframework.stereotype.Component;
 

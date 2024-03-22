@@ -1,6 +1,6 @@
 package com.smarthome.smarthomesystem.subject;
 
-import observer.Observer;
+import com.smarthome.smarthomesystem.observer.Observer;
 
 public interface Subject {
     void registerObserver(Observer observer);
