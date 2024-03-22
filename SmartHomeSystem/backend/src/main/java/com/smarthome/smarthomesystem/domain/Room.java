@@ -23,4 +23,13 @@ public class Room {
     private String name;
 
     private Double temperature;
+
+    private Double desiredTemperature;
+
+    private Boolean isHvacWorking;
+
+    public void setHvacWorking(Boolean b) {
+        isHvacWorking = b;
+    }
+
 }
