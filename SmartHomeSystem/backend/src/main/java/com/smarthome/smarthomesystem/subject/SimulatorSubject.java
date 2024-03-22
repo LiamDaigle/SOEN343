@@ -1,6 +1,6 @@
 package com.smarthome.smarthomesystem.subject;
 
-import observer.Observer;
+import com.smarthome.smarthomesystem.observer.Observer;
 
 import java.util.ArrayList;
 import java.util.List;
