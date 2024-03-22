@@ -13,6 +13,7 @@ const TemperatureModal: React.FC<TemperatureModalProps> = ({ open, onClose }) =>
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       setFile(event.target.files[0]);
+      // console.log("Selected file:", event.target.files[0].name); // Log the selected file name
     }
   };
 
@@ -21,6 +22,8 @@ const TemperatureModal: React.FC<TemperatureModalProps> = ({ open, onClose }) =>
       alert('Please select a file.');
       return;
     }
+
+    console.log("Uploading file:", file.name); // Log the file being uploaded
 
     const formData = new FormData();
     formData.append('file', file);
@@ -32,11 +35,12 @@ const TemperatureModal: React.FC<TemperatureModalProps> = ({ open, onClose }) =>
           'Content-Type': 'multipart/form-data',
         },
       });
+      console.log("Upload successful:", response.data); // Log the response data upon successful upload
       alert('File uploaded successfully.');
       onClose();
     } catch (error) {
+      console.error('Error uploading file:', error); // Log any errors that occur during upload
       alert('Error uploading file.');
-      console.error('Error:', error);
     }
   };
 
