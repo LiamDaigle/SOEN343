@@ -14,9 +14,7 @@ const Simulation = (props: any) => {
   const [isSimulationOn, setSimulationOn] = useState(false);
   const [timeSpeed, setTimeSpeed] = useState(1);
   const [contextDialogOpen, setContextDialogOpen] = useState(false);
-  const [selectedRoom, setSelectedRoom] = useState(
-    props.userData.profile.location
-  ); // Change the default room here
+  const [selectedRoom, setSelectedRoom] = useState(props.userData.profile.location);
   const [selectUserModal, setSelectUserModal] = useState(false);
 
   const toggleSimulation = () => {
@@ -97,22 +95,37 @@ const Simulation = (props: any) => {
     if (storedTemperature) {
       setTemperature(storedTemperature);
     }
+
+    if (storedDate && storedTime) {
+      // Parse stored date and time as UTC
+      const storedDateTimeUTC = new Date(`${storedDate}T${storedTime}Z`);
+      console.log(storedDateTimeUTC)
     
-    // const storedDateTime = localStorage.getItem("dateTime");
-    // if (storedDateTime) {
-    //   const { storedDate, storedTime } = JSON.parse(storedDateTime);
-    //   setDate(storedDate);
-    //   setTime(storedTime);
-    // } else {
-    //   const currentDate = new Date().toISOString().split("T")[0];
-    //   const currentTime = new Date()
-    //     .toISOString()
-    //     .split("T")[1]
-    //     .substring(0, 5);
-    //   setDate(currentDate);
-    //   setTime(currentTime);
-    // }
-  }, [open]);
+      // Initialize counter
+      let counter = 0;
+
+      const interval = setInterval(() => {
+        // Increment the counter by 1 second (1000 milliseconds)
+        counter += 1000;
+
+        // Calculate the simulated time by adding the counter to the storedDateTimeUTC
+        const simulatedTime = new Date(storedDateTimeUTC.getTime() + counter * timeSpeed);
+
+        // Update date and time states
+        setDate(simulatedTime.toISOString().split("T")[0]);
+        setTime(simulatedTime.toISOString().split("T")[1].substring(0, 5));
+      }, 1000); // Update every second
+
+      return () => clearInterval(interval);
+    }
+    
+
+    // If data is not available, set defaults
+    setDate("2023-01-01");
+    setTime("00:00");
+    setTemperature("-10");
+
+  }, [isSimulationOn, timeSpeed]); 
 
   return (
     <div className="simulation-container">
