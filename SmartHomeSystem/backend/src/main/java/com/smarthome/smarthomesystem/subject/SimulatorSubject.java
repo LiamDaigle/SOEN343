@@ -7,7 +7,7 @@ import java.util.List;
 
 public class SimulatorSubject implements Subject {
     private List<Observer> observers = new ArrayList<>();
-    private int temperature;
+    private Double temperature;
 
     @Override
     public void registerObserver(Observer observer) {
@@ -26,7 +26,7 @@ public class SimulatorSubject implements Subject {
         }
     }
 
-    public void setTemperature(int temperature) {
+    public void setTemperature(Double temperature) {
         this.temperature = temperature;
         notifyObservers();
     }

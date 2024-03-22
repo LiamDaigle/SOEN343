@@ -10,7 +10,7 @@ public class SmartHomeHeater implements Observer {
     }
 
     @Override
-    public void update(int temperature) {
+    public void update(Double temperature) {
         System.out.println("Heater " + name + " temperature updated to: " + temperature);
 
         // Conditions 1: temperature outside is cooler than inside a zone or room
