@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -59,5 +64,20 @@ public class RoomController {
     @PostMapping(path = "/api/rooms/findAllWindows")
     public List<Optional<Window>> findAllWindows(@RequestBody RoomDto room){
         return windowRepository.findWindowsByRoom(roomMapper.mapFrom(room));
+    }
+
+    @PatchMapping("/api/rooms/{roomId}/temperature")
+    public ResponseEntity<String> updateRoomTemperature(@PathVariable Long roomId, @RequestBody Double newTemperature) {
+        Optional<Room> optionalRoom = roomRepository.findById(roomId);
+
+        if (optionalRoom.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Room room = optionalRoom.get();
+        room.setTemperature(newTemperature);
+        roomRepository.save(room);
+
+        return ResponseEntity.status(HttpStatus.OK).body("Room temperature updated successfully");
     }
 }
