@@ -1,5 +1,7 @@
 package observer;
 
+
+// Define the Observer interface
 public interface Observer {
-    void update(int temperature);
+    void update(Double temperature);
 }
