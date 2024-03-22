@@ -36,17 +36,37 @@ const Simulation = (props: any) => {
     setContextDialogOpen(false);
   };
 
-  const [date, setDate] = useState<string>("");
-  const [time, setTime] = useState<string>("");
+  const [date, setDate] = useState<string>(() => {
+    const storedDate = localStorage.getItem("date");
+    if (storedDate) {
+      return storedDate;
+    } else {
+      return "2023-01-01";
+    }
+  });
+  const [time, setTime] = useState<string>(() => {
+    const storedTime = localStorage.getItem("time");
+    if (storedTime) {
+      return storedTime;
+    } else {
+      return "00:00";
+    }
+  });
   const [temperature, setTemperature] = useState<string>(() => {
     const storedTemperature = localStorage.getItem("temperature");
     if (storedTemperature) {
-      const storedTemp = JSON.parse(storedTemperature);
-      return storedTemp;
+      return storedTemperature;
     } else {
-      return "15";
+      return "-10";
     }
   });
+
+  const [simulationSettings, setSimulationSettings] = useState<string>(() => {
+    const storedDate = localStorage.getItem("date") || "2023-01-01";
+    const storedTime = localStorage.getItem("time") || "00:00";
+    const storedTemperature = localStorage.getItem("temperature") || "-10";
+    return `${storedDate}, ${storedTime}, ${storedTemperature}`;
+});
 
   useEffect(() => {
     // Retrieve stored simulation toggle state
@@ -63,26 +83,35 @@ const Simulation = (props: any) => {
       setSelectedRoom(storedSelectedRoom);
     }
 
+    const storedDate = localStorage.getItem("date");
+    if (storedDate) {
+      setTemperature(storedDate);
+    }
+
+    const storedTime = localStorage.getItem("time");
+    if (storedTime) {
+      setTemperature(storedTime);
+    }
+
     const storedTemperature = localStorage.getItem("temperature");
     if (storedTemperature) {
-      const storedTemp = JSON.parse(storedTemperature);
-      setTemperature(storedTemp);
+      setTemperature(storedTemperature);
     }
     
-    const storedDateTime = localStorage.getItem("dateTime");
-    if (storedDateTime) {
-      const { storedDate, storedTime } = JSON.parse(storedDateTime);
-      setDate(storedDate);
-      setTime(storedTime);
-    } else {
-      const currentDate = new Date().toISOString().split("T")[0];
-      const currentTime = new Date()
-        .toISOString()
-        .split("T")[1]
-        .substring(0, 5);
-      setDate(currentDate);
-      setTime(currentTime);
-    }
+    // const storedDateTime = localStorage.getItem("dateTime");
+    // if (storedDateTime) {
+    //   const { storedDate, storedTime } = JSON.parse(storedDateTime);
+    //   setDate(storedDate);
+    //   setTime(storedTime);
+    // } else {
+    //   const currentDate = new Date().toISOString().split("T")[0];
+    //   const currentTime = new Date()
+    //     .toISOString()
+    //     .split("T")[1]
+    //     .substring(0, 5);
+    //   setDate(currentDate);
+    //   setTime(currentTime);
+    // }
   }, [open]);
 
   return (
@@ -157,7 +186,7 @@ const Simulation = (props: any) => {
           setCurrentRoom={setSelectedRoom}
           userId={props.userData.id}
           profileId={props.userData.profile.id}
-          temperature={temperature}
+          settings={temperature} // to change
         />
       </Modal>
       <ProfileSelection

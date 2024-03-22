@@ -13,7 +13,7 @@ interface SimulationContextModalProps {
   setCurrentRoom: React.Dispatch<React.SetStateAction<string>>
   userId: any;
   profileId: any;
-  temperature: string
+  settings: string
 }
 
 const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
@@ -24,16 +24,18 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
   setCurrentRoom,
   userId,
   profileId,
-  temperature
+  settings
 }) => {
   const [rooms, setRooms] = useState<string[]>([]);
   const [windowBlocked, setWindowBlocked] = useState<boolean>(false);
   const [selectedWindowRoom, setSelectedWindowRoom] = useState<string>("");
-  const [selectedTempRoom, setSelectedTempRoom] = useState<string>(currentRoom); // Local state for room selection
-  const [temperatureVal, setTemperature] = useState<string>(temperature);
+  const [selectedTempRoom, setSelectedTempRoom] = useState<string>(currentRoom);
+  const [simulationSettings, setSimulationSettings] = useState<string>(settings);
+  const [csvData, setCSVData] = useState<string[][]>([]);
 
   useEffect(() => {
     fetchLayout();
+    fetchCSVData();
   }, []);
 
   const fetchLayout = () => {
@@ -97,20 +99,6 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
     }
   };
 
-  const handleEditTemperature = () => {
-    // Perform validation to ensure temperature is a double value
-    const parsedTemperature = parseFloat(temperatureVal);
-    if (!isNaN(parsedTemperature)) {
-      // Update the state with the entered temperature
-      setTemperature(parsedTemperature.toString());
-      localStorage.setItem("temperature", JSON.stringify(parsedTemperature));
-    } else {
-      // Alert user if the entered temperature is not a valid double value
-      alert("Please enter a valid temperature value.");
-    }
-    location.reload()
-  };
-
   const handlePlaceInhabitant = async () => {
     console.log(`Placing ${inhabitant} in ${selectedTempRoom}`);
     localStorage.setItem("currentLocation", JSON.stringify(selectedTempRoom));
@@ -135,6 +123,30 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
     location.reload();
   };
 
+  const fetchCSVData = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/files/csvData");
+      setCSVData(response.data);
+    } catch (error) {
+      console.error("Error fetching CSV data:", error);
+    }
+  };
+
+  const handleSave = () => {
+    // Split the selected value into date/time and temperature
+    const [selectedDate, selectedTime, selectedTemperature] = simulationSettings.split(", ");
+
+    // Save the selected date, time, and temperature to local storage
+    localStorage.setItem("date", selectedDate);
+    localStorage.setItem("time", selectedTime);
+
+    localStorage.setItem("temperature", selectedTemperature);
+
+    // 
+
+    location.reload()
+  };
+
   if (!open) return null;
 
   return (
@@ -144,20 +156,22 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
         <label>Inhabitant: {inhabitant}</label>
       </div>
       <div>
-      <label>Edit Temperature</label>
-      <TextField
-        type="number"
-        value={temperatureVal}
-        onChange={(e) => setTemperature(e.target.value)}
-        placeholder="Enter temperature"
-        variant="outlined"
-        fullWidth
-        margin="dense"
-      />
-      <button  className="modal-buttons" onClick={handleEditTemperature}>
-        Submit
-      </button>
+        <FormControl fullWidth variant="standard" margin="dense">
+          <InputLabel>Select Date/Time and Outside Temperature:</InputLabel>
+          <Select 
+            value={simulationSettings} 
+            onChange={(e) => setSimulationSettings(e.target.value as string)}>
+            {csvData.map((data, index) => (
+              <MenuItem key={index} value={data.join(", ")}>
+                {data.join(", ")}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </div>
+      <button className="modal-buttons" onClick={handleSave}>
+        Save
+      </button>
       <div>
         <FormControl fullWidth variant="standard" margin="dense">
           <InputLabel>Select Room:</InputLabel>
