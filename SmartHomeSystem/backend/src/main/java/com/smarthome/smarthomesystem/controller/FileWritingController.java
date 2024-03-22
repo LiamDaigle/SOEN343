@@ -10,6 +10,15 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.HttpStatus;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.IOException;
+
+
+
 @RestController
 @RequestMapping("/api/files")
 public class FileWritingController {
@@ -56,4 +65,25 @@ public class FileWritingController {
 
         return ResponseEntity.ok(logs);
     }
+
+    @PostMapping("/uploadCSV")
+    public ResponseEntity<String> uploadCSVFile(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("Please upload a file.");
+        }
+
+        try {
+            byte[] bytes = file.getBytes();
+            String filename = "temperature_data.csv";
+            String filePath = System.getProperty("user.dir") + File.separator + filename;
+            Path path = Paths.get(filePath);
+            Files.write(path, bytes);
+
+            return ResponseEntity.ok("File uploaded successfully.");
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Failed to upload file: " + e.getMessage());
+        }
+    }
+
+
 }

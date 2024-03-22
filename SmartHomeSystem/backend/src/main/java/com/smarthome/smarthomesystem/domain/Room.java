@@ -31,4 +31,5 @@ public class Room {
     public void setHvacWorking(Boolean b) {
         isHvacWorking = b;
     }
+
 }
