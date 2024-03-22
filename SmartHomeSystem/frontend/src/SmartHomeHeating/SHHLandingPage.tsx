@@ -8,6 +8,12 @@ const SHHLandingPage = (props: any) => {
   const [room, setRoom] = useState("");
   const [temperature, setTemperature] = useState("");
 
+  // Ensure props.userData and its properties are defined before accessing
+  const userId = props.userData?.user?.id || "";
+  const profileId = props.userData?.profile?.id || "";
+  const profileName = props.userData?.profile?.name || "";
+  const profileRole = props.userData?.profile?.role || "";
+
   // Function to set permission message
   const setPermissionMessage = () => {
     const { role, location } = props.userData.profile;
@@ -60,9 +66,19 @@ const SHHLandingPage = (props: any) => {
       alert("Please select a room and enter a temperature value.");
       return;
     }
-
+  
     try {
-      const response = await axios.patch(`/api/rooms/${room}/temperature`, parseFloat(temperature));
+      // Find the roomId based on the selected room name
+      const roomResponse = await axios.post("http://localhost:8080/api/rooms/findByName", { name: room });
+      const roomId = roomResponse.data.id;
+      console.log(roomId);
+  
+      // Update the room temperature using the roomId
+      const response = await axios.patch(
+        `http://localhost:8080/api/rooms/${roomId}/temperature`,
+        parseFloat(temperature),  // Send the temperature directly as the request body
+        { headers: { 'Content-Type': 'application/json' } } 
+      );
       alert(response.data);
     } catch (error) {
       console.error("Error setting room temperature:", error);
@@ -102,7 +118,6 @@ const SHHLandingPage = (props: any) => {
       <Button
         className="button custom" type="submit"
         onClick={setRoomTemperature}
-        // disabled={!room || !temperature} // Disable the button if room or temperature is not selected
       >
         Submit
       </Button>

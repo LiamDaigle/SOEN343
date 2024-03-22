@@ -67,7 +67,7 @@ public class RoomController {
     }
 
     @PatchMapping("/api/rooms/{roomId}/temperature")
-    public ResponseEntity<String> updateRoomTemperature(@PathVariable Long roomId, @RequestBody Double newTemperature) {
+    public ResponseEntity<String> updateRoomTemperature(@PathVariable("roomId") Long roomId, @RequestBody Double newTemperature) {
         Optional<Room> optionalRoom = roomRepository.findById(roomId);
 
         if (optionalRoom.isEmpty()) {
