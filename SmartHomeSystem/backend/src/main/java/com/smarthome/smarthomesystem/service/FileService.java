@@ -70,4 +70,22 @@ public class FileService {
             return ResponseEntity.status(500).body("Failed to upload file: " + e.getMessage());
         }
     }
+
+    public ResponseEntity<List<String[]>> getCSVData() {
+        String filename = "temperature_data.csv";
+        String filePath = System.getProperty("user.dir") + File.separator + filename;
+        List<String[]> data = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] values = line.split(",");
+                data.add(values);
+            }
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body(null);
+        }
+
+        return ResponseEntity.ok(data);
+    }
 }
