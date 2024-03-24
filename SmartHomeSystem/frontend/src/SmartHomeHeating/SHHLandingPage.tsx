@@ -7,6 +7,7 @@ const SHHLandingPage = (props: any) => {
   const [permissionMsg, setPermissionMsg] = useState("");
   const [room, setRoom] = useState("");
   const [temperature, setTemperature] = useState("");
+  const [roomTemp, setRoomTemp] = useState("");
 
   // Ensure props.userData and its properties are defined before accessing
   const userId = props.userData?.user?.id || "";
@@ -31,14 +32,28 @@ const SHHLandingPage = (props: any) => {
     }
   };
 
+
   // Call setPermissionMessage only once after the initial render
   useEffect(() => {
     setPermissionMessage();
   }, []);
 
+  // Function to handle room selection change
   const handleChange = (event: SelectChangeEvent<string>) => {
-    setRoom(event.target.value);
-  };
+    const newRoom = event.target.value;
+    setRoom(newRoom);
+    fetchRoomTemperature(newRoom);
+  }
+
+  // Function to fetch room temperature based on room name
+  const fetchRoomTemperature = async (roomName: string) => {
+    try {
+        const roomResponse = await axios.post("http://localhost:8080/api/rooms/findByName", { name: roomName });
+        setRoomTemp(roomResponse.data.temperature);
+    } catch (error) {
+        console.error("Error fetching current temperature:", error);
+    }
+  }
 
   // Function to check if MenuItem should be disabled based on user permissions and location
   const disableCheck = (roomName: string) => {
@@ -71,7 +86,6 @@ const SHHLandingPage = (props: any) => {
       // Find the roomId based on the selected room name
       const roomResponse = await axios.post("http://localhost:8080/api/rooms/findByName", { name: room });
       const roomId = roomResponse.data.id;
-      console.log(roomId);
   
       // Update the room temperature using the roomId
       const response = await axios.patch(
@@ -80,6 +94,7 @@ const SHHLandingPage = (props: any) => {
         { headers: { 'Content-Type': 'application/json' } } 
       );
       alert(response.data);
+      location.reload();
     } catch (error) {
       console.error("Error setting room temperature:", error);
       alert("Error setting room temperature.");
@@ -121,6 +136,7 @@ const SHHLandingPage = (props: any) => {
       >
         Submit
       </Button>
+      {room && <p style={{ color: "black"}}>Current temperature in {room}: {roomTemp} degrees Celcius</p>}
     </div>
   );
 };
