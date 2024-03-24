@@ -21,12 +21,14 @@
 
 .button.custom {
   background-color: var(--accent-color);
-  color: black;
+  color: var(--additional-color);
   margin: 5px;
 }
 
 .button.custom:hover {
-  background-color: var(--secondary-color);
+  cursor: pointer;
+  background-color: var(--secondary-color) !important;
+  border: 2px solid var(--accent-color);
   color: var(--text-color);
 }
 
@@ -45,7 +47,10 @@
 
 /* Add styles when input is clicked */
 .form.custom .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-  border-color: var(--secondary-color) !important;
+  cursor: pointer;
+  background-color: var(--secondary-color) !important;
+  border: 2px solid var(--accent-color);
+  color: var(--text-color);
 }
 
 .dialog-actions.custom {

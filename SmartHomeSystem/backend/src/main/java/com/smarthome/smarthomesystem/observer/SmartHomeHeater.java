@@ -1,6 +1,7 @@
 package com.smarthome.smarthomesystem.observer;
 
 import com.smarthome.smarthomesystem.service.FileService;
+import com.smarthome.smarthomesystem.service.TemperatureControlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,16 +13,22 @@ public class SmartHomeHeater implements Observer {
     @Autowired
     public SmartHomeHeater(FileService fileService) {
         this.fileService = fileService;
+
     }
 
     @Override
     public void update(Double temperature) {
         System.out.println("Heater temperature updated to: " + temperature);
 
-        // Conditions 1: temperature outside is cooler than inside a zone or room
-        //               if and only if the temperature outside is not lower than 20 C
+        /*
+        if the temperature inside a zone or room is warmer than the temperature outside but
+        the temperature outside is no less than 20 degrees C, then the windows are to be opened.
+        But if they are blocked then the system must notify the user and cancel the command
+         */
+        if (temperature > TemperatureControlService.getOutsideTemperatureInstance().getTemperature()
+                && TemperatureControlService.getOutsideTemperatureInstance().getTemperature() >= 20) {
 
-        // Condition 2: If the windows are blocked by an arbitrary object
+        }
 
         // Condition 3: If the temperature inside the home is <= zero degrees
         if (temperature <= 0) {
@@ -29,3 +36,4 @@ public class SmartHomeHeater implements Observer {
         }
     }
 }
+
