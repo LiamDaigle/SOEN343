@@ -1,8 +1,8 @@
 :root {
   /* Primary colors */
   --primary-color: #000000; /* Black */
-  --secondary-color: #0b3c5d; /* Navy Blue */
-  --accent-color: #fca311; /* Orange */
+  --secondary-color: ##999999; /* Navy Blue */
+  --accent-color: #ffa90a; /* Orange */
 
   /* Additional colors */
   --additional-color: #e5e5e5; /* Light Gray */
@@ -13,8 +13,8 @@
   --content-background-color: #ffffff; /* White */
 
   /* Text colors */
-  --text-color: #ffffff; /* Dark Gray */
-  --text-secondary-color: #6c757d; /* Gray */
+  --text-color: #262626; /* Dark Gray */
+  --text-secondary-color: #000000; /* Gray */
 
   /* Additional colors */
   --warning-color: #ffc107; /* Yellow */

@@ -1,13 +1,18 @@
 package com.smarthome.smarthomesystem.observer;
 
 import com.smarthome.smarthomesystem.repositories.RoomRepository;
+import com.smarthome.smarthomesystem.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import com.smarthome.smarthomesystem.service.FileService;
 
 @Component
 public class SmartHomeHeater implements Observer {
 
-    public SmartHomeHeater() {
+    private final FileService fileService;
+
+    public SmartHomeHeater(FileService fileService) {
+        this.fileService = fileService;
     }
 
     @Override
@@ -22,7 +27,7 @@ public class SmartHomeHeater implements Observer {
         // Condition 3: If the temperature inside the home is <= zero degrees
         if (temperature <= 0 )
         {
-            System.out.println("WARNING: Risk of pipes freezing! Turn on heater.");
+            fileService.writeToFile("\\u26A0\\ufe0f WARNING: Risk of pipes freezing! Turn on heater.");
         }
 
     }
