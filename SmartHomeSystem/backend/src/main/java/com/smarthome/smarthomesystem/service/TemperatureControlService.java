@@ -83,9 +83,6 @@ public class TemperatureControlService {
     // You can add other methods as needed
 
     private double getOutsideTemperature() {
-        // Implement logic to get outside temperature
-        // This could be fetched from a service or external source
-        // For demonstration purposes, returning a static value
-        return 25.0;
+        return outsideTemperatureInstance.getTemperature();
     }
 }

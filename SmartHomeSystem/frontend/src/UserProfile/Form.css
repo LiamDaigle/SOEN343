@@ -26,27 +26,13 @@
 }
 
 .button.custom:hover {
-  background-color: var(--secondary-color);
+  cursor: pointer;
+  background-color: var(--secondary-color) !important;
+  border: 2px solid var(--accent-color);
   color: var(--text-color);
 }
 
-/* Add focus styles */
-.form.custom .Mui-focused .MuiOutlinedInput-notchedOutline,
-.form.custom
-  .MuiOutlinedInput-root.Mui-focused
-  .MuiOutlinedInput-notchedOutline {
-  border-color: var(--secondary-color) !important;
-}
 
-/* Add placeholder color */
-.form.custom .MuiFormLabel-root.Mui-focused {
-  color: var(--secondary-color) !important;
-}
-
-/* Add styles when input is clicked */
-.form.custom .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-  border-color: var(--secondary-color) !important;
-}
 
 .dialog-actions.custom {
   display: flex;
@@ -65,6 +51,7 @@
 .profile-btn:hover,
 .selected {
   cursor: pointer;
-  background-color: var(--secondary-color);
+  background-color: var(--secondary-color) !important;
+  border: 2px solid var(--accent-color);
   color: var(--text-color);
 }
