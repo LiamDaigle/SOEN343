@@ -60,7 +60,7 @@ public class FileService {
 
         try {
             byte[] bytes = file.getBytes();
-            String filename = "temperature_data.csv";
+            String filename = "exampleTemperature.csv";
             String filePath = System.getProperty("user.dir") + File.separator + filename;
             Path path = Paths.get(filePath);
             Files.write(path, bytes);
@@ -72,7 +72,7 @@ public class FileService {
     }
 
     public ResponseEntity<List<String[]>> getCSVData() {
-        String filename = "temperature_data.csv";
+        String filename = "exampleTemperature.csv";
         String filePath = System.getProperty("user.dir") + File.separator + filename;
         List<String[]> data = new ArrayList<>();
 
