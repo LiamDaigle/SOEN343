@@ -1,5 +1,6 @@
 package com.smarthome.smarthomesystem;
 
+import com.smarthome.smarthomesystem.service.TemperatureControlService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -8,5 +9,7 @@ public class SmartHomeSystemApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SmartHomeSystemApplication.class, args);
+
+		TemperatureControlService.getOutsideTemperatureInstance();
 	}
 }

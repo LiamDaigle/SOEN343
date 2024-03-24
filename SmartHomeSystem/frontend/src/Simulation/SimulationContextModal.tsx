@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { FormControl, InputLabel, Select, MenuItem, TextField } from '@mui/material';
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 import "./SimulationContextModal.css";
 import exampleLayout from "../assets/exampleHouseLayout.json";
 import axios from "axios";
@@ -10,10 +16,10 @@ interface SimulationContextModalProps {
   onClose: () => void;
   inhabitant: string;
   currentRoom: string;
-  setCurrentRoom: React.Dispatch<React.SetStateAction<string>>
+  setCurrentRoom: React.Dispatch<React.SetStateAction<string>>;
   userId: any;
   profileId: any;
-  settings: string
+  settings: string;
 }
 
 const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
@@ -24,13 +30,14 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
   setCurrentRoom,
   userId,
   profileId,
-  settings
+  settings,
 }) => {
   const [rooms, setRooms] = useState<string[]>([]);
   const [windowBlocked, setWindowBlocked] = useState<boolean>(false);
   const [selectedWindowRoom, setSelectedWindowRoom] = useState<string>("");
   const [selectedTempRoom, setSelectedTempRoom] = useState<string>(currentRoom);
-  const [simulationSettings, setSimulationSettings] = useState<string>(settings);
+  const [simulationSettings, setSimulationSettings] =
+    useState<string>(settings);
   const [csvData, setCSVData] = useState<string[][]>([]);
 
   useEffect(() => {
@@ -74,23 +81,24 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
 
   const hasWindow = (room: string) => {
     const roomData = exampleLayout[room as keyof typeof exampleLayout];
-    return roomData && 'windows' in roomData && roomData.windows > 0;
+    return roomData && "windows" in roomData && roomData.windows > 0;
   };
 
   const handleBlockWindow = async () => {
     console.log(`Blocking window in ${selectedWindowRoom}`);
-    
+
     try {
       // Retrieve the window ID based on the selected room
-      const windowIdResponse = await RoomReceiver.findByName({ name: selectedWindowRoom });
+      const windowIdResponse = await RoomReceiver.findByName({
+        name: selectedWindowRoom,
+      });
       const windowId = windowIdResponse.id;
-  
+
       // Make PATCH request to block the window
-      await axios.patch(
-        `http://localhost:8080/api/windows/${windowId}`,
-        { isBlocked: true }
-      );
-  
+      await axios.patch(`http://localhost:8080/api/windows/${windowId}`, {
+        isBlocked: true,
+      });
+
       console.log("Window blocked successfully");
       onClose();
     } catch (error) {
@@ -102,22 +110,25 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
   const handlePlaceInhabitant = async () => {
     console.log(`Placing ${inhabitant} in ${selectedTempRoom}`);
     localStorage.setItem("currentLocation", JSON.stringify(selectedTempRoom));
-  
+
     try {
       const response = await axios.patch(
         `http://localhost:8080/api/users/${userId}/profiles/${profileId}`,
-        selectedTempRoom, 
+        selectedTempRoom,
         {
           headers: {
             "Content-Type": "text/plain",
-          }
+          },
         }
       );
       console.log("Location updated successfully:", response.data);
       setCurrentRoom(selectedTempRoom); // Update parent state with selected room
       onClose();
     } catch (error: any) {
-      console.error("Error updating location:", error.response?.data || error.message);
+      console.error(
+        "Error updating location:",
+        error.response?.data || error.message
+      );
       alert("Failed to update location. Please try again.");
     }
     location.reload();
@@ -125,16 +136,25 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
 
   const fetchCSVData = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/files/csvData");
+      const response = await axios.get(
+        "http://localhost:8080/api/files/csvData"
+      );
       setCSVData(response.data);
     } catch (error) {
       console.error("Error fetching CSV data:", error);
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     // Split the selected value into date/time and temperature
-    const [selectedDate, selectedTime, selectedTemperature] = simulationSettings.split(", ");
+    const [selectedDate, selectedTime, selectedTemperature] =
+      simulationSettings.split(", ");
+    console.log(typeof parseFloat(selectedTemperature));
+
+    const response = await axios.post(
+      "http://localhost:8080/api/temperature",
+      selectedTemperature
+    );
 
     // Save the selected date, time, and temperature to local storage
     localStorage.setItem("date", selectedDate);
@@ -142,9 +162,9 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
 
     localStorage.setItem("temperature", selectedTemperature);
 
-    // 
+    //
 
-    location.reload()
+    location.reload();
   };
 
   if (!open) return null;
@@ -158,9 +178,10 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
       <div>
         <FormControl fullWidth variant="standard" margin="dense">
           <InputLabel>Select Date/Time and Outside Temperature:</InputLabel>
-          <Select 
-            value={simulationSettings} 
-            onChange={(e) => setSimulationSettings(e.target.value as string)}>
+          <Select
+            value={simulationSettings}
+            onChange={(e) => setSimulationSettings(e.target.value as string)}
+          >
             {csvData.map((data, index) => (
               <MenuItem key={index} value={data.join(", ")}>
                 {data.join(", ")}
@@ -180,7 +201,11 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
             onChange={(e) => setSelectedTempRoom(e.target.value as string)}
           >
             {rooms.map((room) => (
-              <MenuItem key={room} value={room} disabled={room === selectedTempRoom}>
+              <MenuItem
+                key={room}
+                value={room}
+                disabled={room === selectedTempRoom}
+              >
                 {room}
               </MenuItem>
             ))}
