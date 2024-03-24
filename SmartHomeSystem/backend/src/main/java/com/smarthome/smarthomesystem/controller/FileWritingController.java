@@ -23,6 +23,9 @@ import java.io.IOException;
 @RequestMapping("/api/files")
 public class FileWritingController {
 
+    private static final String FILENAME = "exampleTemperature.csv";
+    private static final String CSV_FILE_PATH = System.getProperty("user.dir") + File.separator + FILENAME;
+
     @PostMapping("/write")
     public ResponseEntity<String> writeToFile(@RequestBody JsonNode requestBody) {
         String data = requestBody.get("data").asText();
@@ -74,15 +77,30 @@ public class FileWritingController {
 
         try {
             byte[] bytes = file.getBytes();
-            String filename = "temperature_data.csv";
-            String filePath = System.getProperty("user.dir") + File.separator + filename;
-            Path path = Paths.get(filePath);
+            Path path = Paths.get(CSV_FILE_PATH);
             Files.write(path, bytes);
 
             return ResponseEntity.ok("File uploaded successfully.");
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Failed to upload file: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/csvData")
+    public ResponseEntity<List<String[]>> getCSVData() {
+        List<String[]> data = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(CSV_FILE_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] values = line.split(",");
+                data.add(values);
+            }
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body(null);
+        }
+
+        return ResponseEntity.ok(data);
     }
 
 
