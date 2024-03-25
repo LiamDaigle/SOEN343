@@ -382,6 +382,11 @@ const HouseLayoutGridElement = (props: Props) => {
                 size={50}
                 className="icon"
                 onClick={async () => {
+                  const isSHHOn = localStorage.getItem("SHH_on");
+                  if (isSHHOn === "false") {
+                    console.log("Cannot modify heating, SHH is turned off.");
+                    return;
+                  }
                   console.log("Set heating to off");
                   setHeatingOn(false);
 
@@ -401,6 +406,11 @@ const HouseLayoutGridElement = (props: Props) => {
                 size={50}
                 className="icon"
                 onClick={async () => {
+                  const isSHHOn = localStorage.getItem("SHH_on");
+                  if (isSHHOn === "false") {
+                    console.log("Cannot modify heating, SHH is turned off.");
+                    return;
+                  }
                   console.log("Set heating to on");
                   setHeatingOn(true);
 
