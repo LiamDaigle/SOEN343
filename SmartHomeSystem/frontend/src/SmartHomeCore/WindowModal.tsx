@@ -7,6 +7,12 @@ import DialogContentText from "@mui/material/DialogContentText";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./ControlsModalStyle.css";
+import GetAllWindowsCommand from "../AxiosCommands/Command Design Pattern/commands/GetAllWindowsCommand";
+import WindowCloseCommand from "../AxiosCommands/Command Design Pattern/commands/WindowCloseCommand";
+import WindowOpenCommand from "../AxiosCommands/Command Design Pattern/commands/WindowOpenCommand";
+import SHCInvoker from "../AxiosCommands/Command Design Pattern/SHCInvoker";
+
+import { timestamp } from "../Common/getTime";
 
 interface FormDialogProps {
   open: boolean;
@@ -20,6 +26,12 @@ const WindowModal: React.FC<FormDialogProps> = ({
   userData,
 }) => {
   const [roomsWindows, setRoomsWindows] = useState<any[]>([]);
+
+  // Ensure userData and its properties are defined before accessing
+  const userId = userData.id || "";
+  const profileId = userData.profile?.id || "";
+  const profileName = userData.profile?.name || "";
+  const profileRole = userData?.profile?.role || "";
 
   useEffect(() => {
     fetchWindowsByRoom();
@@ -71,6 +83,7 @@ const WindowModal: React.FC<FormDialogProps> = ({
 
   const toggleWindow = async (
     roomId: string,
+    roomName: string,
     windowId: number,
     newStatus: boolean
   ) => {
@@ -81,10 +94,21 @@ const WindowModal: React.FC<FormDialogProps> = ({
         },
         open: newStatus,
       };
-      const response = await axios.put(
-        `http://localhost:8080/api/windows/${windowId}`,
-        window
-      );
+
+      // Call open window command 
+      if (newStatus){
+        const windowOpenCommand = new WindowOpenCommand(window)
+        const invoker = new SHCInvoker(windowOpenCommand);
+        const windowOpened = await invoker.executeCommand();
+        writeOpenWindowToFile(roomName, windowId);
+      }
+      // Call close window command
+      else if(!newStatus){
+        const windowCloseCommand = new WindowCloseCommand(window)
+        const invoker = new SHCInvoker(windowCloseCommand);
+        const windowClosed = await invoker.executeCommand();
+        writeCloseWindowToFile(roomName, windowId);
+      }
 
       // update the state accordingly
       const updatedRoomsWindows = roomsWindows.map((roomWindows) => {
@@ -104,6 +128,34 @@ const WindowModal: React.FC<FormDialogProps> = ({
       console.error("Error toggling window:", error);
     }
   };
+
+  const writeOpenWindowToFile = async (roomName, windowId) => {
+    
+    try {
+      await axios.post(
+        "http://localhost:8080/api/files/write",
+        {
+          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Open Window\nEvent Description: User Just Opened Window Id ${windowId} in ${roomName}\nend`,
+        }
+      );
+    } catch (error) {
+      console.error("Error writing Open Window data to file:", error);
+    }
+  }
+
+  const writeCloseWindowToFile = async (roomName, windowId) => {
+    console.log(windowId.toString(), " and ", roomName)
+    try {
+      await axios.post(
+        "http://localhost:8080/api/files/write",
+        {
+          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Close Window\nEvent Description: User Just Closed Window Id ${windowId} in ${roomName}\nend`,
+        }
+      );
+    } catch (error) {
+      console.error("Error writing Close Window data to file:", error);
+    }
+  }
 
   return (
     <Dialog open={open} onClose={onClose}>
@@ -145,6 +197,7 @@ const WindowModal: React.FC<FormDialogProps> = ({
                           onClick={() =>
                             toggleWindow(
                               roomWindows.roomId,
+                              roomWindows.roomName,
                               window.id,
                               !window.open
                             )

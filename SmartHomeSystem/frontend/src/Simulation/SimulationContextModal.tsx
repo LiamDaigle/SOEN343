@@ -190,7 +190,7 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
     }
   }
 
-  const writeBlockWindowToFile = async () => {
+  const writeBlockWindowToFile = async (roomName, windowId) => {
     
     try {
       await axios.post(
