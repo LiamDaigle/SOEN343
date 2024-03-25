@@ -14,12 +14,15 @@ import axios from "axios";
 import "../SmartHomeSimulator/Form.css";
 import ZoneModal from "./ZoneModal/ZoneModal";
 
+import { timestamp } from "../Common/getTime";
+
 const SHHLandingPage = (props: any) => {
   const [permissionMsg, setPermissionMsg] = useState("");
   const [room, setRoom] = useState("");
   const [temperature, setTemperature] = useState("");
   const [isOn, setIsOn] = useState(true);
   const [zoneModalOpen, setZoneModalOpen] = useState(false);
+  const [roomTemp, setRoomTemp] = useState("");
 
   // Ensure props.userData and its properties are defined before accessing
   const userId = props.userData?.user?.id || "";
@@ -57,8 +60,29 @@ const SHHLandingPage = (props: any) => {
     setPermissionMessage();
   }, []);
 
+  // Function to handle room selection change
   const handleChange = (event: SelectChangeEvent<string>) => {
-    setRoom(event.target.value);
+    const newRoom = event.target.value;
+    setRoom(newRoom);
+    fetchRoomTemperature(newRoom);
+  };
+
+  // Function to fetch room temperature based on room name
+  const fetchRoomTemperature = async (roomName: string) => {
+    if (!roomName) {
+      alert("Please select a room.");
+      return;
+    }
+
+    try {
+      const roomResponse = await axios.post(
+        "http://localhost:8080/api/rooms/findByName",
+        { name: roomName }
+      );
+      setRoomTemp(roomResponse.data.temperature);
+    } catch (error) {
+      console.error("Error fetching current temperature:", error);
+    }
   };
 
   // Function to check if MenuItem should be disabled based on user permissions and location
@@ -80,6 +104,7 @@ const SHHLandingPage = (props: any) => {
     }
   };
 
+  // Function to set room temperature
   const setRoomTemperature = async () => {
     if (!room || !temperature) {
       alert("Please select a room and enter a temperature value.");
@@ -93,18 +118,31 @@ const SHHLandingPage = (props: any) => {
         { name: room }
       );
       const roomId = roomResponse.data.id;
-      console.log(roomId);
 
       // Update the room temperature using the roomId
       const response = await axios.patch(
         `http://localhost:8080/api/rooms/${roomId}/temperature`,
-        parseFloat(temperature), // Send the temperature directly as the request body
+        parseFloat(temperature),
         { headers: { "Content-Type": "application/json" } }
       );
-      alert(response.data);
+      writeRoomTemperatureToFile();
+      // alert(response.data);
+      location.reload();
     } catch (error) {
       console.error("Error setting room temperature:", error);
       alert("Error setting room temperature.");
+    }
+  };
+
+  // Function to write room temperature data to file
+  const writeRoomTemperatureToFile = async () => {
+    try {
+      await axios.post("http://localhost:8080/api/files/write", {
+        data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Edit Room Temperature\nEvent Description: User Just Changed ${room} Temperature from ${roomTemp} to ${temperature} Degrees Celcius\nend`,
+      });
+      console.log("Room Temperature data written to file successfully");
+    } catch (error) {
+      console.error("Error writing room temperature data to file:", error);
     }
   };
 
@@ -190,6 +228,11 @@ const SHHLandingPage = (props: any) => {
           >
             Submit
           </Button>
+          {room && (
+            <p style={{ color: "black" }}>
+              Current temperature in {room}: {roomTemp} degrees Celcius
+            </p>
+          )}
         </>
       ) : (
         <Typography style={{ color: "black" }}>

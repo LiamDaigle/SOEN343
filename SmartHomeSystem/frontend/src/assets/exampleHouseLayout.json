@@ -6,21 +6,21 @@
     ],
     "Backyard":{
         "name":"Backyard",
-        "windows":0,
+        "windows":1,
         "doors":0,
         "lights":2,
         "autoLockDoors":1
     },
     "Entrance":{
         "name":"Entrance",
-        "windows":0,
+        "windows":1,
         "doors":0,
         "lights":2,
         "autoLockDoors":1
     },
     "Garage":{
         "name":"Garage",
-        "windows":0,
+        "windows":1,
         "doors":0,
         "lights":2,
         "autoLockDoors":1

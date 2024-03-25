@@ -1,6 +1,8 @@
 package com.smarthome.smarthomesystem.service;
 
+import com.smarthome.smarthomesystem.domain.OutsideTemperature;
 import com.smarthome.smarthomesystem.domain.Room;
+import com.smarthome.smarthomesystem.repositories.OutsideTemperatureRepository;
 import com.smarthome.smarthomesystem.repositories.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,9 +13,34 @@ public class TemperatureControlService {
     @Autowired
     private final RoomRepository roomRepository;
 
+    private static OutsideTemperatureRepository temperatureRepository = null;
+    private static OutsideTemperature outsideTemperatureInstance;
+
     @Autowired
-    public TemperatureControlService(RoomRepository roomRepository) {
+    private TemperatureControlService(RoomRepository roomRepository, OutsideTemperatureRepository temperatureRepository) {
         this.roomRepository = roomRepository;
+        this.temperatureRepository = temperatureRepository;
+    }
+
+    // skeleton public method
+    public static OutsideTemperature getOutsideTemperatureInstance() {
+        if (outsideTemperatureInstance == null) {
+            // Retrieve existing instance if available, otherwise create a new one
+            outsideTemperatureInstance = temperatureRepository.findById(1L).orElse(null);
+            if (outsideTemperatureInstance == null) {
+                outsideTemperatureInstance = new OutsideTemperature();
+                outsideTemperatureInstance.setTemperature(-10.0); // Set initial temperature
+                temperatureRepository.save(outsideTemperatureInstance);
+            }
+        }
+        return outsideTemperatureInstance;
+    }
+
+    // Example method to save temperature
+    public void saveTemperature(double temperature) {
+        OutsideTemperature outsideTemperature = getOutsideTemperatureInstance();
+        outsideTemperature.setTemperature(temperature);
+        temperatureRepository.save(outsideTemperature);
     }
 
     public void updateRoomTemperature(Room room, double elapsedTime) {
@@ -56,9 +83,6 @@ public class TemperatureControlService {
     // You can add other methods as needed
 
     private double getOutsideTemperature() {
-        // Implement logic to get outside temperature
-        // This could be fetched from a service or external source
-        // For demonstration purposes, returning a static value
-        return 25.0;
+        return outsideTemperatureInstance.getTemperature();
     }
 }

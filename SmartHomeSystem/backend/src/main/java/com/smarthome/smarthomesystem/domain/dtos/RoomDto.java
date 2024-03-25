@@ -15,6 +15,12 @@ public class RoomDto {
 
     private String name;
 
+    private Double temperature;
+
+    private Double desiredTemperature;
+
+    private Boolean isHvacWorking;
+
 //    private List<Window> windows;
 //
 //    private List<Light> lights;

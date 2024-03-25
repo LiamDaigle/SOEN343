@@ -48,7 +48,7 @@
 
 .common-btn:hover {
   cursor: pointer;
-  background-color: var(--secondary-color);
+  background-color: var(--secondary-color) !important;
   border: 2px solid var(--accent-color);
   color: var(--text-color);
 }

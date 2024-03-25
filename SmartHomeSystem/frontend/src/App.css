@@ -1,20 +1,20 @@
 :root {
   /* Primary colors */
   --primary-color: #000000; /* Black */
-  --secondary-color: #0b3c5d; /* Navy Blue */
-  --accent-color: #fca311; /* Orange */
+  --secondary-color: #fafdfb; /* Navy Blue */
+  --accent-color: #009eb0; /* Orange */
 
   /* Additional colors */
-  --additional-color: #e5e5e5; /* Light Gray */
-  --additional-color2: #ffffff; /* White */
+  --additional-color: #474a4a; /* Light Gray */
+  --additional-color2: #474a4a; /* White */
 
   /* Background colors */
-  --background-color: #f8f9fa; /* Light Gray */
-  --content-background-color: #ffffff; /* White */
+  --background-color: #fafdfb; /* Light Gray */
+  --content-background-color: #fafdfb; /* White */
 
   /* Text colors */
-  --text-color: #ffffff; /* Dark Gray */
-  --text-secondary-color: #6c757d; /* Gray */
+  --text-color: #2f2c2d; /* Dark Gray */
+  --text-secondary-color: #474a4a; /* Gray */
 
   /* Additional colors */
   --warning-color: #ffc107; /* Yellow */
@@ -38,7 +38,7 @@ h3,
 h4,
 h5,
 h6 {
-  color: var(--text-color);
+  color: var(--accent-color);
 }
 
 /* Paragraphs */
