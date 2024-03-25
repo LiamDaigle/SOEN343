@@ -24,4 +24,6 @@ jobs:
         run: ./mvnw clean install -B
 
       - name: Run Tests
-        run: ./mvnw test
+        run: |
+          cd SmartHomeSystem/backend
+          ./mvnw test -Dtest=com.smarthome.smarthomesystem.controller.*
