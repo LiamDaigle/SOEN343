@@ -11,14 +11,10 @@ import com.smarthome.smarthomesystem.repositories.LightRepository;
 import com.smarthome.smarthomesystem.repositories.RoomRepository;
 import com.smarthome.smarthomesystem.repositories.WindowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Map;
@@ -45,6 +41,10 @@ public class RoomController {
         this.roomMapper = roomMapper;
     }
 
+    @GetMapping(path="/api/rooms/findAll")
+    public ResponseEntity<?> findAll(){
+        return ResponseEntity.ok(roomRepository.findAll());
+    }
     @PostMapping(path="/api/rooms/findByName")
     public RoomDto findByName(@RequestBody Map<String, String> nameMapping){
         Room returnedRoom = roomRepository.findByName(nameMapping.get("name"));

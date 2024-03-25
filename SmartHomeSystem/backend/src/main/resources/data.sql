@@ -1,8 +1,8 @@
-INSERT INTO rooms (id,name, temperature) VALUES (0,'Backyard', 10);
-INSERT INTO rooms (id,name, temperature) VALUES (1,'Garage', 10);
-INSERT INTO rooms (id,name, temperature) VALUES (2,'Entrance', 10);
-INSERT INTO rooms (id,name, temperature) VALUES (3,'Bedroom', 10);
-INSERT INTO rooms (id,name, temperature) VALUES (4,'LivingRoom', 10);
+INSERT INTO rooms (id,name, temperature, desired_temperature, is_hvac_working) VALUES (0,'Backyard', 10, 12, true);
+INSERT INTO rooms (id,name, temperature, desired_temperature, is_hvac_working) VALUES (1,'Garage', 12, 12, true);
+INSERT INTO rooms (id,name, temperature, desired_temperature, is_hvac_working) VALUES (2,'Entrance', 13, 12, true);
+INSERT INTO rooms (id,name, temperature, desired_temperature, is_hvac_working) VALUES (3,'Bedroom', 40, 12, true);
+INSERT INTO rooms (id,name, temperature, desired_temperature, is_hvac_working) VALUES (4,'LivingRoom', 45, 12, true);
 
 INSERT INTO doors (id, is_auto_lock, is_open, room_id) VALUES (0,false,true, 0);
 INSERT INTO doors (id, is_auto_lock, is_open, room_id) VALUES (1,false,true, 0);
