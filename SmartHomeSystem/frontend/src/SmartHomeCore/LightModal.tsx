@@ -7,6 +7,8 @@ import axios from "axios";
 import "./ControlsModalStyle.css";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import LightOffCommand from "../AxiosCommands/Command Design Pattern/commands/LightOffCommand";
+import LightOnCommand from "../AxiosCommands/Command Design Pattern/commands/LightOnCommand";
 import SHCInvoker from "../AxiosCommands/Command Design Pattern/SHCInvoker";
 import GetAllLightsCommand from "../AxiosCommands/Command Design Pattern/commands/GetAllLightsCommand";
 
@@ -46,20 +48,17 @@ const LightModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
 
     for (const room of finalRooms) {
       try {
-        const lightsResponse = await axios.post(
-          "http://localhost:8080/api/rooms/findAllLights",
-          {
-            id: room.id,
-            name: room.name,
-          }
-        );
+        const getAllLightsCommand = new GetAllLightsCommand({id:room.id});
+        const invoker = new SHCInvoker(getAllLightsCommand);
+        const lightsResponse: Array<object> =
+          await invoker.executeCommand();
 
         const roomName = room.name;
 
         roomsLights.push({
           roomId: room.id,
           roomName: roomName,
-          lights: lightsResponse.data.map((light: any) => ({
+          lights: lightsResponse.map((light: any) => ({
             id: light.id,
             on: light.on,
           })),
@@ -79,16 +78,28 @@ const LightModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
   ) => {
     try {
       const light = {
+        id: lightId,
         room: {
           id: roomId,
         },
         on: newStatus,
       };
-      const response = await axios.put(
-        `http://localhost:8080/api/lights/${lightId}`,
-        light
-      );
-
+      
+      // Call open light command 
+      if (newStatus){
+        console.log(light)
+        const lightOnCommand = new LightOnCommand(light)
+        const invoker = new SHCInvoker(lightOnCommand);
+        const lightOpened = await invoker.executeCommand();
+      }
+      // Call close light command
+      else if(!newStatus){
+        console.log(light)
+        const lightOffCommand = new LightOffCommand(light)
+        const invoker = new SHCInvoker(lightOffCommand);
+        const lightClosed = await invoker.executeCommand();
+      }
+    
       // Update the state accordingly
       const updatedRoomsLights = roomsLights.map((roomLights) => {
         if (roomLights.roomId === roomId) {
