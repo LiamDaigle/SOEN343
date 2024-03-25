@@ -9,31 +9,20 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import Modal from "@mui/material/Modal";
 import SimulationContextModal from "./SimulationContextModal";
 import ProfileSelection from "../SmartHomeSimulator/ProfileSelection";
+import axios from "axios";
 
 const Simulation = (props: any) => {
-  const [isSimulationOn, setSimulationOn] = useState(false);
-  const [timeSpeed, setTimeSpeed] = useState(1);
+  const [isSimulationOn, setSimulationOn] = useState(() => {
+    const savedState = localStorage.getItem("simulationOn");
+    return savedState ? JSON.parse(savedState) : false;
+  });
+  const [timeSpeed, setTimeSpeed] = useState(() => {
+    const savedSpeed = localStorage.getItem("timeSpeed");
+    return savedSpeed ? parseFloat(savedSpeed) : 1;
+  });
   const [contextDialogOpen, setContextDialogOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(props.userData.profile.location);
   const [selectUserModal, setSelectUserModal] = useState(false);
-
-  const toggleSimulation = () => {
-    setSimulationOn(!isSimulationOn);
-    localStorage.setItem("simulationToggle", JSON.stringify(!isSimulationOn));
-  };
-
-  const handleTimeSpeedChange = (value: number) => {
-    setTimeSpeed(value);
-  };
-
-  const openContextDialog = () => {
-    setContextDialogOpen(true);
-  };
-
-  const closeContextDialog = () => {
-    setContextDialogOpen(false);
-  };
-
   const [date, setDate] = useState<string>(() => {
     const storedDate = localStorage.getItem("date");
     if (storedDate) {
@@ -58,68 +47,64 @@ const Simulation = (props: any) => {
       return "10";
     }
   });
-
   const [simulationSettings] = useState<string>(() => {
     const storedDate = localStorage.getItem("date") || "2023-01-01";
     const storedTime = localStorage.getItem("time") || "00:00";
     const storedTemperature = localStorage.getItem("temperature") || "10";
     return `${storedDate}, ${storedTime}, ${storedTemperature}`;
-});
+  });
 
   useEffect(() => {
-    // Retrieve stored simulation toggle state
-    const storedSimulationToggle = localStorage.getItem("simulationToggle");
-    if (storedSimulationToggle) {
-      const storedIsSimulationOn = JSON.parse(storedSimulationToggle);
-      setSimulationOn(storedIsSimulationOn);
+    // Save state to local storage whenever isSimulationOn changes
+    localStorage.setItem("simulationOn", JSON.stringify(isSimulationOn));
+  }, [isSimulationOn]);
+
+  useEffect(() => {
+    // Save state to local storage whenever timeSpeed changes
+    localStorage.setItem("timeSpeed", String(timeSpeed));
+  }, [timeSpeed]);
+
+  const toggleSimulation = () => {
+    const newValue = !isSimulationOn;
+    setSimulationOn(newValue);
+    // Call API to update isOpen in the database
+    axios.put(`http://localhost:8080/api/simulation/0/toggle`, { isOn: newValue })
+      .then(response => console.log(response.data))
+      .catch(error => console.error('Error toggling simulation:', error));
+  };
+
+  const handleTimeSpeedChange = (value: number) => {
+    setTimeSpeed(value);
+    writeSpeedToFile(value);
+    // Call API to update speed in the database
+    axios.patch(`http://localhost:8080/api/simulation/0/speed`, 
+    value,
+    { headers: { "Content-Type": "application/json" } })
+      .then(response => console.log(response.data))
+      .catch(error => console.error('Error updating speed:', error));
+  };
+
+  const writeSpeedToFile = async (speedValue) => {
+
+    try {
+      await axios.post(
+        "http://localhost:8080/api/files/write",
+        {
+          data: `Speed has been set to `+ speedValue,
+        }
+      );
+    } catch (error) {
+      console.error("Error writing Speed Off data to file:", error);
     }
+  }
 
-    // Retrieve stored current location
-    const storedCurrentLocation = localStorage.getItem("currentLocation");
-    if (storedCurrentLocation) {
-      const storedSelectedRoom = JSON.parse(storedCurrentLocation);
-      setSelectedRoom(storedSelectedRoom);
-    }
+  const openContextDialog = () => {
+    setContextDialogOpen(true);
+  };
 
-    const storedDate = localStorage.getItem("date");
-    if (storedDate) {
-      setTemperature(storedDate);
-    }
-
-    const storedTime = localStorage.getItem("time");
-    if (storedTime) {
-      setTemperature(storedTime);
-    }
-
-    const storedTemperature = localStorage.getItem("temperature");
-    if (storedTemperature) {
-      setTemperature(storedTemperature);
-    }
-
-    if (storedDate && storedTime) {
-      // Parse stored date and time as UTC
-      const storedDateTimeUTC = new Date(`${storedDate}T${storedTime}Z`);
-      console.log(storedDateTimeUTC)
-    
-      // Initialize counter
-      let counter = 0;
-
-      const interval = setInterval(() => {
-        // Increment the counter by 1 second (1000 milliseconds)
-        counter += 1000;
-
-        // Calculate the simulated time by adding the counter to the storedDateTimeUTC
-        const simulatedTime = new Date(storedDateTimeUTC.getTime() + counter * timeSpeed);
-
-        // Update date and time states
-        setDate(simulatedTime.toISOString().split("T")[0]);
-        setTime(simulatedTime.toISOString().split("T")[1].substring(0, 5));
-      }, 1000); // Update every second
-
-      return () => clearInterval(interval);
-    }
-
-  }, [isSimulationOn, timeSpeed]); 
+  const closeContextDialog = () => {
+    setContextDialogOpen(false);
+  };
 
   return (
     <div className="simulation-container">
@@ -164,8 +149,7 @@ const Simulation = (props: any) => {
           <p>{temperature}</p>
         </div>{" "}
         {/* TODO: change temperature */}
-        <div
-          className="data-and-time"
+        <div           className="data-and-time"
           style={{ display: isSimulationOn ? "block" : "none" }}
         >
           <p>{date}</p>
@@ -207,3 +191,4 @@ const Simulation = (props: any) => {
 };
 
 export default Simulation;
+

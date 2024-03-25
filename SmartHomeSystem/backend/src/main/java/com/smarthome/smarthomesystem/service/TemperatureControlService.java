@@ -2,8 +2,10 @@ package com.smarthome.smarthomesystem.service;
 
 import com.smarthome.smarthomesystem.domain.OutsideTemperature;
 import com.smarthome.smarthomesystem.domain.Room;
+import com.smarthome.smarthomesystem.domain.Simulation;
 import com.smarthome.smarthomesystem.repositories.OutsideTemperatureRepository;
 import com.smarthome.smarthomesystem.repositories.RoomRepository;
+import com.smarthome.smarthomesystem.repositories.SimulationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
@@ -20,13 +22,15 @@ public class TemperatureControlService {
     private FileService fileService;
 
     private static OutsideTemperatureRepository temperatureRepository = null;
+    private SimulationRepository simulationRepo;
     private static OutsideTemperature outsideTemperatureInstance;
 
     @Autowired
-    private TemperatureControlService(RoomRepository roomRepository, OutsideTemperatureRepository temperatureRepository, FileService fileService) {
+    private TemperatureControlService(RoomRepository roomRepository, OutsideTemperatureRepository temperatureRepository, FileService fileService, SimulationRepository simulationRepository) {
         this.roomRepository = roomRepository;
         this.temperatureRepository = temperatureRepository;
         this.fileService = fileService;
+        this.simulationRepo = simulationRepository;
 
     }
 
@@ -73,7 +77,14 @@ public class TemperatureControlService {
         double roomTemperature = room.getTemperature();
         boolean hvacWorking = room.getIsHvacWorking();
 
+        Simulation simulation = simulationRepo.getSimulation(0L);
+        boolean is_simulation_on = simulation.getOn();
+        double speed = simulation.getSpeed();
+        long consoleSpeed = (long) (1/speed);
+        fileService.writeToFile("Simulation speed is set to: "+ speed + "x");
+
         HVACState currentState;
+        double count = 0;
 
         if (hvacWorking) {
             currentState = HVACState.ON;
@@ -81,7 +92,6 @@ public class TemperatureControlService {
             currentState = HVACState.OFF;
         }
 
-        double time = 0;
         double temperatureDifference = roomTemperature - desiredTemperature;
 
         if (Math.abs(temperatureDifference) >= 1.0) {
@@ -90,9 +100,9 @@ public class TemperatureControlService {
             fileService.writeToFile("Room Temperature is " + roomTemperature);
         }
 
-        while (time < 20) {
+        while (getSimulationStatus() && count<20) {
             try {
-                TimeUnit.SECONDS.sleep(1);
+                TimeUnit.SECONDS.sleep(consoleSpeed);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -131,13 +141,24 @@ public class TemperatureControlService {
             roomTemperature = Math.round(roomTemperature * 1000.0) / 1000.0;
 
             fileService.writeToFile("Room Temperature: " + roomTemperature);
-            time++;
+            Simulation simulationUpdate = simulationRepo.getSimulation(0L);
+            is_simulation_on = simulationUpdate.getOn();
+            System.out.println("is simulation on? "+ is_simulation_on);
             room.setTemperature(roomTemperature);
             roomRepository.save(room);
+            count++;
         }
+        fileService.writeToFile("Simulation turned off.");
     }
 
     private double getOutsideTemperature() {
         return outsideTemperatureInstance.getTemperature();
+    }
+
+    private boolean getSimulationStatus(){
+        Simulation simulation = simulationRepo.getSimulation(0L);
+        boolean is_simulation_on = simulation.getOn();
+        System.out.println("inside method it is..."+ is_simulation_on);
+        return is_simulation_on;
     }
 }
