@@ -81,6 +81,7 @@ public class RoomController {
 
         Room room = optionalRoom.get();
         room.setTemperature(newTemperature);
+        room.setOverrideZone(true);
         roomRepository.save(room);
         simulatorSubject.setTemperature(newTemperature);
         simulatorSubject.setRoomId(roomId);
