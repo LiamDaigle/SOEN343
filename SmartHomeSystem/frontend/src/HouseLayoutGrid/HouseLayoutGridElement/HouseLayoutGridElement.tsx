@@ -3,11 +3,14 @@ import { FaDoorClosed } from "react-icons/fa"; //closed door
 import { FaDoorOpen } from "react-icons/fa"; //open door
 import { GiWindow } from "react-icons/gi"; //open window
 import { GiWindowBars } from "react-icons/gi"; //closed window
+import { TbWindowOff } from "react-icons/tb";
 import { BsPerson } from "react-icons/bs"; //Nobody in room
 import { FaRegLightbulb } from "react-icons/fa";
 import { FaLightbulb } from "react-icons/fa";
 import { BsPersonFill } from "react-icons/bs"; // person
 import { BsFillPeopleFill } from "react-icons/bs"; // people for if there is more than one person in the room
+import { TbAirConditioning } from "react-icons/tb";
+import { TbAirConditioningDisabled } from "react-icons/tb";
 import { GiGrass } from "react-icons/gi"; //Grass for representing outside
 import SHCInvoker from "../../AxiosCommands/Command Design Pattern/SHCInvoker";
 import LightOffCommand from "../../AxiosCommands/Command Design Pattern/commands/LightOffCommand";
@@ -21,6 +24,9 @@ import WindowOpenCommand from "../../AxiosCommands/Command Design Pattern/comman
 import GetAllLightsCommand from "../../AxiosCommands/Command Design Pattern/commands/GetAllLightsCommand";
 import LightOnCommand from "../../AxiosCommands/Command Design Pattern/commands/LightOnCommand";
 import axios from "axios";
+import RoomUpdateHvacCommand from "../../AxiosCommands/Command Design Pattern/commands/RoomUpdateHvacCommand";
+import { Button } from "@mui/material";
+import WindowBlockedCommand from "../../AxiosCommands/Command Design Pattern/commands/WindowBlockedCommand";
 
 interface Props {
   isEmpty: boolean;
@@ -49,11 +55,13 @@ const HouseLayoutGridElement = (props: Props) => {
   const autoLockDoors = props.autoLockDoors;
 
   const [windowOpen, setWindowOpen] = useState(false);
+  const [windowBlocked, setWindowBlocked] = useState(false);
   const [doorOpen, setDoorOpen] = useState(false);
   const [lightOn, setLightOn] = useState(false);
   const [isOccupied, setIsOccupied] = useState(false); // New state to indicate if the room is occupied
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [roomsDoors, setRoomsDoors] = useState<any[]>([]);
+  const [heatingOn, setHeatingOn] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -130,6 +138,63 @@ const HouseLayoutGridElement = (props: Props) => {
     <td key={name} className={css}>
       <div className="icon-row">
         <h4 className="roomName">{name}</h4>
+      </div>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        {windowBlocked ? (
+          <Button
+            style={{ alignSelf: "flex-end" }}
+            onClick={async () => {
+              console.log("Window Unblocked");
+              setWindowBlocked(false);
+
+              const findRoomCommand = new FindRoomCommand({ name: name });
+              const invoker = new SHCInvoker(findRoomCommand);
+              const room = await invoker.executeCommand();
+              const roomId = room.id;
+              console.log(roomId);
+
+              const getAllWindowsCommand = new GetAllWindowsCommand(room);
+              invoker.setCommand(getAllWindowsCommand);
+              const windowList: Array<object> = await invoker.executeCommand();
+
+              windowList.forEach((window) => {
+                console.log(window);
+                const updateWindow = new WindowBlockedCommand(window.id, false);
+                invoker.setCommand(updateWindow);
+                invoker.executeCommand();
+              });
+            }}
+          >
+            Unblock Window
+          </Button>
+        ) : (
+          <Button
+            style={{ alignSelf: "flex-end" }}
+            onClick={async () => {
+              console.log("Window Blocked");
+              setWindowBlocked(true);
+
+              const findRoomCommand = new FindRoomCommand({ name: name });
+              const invoker = new SHCInvoker(findRoomCommand);
+              const room = await invoker.executeCommand();
+              const roomId = room.id;
+              console.log(roomId);
+
+              const getAllWindowsCommand = new GetAllWindowsCommand(room);
+              invoker.setCommand(getAllWindowsCommand);
+              const windowList: Array<object> = await invoker.executeCommand();
+
+              windowList.forEach((window) => {
+                console.log(window);
+                const updateWindow = new WindowBlockedCommand(window.id, true);
+                invoker.setCommand(updateWindow);
+                invoker.executeCommand();
+              });
+            }}
+          >
+            Block Window
+          </Button>
+        )}
       </div>
       {isEmpty ? (
         <div className="icon-row">
@@ -215,6 +280,9 @@ const HouseLayoutGridElement = (props: Props) => {
                 className="icon"
               />
             ) : (
+              <></>
+            )}
+            {!windowOpen && !windowBlocked ? (
               <GiWindowBars
                 onClick={async () => {
                   console.log("Window Opened");
@@ -239,6 +307,17 @@ const HouseLayoutGridElement = (props: Props) => {
                 size={50}
                 className="icon"
               />
+            ) : (
+              <></>
+            )}
+            {!windowOpen && windowBlocked ? (
+              <TbWindowOff
+                size={50}
+                className="icon"
+                onClick={() => setWindowOpen(true)}
+              />
+            ) : (
+              <></>
             )}
           </div>
           <div className="icon-row">
@@ -297,6 +376,45 @@ const HouseLayoutGridElement = (props: Props) => {
               <BsPersonFill size={50} className="icon" /> // Using BsPersonFill when room is occupied
             ) : (
               <BsPerson size={50} className="icon" />
+            )}
+            {heatingOn ? (
+              <TbAirConditioning
+                size={50}
+                className="icon"
+                onClick={async () => {
+                  console.log("Set heating to off");
+                  setHeatingOn(false);
+
+                  const findRoomCommand = new FindRoomCommand({ name: name });
+                  const invoker = new SHCInvoker(findRoomCommand);
+                  const room = await invoker.executeCommand();
+                  const roomId = room.id;
+                  console.log(roomId);
+
+                  invoker.setCommand(new RoomUpdateHvacCommand(roomId, false));
+                  const result = await invoker.executeCommand();
+                  console.log(result);
+                }}
+              />
+            ) : (
+              <TbAirConditioningDisabled
+                size={50}
+                className="icon"
+                onClick={async () => {
+                  console.log("Set heating to on");
+                  setHeatingOn(true);
+
+                  const findRoomCommand = new FindRoomCommand({ name: name });
+                  const invoker = new SHCInvoker(findRoomCommand);
+                  const room = await invoker.executeCommand();
+                  const roomId = room.id;
+                  console.log(roomId);
+
+                  invoker.setCommand(new RoomUpdateHvacCommand(roomId, true));
+                  const result = await invoker.executeCommand();
+                  console.log(result);
+                }}
+              />
             )}
           </div>
         </>

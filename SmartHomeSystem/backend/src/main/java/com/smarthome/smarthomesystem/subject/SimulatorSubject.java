@@ -18,6 +18,12 @@ public class SimulatorSubject implements Subject {
 
     private Long roomId;
 
+    public void setHvacWorking(Boolean hvacWorking) {
+        isHvacWorking = hvacWorking;
+    }
+
+    private Boolean isHvacWorking;
+
 
     @Override
     public void registerObserver(Observer observer) {
