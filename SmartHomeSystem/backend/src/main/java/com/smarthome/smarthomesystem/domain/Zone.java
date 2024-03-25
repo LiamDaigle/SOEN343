@@ -24,7 +24,11 @@ public class Zone {
 
     private Double temperature;
 
-    private Double desiredTemperature;
+    private Double desiredTemperatureMorning;
+
+    private Double desiredTemperatureAfternoon;
+
+    private Double desiredTemperatureNight;
 
     private Boolean isHvacWorking;
 }

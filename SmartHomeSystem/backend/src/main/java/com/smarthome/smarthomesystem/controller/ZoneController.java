@@ -49,8 +49,8 @@ public class ZoneController {
         return ResponseEntity.status(HttpStatus.OK).body("Zone temperature updated successfully");
     }
 
-    @PatchMapping("/api/zones/{zoneId}/desiredTemperature")
-    public ResponseEntity<?> updateZoneDesiredTemperature(@PathVariable("zoneId") Long zoneId, @RequestBody Double newTemperature){
+    @PatchMapping("/api/zones/{zoneId}/desiredTemperatureMorning")
+    public ResponseEntity<?> updateZoneDesiredMorningTemperature(@PathVariable("zoneId") Long zoneId, @RequestBody Double newTemperature){
         Optional<Zone> zoneOptional = zoneRepository.findById(zoneId);
 
         if (zoneOptional.isEmpty()) {
@@ -58,7 +58,37 @@ public class ZoneController {
         }
 
         Zone zone = zoneOptional.get();
-        zone.setDesiredTemperature(newTemperature);
+        zone.setDesiredTemperatureMorning(newTemperature);
+        zoneRepository.save(zone);
+
+        return ResponseEntity.status(HttpStatus.OK).body("Zone desired temperature updated successfully");
+    }
+
+    @PatchMapping("/api/zones/{zoneId}/desiredTemperatureAfternoon")
+    public ResponseEntity<?> updateZoneDesiredAfternoonTemperature(@PathVariable("zoneId") Long zoneId, @RequestBody Double newTemperature){
+        Optional<Zone> zoneOptional = zoneRepository.findById(zoneId);
+
+        if (zoneOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Zone zone = zoneOptional.get();
+        zone.setDesiredTemperatureAfternoon(newTemperature);
+        zoneRepository.save(zone);
+
+        return ResponseEntity.status(HttpStatus.OK).body("Zone desired temperature updated successfully");
+    }
+
+    @PatchMapping("/api/zones/{zoneId}/desiredTemperatureNight")
+    public ResponseEntity<?> updateZoneDesiredNightTemperature(@PathVariable("zoneId") Long zoneId, @RequestBody Double newTemperature){
+        Optional<Zone> zoneOptional = zoneRepository.findById(zoneId);
+
+        if (zoneOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Zone zone = zoneOptional.get();
+        zone.setDesiredTemperatureNight(newTemperature);
         zoneRepository.save(zone);
 
         return ResponseEntity.status(HttpStatus.OK).body("Zone desired temperature updated successfully");
