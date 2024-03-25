@@ -55,7 +55,7 @@ const Simulation = (props: any) => {
     if (storedTemperature) {
       return storedTemperature;
     } else {
-      return "-10";
+      return "10";
     }
   });
 

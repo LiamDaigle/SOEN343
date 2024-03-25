@@ -8,6 +8,7 @@ import DoorOpenCommand from "../AxiosCommands/Command Design Pattern/commands/Do
 import SHCInvoker from "../AxiosCommands/Command Design Pattern/SHCInvoker";
 import DoorCloseCommand from "../AxiosCommands/Command Design Pattern/commands/DoorCloseCommand";
 import GetAllDoorsCommand from "../AxiosCommands/Command Design Pattern/commands/GetAllDoorsCommand";
+import { timestamp } from "../Common/getTime";
 
 interface FormDialogProps {
   open: boolean;
@@ -17,6 +18,12 @@ interface FormDialogProps {
 
 const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
   const [roomsDoors, setRoomsDoors] = useState<any[]>([]);
+
+  // Ensure userData and its properties are defined before accessing
+  const userId = userData.id || "";
+  const profileId = userData.profile?.id || "";
+  const profileName = userData.profile?.name || "";
+  const profileRole = userData?.profile?.role || "";
 
   useEffect(() => {
     const fetchDoorsByRoom = async () => {
@@ -68,6 +75,7 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
 
   const toggleDoor = async (
     roomId: string,
+    roomName: string,
     doorId: number,
     newStatus: boolean,
     autoLock: boolean
@@ -87,12 +95,14 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
         const doorOpenCommand = new DoorOpenCommand(door)
         const invoker = new SHCInvoker(doorOpenCommand);
         const doorOpened = await invoker.executeCommand();
+        writeOpenDoorToFile(roomName, doorId);
       }
       // Call close door command
       else if(!newStatus){
         const doorCloseCommand = new DoorCloseCommand(door)
         const invoker = new SHCInvoker(doorCloseCommand);
         const doorClosed = await invoker.executeCommand();
+        writeCloseDoorToFile(roomName, doorId);
       }
 
       // Update the state accordingly
@@ -114,8 +124,36 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
     }
   };
 
+  const writeOpenDoorToFile = async (roomName, doorId) => {
+    
+    try {
+      await axios.post(
+        "http://localhost:8080/api/files/write",
+        {
+          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Open Door\nEvent Description: User Just Opened Door Id ${doorId} in ${roomName}\nend`,
+        }
+      );
+    } catch (error) {
+      console.error("Error writing Open Door data to file:", error);
+    }
+  }
+
+  const writeCloseDoorToFile = async (roomName, doorId) => {
+
+    try {
+      await axios.post(
+        "http://localhost:8080/api/files/write",
+        {
+          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Close Door\nEvent Description: User Just Closed Door Id ${doorId} in ${roomName}\nend`,
+        }
+      );
+    } catch (error) {
+      console.error("Error writing Close Door data to file:", error);
+    }
+  }
+
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={() => { onClose(); location.reload(); }}>
       <DialogContent className="dialog-container custom controls-modal">
         <DialogContentText className="dialog-subheading custom">
           All Doors
@@ -155,6 +193,7 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
                           onClick={() =>
                             toggleDoor(
                               roomDoors.roomId,
+                              roomDoors.roomName,
                               door.id,
                               !door.open,
                               door.autoLock
@@ -172,6 +211,7 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
                             onChange={() =>
                               toggleDoor(
                                 roomDoors.roomId,
+                                roomDoors.roomName,
                                 door.id,
                                 door.open,
                                 !door.autoLock
