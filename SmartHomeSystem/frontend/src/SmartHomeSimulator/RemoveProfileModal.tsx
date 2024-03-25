@@ -11,6 +11,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
 import "./Form.css"; // Import the CSS file
 import { Link, useNavigate } from "react-router-dom";
+import { timestamp } from "../Common/getTime";
 
 interface FormDialogProps {
   open: boolean;
@@ -31,6 +32,10 @@ const RemoveProfileModal: React.FC<FormDialogProps> = ({
   });
   const navigate = useNavigate();
   const { name, profiletype } = userData;
+  const userID = userData.id || "";
+  const profileID = userData.profile?.id || "";
+  const profileName = userData.profile?.name || "";
+  const profileRole = userData?.profile?.role || "";
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -46,10 +51,18 @@ const RemoveProfileModal: React.FC<FormDialogProps> = ({
       const response = await axios.delete(
         `http://localhost:8080/api/users/${userId}/profiles/${name}`
       );
+
+      try {
+        await axios.post("http://localhost:8080/api/files/write", {
+          data: `Timestamp: ${timestamp} \nProfile ID: ${profileID}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Log In\nEvent Description: User Removed a Profile\nend`,
+        });
+      } catch (error) {
+        console.error("Error writing Block Window data to file:", error);
+      }
       alert("User profile removed successfully!");
       navigate("/");
       onClose();
-      location.reload()
+      location.reload();
       // Handle redirection or any other action upon successful registration
     } catch (error: any) {
       console.error("User profile removed failed:", error.response.data);
