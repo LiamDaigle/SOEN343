@@ -15,6 +15,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
+import { timestamp } from "../Common/getTime";
 
 interface FormDialogProps {
   open: boolean;
@@ -34,6 +35,10 @@ const AddProfileModal: React.FC<FormDialogProps> = ({
   });
   const navigate = useNavigate();
   const { name, profiletype, room } = userData;
+  const userID = userData.id || "";
+  const profileId = userData.profile?.id || "";
+  const profileName = userData.profile?.name || "";
+  const profileRole = userData?.profile?.role || "";
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -54,10 +59,19 @@ const AddProfileModal: React.FC<FormDialogProps> = ({
           location: room,
         }
       );
+      console.log(response);
+
+      try {
+        await axios.post("http://localhost:8080/api/files/write", {
+          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Log In\nEvent Description: User Created a new profile\nend`,
+        });
+      } catch (error) {
+        console.error("Error writing Block Window data to file:", error);
+      }
       alert("User profile created successfully!");
       navigate("/");
       onClose();
-      location.reload()
+      location.reload();
       // Handle redirection or any other action upon successful registration
     } catch (error: any) {
       console.error("User profile creation failed:", error.response.data);

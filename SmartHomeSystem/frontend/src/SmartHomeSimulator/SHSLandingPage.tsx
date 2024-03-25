@@ -108,6 +108,8 @@ const SHSLandingPage = (props: any) => {
       <TemperatureCSVModal 
         open={temperatureCSVModalOpen}
         onClose={() => setTemperatureCSVModalOpen(false)}
+        userData={props.userData}
+
       />
     </div>
   );

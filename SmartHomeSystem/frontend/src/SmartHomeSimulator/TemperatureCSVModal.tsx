@@ -2,13 +2,22 @@ import React, { useState } from "react";
 import { Dialog, DialogContent, DialogActions, DialogContentText, Button, IconButton, TextField } from "@mui/material";
 import axios from "axios";
 
+import { timestamp } from "../Common/getTime";
+
 interface TemperatureModalProps {
   open: boolean;
   onClose: () => void;
+  userData: any
 }
 
-const TemperatureModal: React.FC<TemperatureModalProps> = ({ open, onClose }) => {
+const TemperatureModal: React.FC<TemperatureModalProps> = ({ open, onClose, userData}) => {
   const [file, setFile] = useState<File | null>(null);
+
+  // Ensure userData and its properties are defined before accessing
+  const userId = userData.id || "";
+  const profileId = userData.profile?.id || "";
+  const profileName = userData.profile?.name || "";
+  const profileRole = userData?.profile?.role || "";
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -35,7 +44,7 @@ const TemperatureModal: React.FC<TemperatureModalProps> = ({ open, onClose }) =>
           'Content-Type': 'multipart/form-data',
         },
       });
-      console.log("Upload successful:", response.data); // Log the response data upon successful upload
+      writeUploadCsvToFile();
       alert('File uploaded successfully.');
       onClose();
     } catch (error) {
@@ -43,6 +52,20 @@ const TemperatureModal: React.FC<TemperatureModalProps> = ({ open, onClose }) =>
       alert('Error uploading file.');
     }
   };
+
+  const writeUploadCsvToFile = async () => {
+    
+    try {
+      await axios.post(
+        "http://localhost:8080/api/files/write",
+        {
+          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Upload CSV\nEvent Description: User Just Uploaded Outside Temperature CSV\nend`,
+        }
+      );
+    } catch (error) {
+      console.error("Error writing Upload Temperature CSV data to file:", error);
+    }
+  }
 
   return (
     <Dialog open={open} onClose={onClose}>

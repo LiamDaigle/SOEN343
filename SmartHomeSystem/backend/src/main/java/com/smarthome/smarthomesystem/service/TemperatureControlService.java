@@ -2,10 +2,16 @@ package com.smarthome.smarthomesystem.service;
 
 import com.smarthome.smarthomesystem.domain.OutsideTemperature;
 import com.smarthome.smarthomesystem.domain.Room;
+import com.smarthome.smarthomesystem.domain.Simulation;
 import com.smarthome.smarthomesystem.repositories.OutsideTemperatureRepository;
 import com.smarthome.smarthomesystem.repositories.RoomRepository;
+import com.smarthome.smarthomesystem.repositories.SimulationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
+import com.smarthome.smarthomesystem.service.FileService;
+import java.util.concurrent.TimeUnit;
+
 
 @Service
 public class TemperatureControlService {
@@ -13,13 +19,24 @@ public class TemperatureControlService {
     @Autowired
     private final RoomRepository roomRepository;
 
+    private FileService fileService;
+
     private static OutsideTemperatureRepository temperatureRepository = null;
+    private SimulationRepository simulationRepo;
     private static OutsideTemperature outsideTemperatureInstance;
 
     @Autowired
-    private TemperatureControlService(RoomRepository roomRepository, OutsideTemperatureRepository temperatureRepository) {
+    private TemperatureControlService(RoomRepository roomRepository, OutsideTemperatureRepository temperatureRepository, FileService fileService, SimulationRepository simulationRepository) {
         this.roomRepository = roomRepository;
         this.temperatureRepository = temperatureRepository;
+        this.fileService = fileService;
+        this.simulationRepo = simulationRepository;
+
+    }
+
+    @Autowired
+    public void setFileService(FileService fileService) {
+        this.fileService= fileService;
     }
 
     // skeleton public method
@@ -43,46 +60,105 @@ public class TemperatureControlService {
         temperatureRepository.save(outsideTemperature);
     }
 
-    public void updateRoomTemperature(Room room, double elapsedTime) {
-        double outsideTemperature = getOutsideTemperature(); // Get the outside temperature from your TemperatureService or another source
-        double desiredTemperature = room.getDesiredTemperature();
+    // Enum representing the states of the temperature control system
+    private enum HVACState {
+        OFF,
+        ON
+    }
 
+    public void updateRoomTemperature(Room room) {
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        double outsideTemperature = getOutsideTemperature();
+        double desiredTemperature = room.getDesiredTemperature();
         double roomTemperature = room.getTemperature();
         boolean hvacWorking = room.getIsHvacWorking();
 
-        double temperatureDifference = roomTemperature - desiredTemperature;
+        Simulation simulation = simulationRepo.getSimulation(0L);
+        boolean is_simulation_on = simulation.getOn();
+        double speed = simulation.getSpeed();
+        long consoleSpeed = (long) (1/speed);
+        fileService.writeToFile("Simulation speed is set to: "+ speed + "x");
 
-        if (!hvacWorking) {
-            // HVAC not working
-            if (roomTemperature < outsideTemperature) {
-                roomTemperature += 0.05 * elapsedTime; // Increase temperature towards outside
-            } else if (roomTemperature > outsideTemperature) {
-                roomTemperature -= 0.05 * elapsedTime; // Decrease temperature towards outside
-            }
+        HVACState currentState;
+        double count = 0;
+
+        if (hvacWorking) {
+            currentState = HVACState.ON;
         } else {
-            // HVAC working
-            if (Math.abs(temperatureDifference) >= 1.0) {
-                // If temperature difference is >= 1°C, adjust temperature towards desired temperature
-                if (temperatureDifference > 0) {
-                    roomTemperature -= 0.1 * elapsedTime; // Reduce temperature
-                } else {
-                    roomTemperature += 0.1 * elapsedTime; // Increase temperature
-                }
-            } else {
-                // If temperature difference is < 1°C, pause HVAC
-                if (Math.abs(temperatureDifference) <= 0.25) {
-                    room.setHvacWorking(false); // Pause HVAC
-                }
-            }
+            currentState = HVACState.OFF;
         }
 
-        room.setTemperature(roomTemperature);
-        roomRepository.save(room);
-    }
+        double temperatureDifference = roomTemperature - desiredTemperature;
 
-    // You can add other methods as needed
+        if (Math.abs(temperatureDifference) >= 1.0) {
+            currentState = HVACState.ON;
+            fileService.writeToFile("HVAC is ON");
+            fileService.writeToFile("Room Temperature is " + roomTemperature);
+        }
+
+        while (getSimulationStatus() && count<20) {
+            try {
+                TimeUnit.SECONDS.sleep(consoleSpeed);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            temperatureDifference = roomTemperature - desiredTemperature;
+
+            switch (currentState) {
+
+                case OFF:
+                    if (Math.abs(temperatureDifference) >= 0.25) {
+                        currentState = HVACState.ON;
+                        fileService.writeToFile("HVAC is ON");
+                        fileService.writeToFile("Room Temperature is " + roomTemperature);
+                    } else if (roomTemperature < outsideTemperature) {
+                        roomTemperature += 0.05;
+                        roomTemperature = Math.min(roomTemperature, outsideTemperature);
+                    } else if (roomTemperature > outsideTemperature) {
+                        roomTemperature -= 0.05;
+                        roomTemperature = Math.max(roomTemperature, outsideTemperature);
+                    }
+                    break;
+
+                case ON:
+                    if (temperatureDifference > 0) {
+                        roomTemperature -= 0.1;
+                    } else if (temperatureDifference < 0) {
+                        roomTemperature += 0.1;
+                    } else if (temperatureDifference == 0) {
+                        currentState = HVACState.OFF;
+                        fileService.writeToFile("HVAC is OFF");
+                        fileService.writeToFile("Room Temperature is " + roomTemperature);
+                    }
+                    break;
+            }
+
+            roomTemperature = Math.round(roomTemperature * 1000.0) / 1000.0;
+
+            fileService.writeToFile("Room Temperature: " + roomTemperature);
+            Simulation simulationUpdate = simulationRepo.getSimulation(0L);
+            is_simulation_on = simulationUpdate.getOn();
+            System.out.println("is simulation on? "+ is_simulation_on);
+            room.setTemperature(roomTemperature);
+            roomRepository.save(room);
+            count++;
+        }
+        fileService.writeToFile("Simulation turned off.");
+    }
 
     private double getOutsideTemperature() {
         return outsideTemperatureInstance.getTemperature();
+    }
+
+    private boolean getSimulationStatus(){
+        Simulation simulation = simulationRepo.getSimulation(0L);
+        boolean is_simulation_on = simulation.getOn();
+        System.out.println("inside method it is..."+ is_simulation_on);
+        return is_simulation_on;
     }
 }

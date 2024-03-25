@@ -1,8 +1,14 @@
 package com.smarthome.smarthomesystem.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Flux;
+
+
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,6 +25,11 @@ public class FileWritingController {
 
     public FileWritingController(FileService fileService) {
         this.fileService = fileService;
+    }
+
+    @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<ServerSentEvent<String>> streamLogs() {
+        return fileService.streamLogs();
     }
 
     @PostMapping("/write")

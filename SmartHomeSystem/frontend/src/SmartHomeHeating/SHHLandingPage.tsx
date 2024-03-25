@@ -121,6 +121,7 @@ const SHHLandingPage = (props: any) => {
     }
 
     try {
+
       // Find the roomId based on the selected room name
       const roomResponse = await axios.post(
         "http://localhost:8080/api/rooms/findByName",
@@ -128,13 +129,15 @@ const SHHLandingPage = (props: any) => {
       );
       const roomId = roomResponse.data.id;
 
+      writeRoomTemperatureToFile();
+
       // Update the room temperature using the roomId
       const response = await axios.patch(
         `http://localhost:8080/api/rooms/${roomId}/temperature`,
         parseFloat(temperature),
         { headers: { "Content-Type": "application/json" } }
       );
-      writeRoomTemperatureToFile();
+
       // alert(response.data);
       location.reload();
     } catch (error) {

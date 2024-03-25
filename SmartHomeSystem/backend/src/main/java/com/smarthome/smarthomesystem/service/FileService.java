@@ -1,18 +1,33 @@
 package com.smarthome.smarthomesystem.service;
 
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.ResponseEntity;
+import reactor.core.publisher.DirectProcessor;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxSink;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class FileService {
+
+    private final DirectProcessor<ServerSentEvent<String>> logProcessor;
+    private final FluxSink<ServerSentEvent<String>> logSink;
+
+    public FileService() {
+        this.logProcessor = DirectProcessor.create();
+        this.logSink = logProcessor.sink();
+        startStreamingLogs();
+    }
+
 
     public ResponseEntity<String> writeToFile(String data) {
         String filename = "data.txt";
@@ -21,6 +36,8 @@ public class FileService {
         try (FileWriter writer = new FileWriter(filePath, true)) {
             writer.write(data + System.lineSeparator());
             writer.flush();
+            // Pass the written data through the logSink
+            logSink.next(ServerSentEvent.builder(data).build());
             return ResponseEntity.ok("Data written successfully");
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Error writing data: " + e.getMessage());
@@ -88,4 +105,32 @@ public class FileService {
 
         return ResponseEntity.ok(data);
     }
+
+    private void startStreamingLogs() {
+        // Create a new thread to continuously emit log messages
+        new Thread(() -> {
+            List<String> logs = new ArrayList<>();
+            while (true) {
+                if (!logs.isEmpty()) {
+                    logSink.next(ServerSentEvent.builder(logs.remove(0)).build());
+                }
+                // Introduce some delay between emissions (optional)
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    public Flux<ServerSentEvent<String>> streamLogs() {
+        return logProcessor;
+    }
+
+    public FluxSink<ServerSentEvent<String>> getLogSink() {
+        return logSink;
+    }
+
+
 }
