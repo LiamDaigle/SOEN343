@@ -23,7 +23,7 @@ jobs:
 
       - name: Build with Maven
         run: |
-          cd backend
+          cd SmartHomeSystem/backend
           ./mvnw clean install -B
 
       - name: Run Tests
