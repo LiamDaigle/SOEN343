@@ -121,7 +121,11 @@ const ZoneModal: React.FC<ZoneModalProps> = ({ open, onClose }) => {
   const AddZones = () => {
     const [zoneName, setZoneName] = useState("");
     const [temperature, setTemperature] = useState(10);
-    const [desiredTemperature, setDesiredTemperature] = useState(10);
+    const [desiredMorningTemperature, setDesiredMorningTemperature] =
+      useState(10);
+    const [desiredAfternoonTemperature, setDesiredAfternoonTemperature] =
+      useState(10);
+    const [desiredNightTemperature, setDesiredNightTemperature] = useState(10);
 
     const onSubmit = async () => {
       let roomString = "";
@@ -137,7 +141,9 @@ const ZoneModal: React.FC<ZoneModalProps> = ({ open, onClose }) => {
         name: zoneName,
         rooms: roomString,
         temperature: temperature,
-        desiredTemperature: desiredTemperature,
+        desiredTemperatureMorning: desiredMorningTemperature,
+        desiredTemperatureAfternoon: desiredAfternoonTemperature,
+        desiredTemperatureNight: desiredNightTemperature,
         isHvacWorking: true,
       };
 
@@ -171,12 +177,12 @@ const ZoneModal: React.FC<ZoneModalProps> = ({ open, onClose }) => {
               ))}
             </Container>
           </Container>
-          <TextField
-            onChange={(e) => setZoneName(e.target.value)}
-            style={{ alignSelf: "center", marginBottom: "2vh" }}
-            placeholder="Zone name..."
-          />
           <Container>
+            <TextField
+              onChange={(e) => setZoneName(e.target.value)}
+              style={{ alignSelf: "center", marginBottom: "2vh" }}
+              placeholder="Zone name..."
+            />
             <TextField
               onChange={(e) =>
                 setTemperature(Number.parseFloat(e.target.value))
@@ -184,12 +190,30 @@ const ZoneModal: React.FC<ZoneModalProps> = ({ open, onClose }) => {
               style={{ alignSelf: "center", marginBottom: "2vh" }}
               placeholder="Temperature..."
             />
+          </Container>
+          <Container style={{ display: "flex", flexDirection: "row" }}>
             <TextField
               onChange={(e) =>
-                setDesiredTemperature(Number.parseFloat(e.target.value))
+                setDesiredMorningTemperature(Number.parseFloat(e.target.value))
               }
               style={{ alignSelf: "center", marginBottom: "2vh" }}
-              placeholder="Desired temperature..."
+              placeholder="Desired morning temp..."
+            />
+            <TextField
+              onChange={(e) =>
+                setDesiredAfternoonTemperature(
+                  Number.parseFloat(e.target.value)
+                )
+              }
+              style={{ alignSelf: "center", marginBottom: "2vh" }}
+              placeholder="Desired afternoon temp..."
+            />
+            <TextField
+              onChange={(e) =>
+                setDesiredNightTemperature(Number.parseFloat(e.target.value))
+              }
+              style={{ alignSelf: "center", marginBottom: "2vh" }}
+              placeholder="Desired night temp..."
             />
           </Container>
           <Button onClick={onSubmit}>Submit</Button>
