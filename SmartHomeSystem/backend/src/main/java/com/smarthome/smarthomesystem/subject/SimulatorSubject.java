@@ -5,6 +5,7 @@ import com.smarthome.smarthomesystem.observer.Observer;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class SimulatorSubject implements Subject {
@@ -57,5 +58,13 @@ public class SimulatorSubject implements Subject {
 
     public void setRoomId(Long roomId) {
         this.roomId = roomId;
+    }
+
+    public List<Observer> getObservers() {
+        return observers;
+    }
+
+    public void setObservers(List<Observer> observers) {
+        this.observers = observers;
     }
 }
