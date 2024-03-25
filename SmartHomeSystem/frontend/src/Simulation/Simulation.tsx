@@ -39,9 +39,10 @@ const Simulation = (props: any) => {
     if (storedDate) {
       return storedDate;
     } else {
-      return "2023-01-01";
+      return "1/1/2023";
     }
   });
+
   const [time, setTime] = useState<string>(() => {
     const storedTime = localStorage.getItem("time");
     if (storedTime) {
@@ -50,6 +51,7 @@ const Simulation = (props: any) => {
       return "00:00";
     }
   });
+
   const [temperature, setTemperature] = useState<string>(() => {
     const storedTemperature = localStorage.getItem("temperature");
     if (storedTemperature) {
