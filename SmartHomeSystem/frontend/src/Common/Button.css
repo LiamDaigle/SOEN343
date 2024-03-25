@@ -1,6 +1,6 @@
 .common-btn {
   background-color: var(--accent-color);
-  color: var(--primary-color);
+  color: var(--additional-color);
   width: 100px;
   height: 40px;
   font-weight: 700;

@@ -20,6 +20,8 @@ public class Window {
 
     private boolean isOpen;
 
+    private boolean isBlocked;
+
     public boolean getIsBlocked() {
         return isBlocked;
     }
@@ -28,7 +30,13 @@ public class Window {
         isBlocked = blocked;
     }
 
-    private boolean isBlocked;
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void setOpen(boolean open) {
+        isOpen = open;
+    }
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "room_id")

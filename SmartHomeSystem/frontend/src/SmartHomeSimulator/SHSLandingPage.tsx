@@ -7,6 +7,7 @@ import ProfileSelection from "./ProfileSelection";
 import axios from "axios";
 import EditProfileModal from "./EditProfileModal";
 import DateTimeModal from "./DateTimeModal";
+import TemperatureCSVModal from "./TemperatureCSVModal";
 
 interface Profile {
   id: string;
@@ -19,6 +20,7 @@ const SHSLandingPage = (props: any) => {
   const [removeUserModalOpen, setRemoveUserModalOpen] = useState(false);
   const [selectUserModal, setSelectUserModal] = useState(false);
   const [editProfileModalOpen, setEditProfileModalOpen] = useState(false);
+  const [temperatureCSVModalOpen, setTemperatureCSVModalOpen] = useState(false);
   const handleEditProfile = () => {
     setEditProfileModalOpen(true);
   };
@@ -53,14 +55,17 @@ const SHSLandingPage = (props: any) => {
         <button className="common-btn" onClick={() => setSelectUserModal(true)}>
           Select Profile
         </button>
-        <button
+        {/* <button
           className="common-btn"
           onClick={() => setDateTimeModalOpen(true)} // Open DateTimeModal
         >
           Edit Date/Time
-        </button>{" "}
+        </button>{" "} */}
         <button className="common-btn" onClick={() => setDialogOpen(true)}>
           Logout
+        </button>
+        <button className="common-btn" onClick={() => setTemperatureCSVModalOpen(true)}> 
+          Upload CSV
         </button>
       </div>
       <LogoutModal
@@ -99,6 +104,10 @@ const SHSLandingPage = (props: any) => {
       <DateTimeModal
         open={dateTimeModalOpen} // Pass state to DateTimeModal
         onClose={() => setDateTimeModalOpen(false)} // Close DateTimeModal
+      />
+      <TemperatureCSVModal 
+        open={temperatureCSVModalOpen}
+        onClose={() => setTemperatureCSVModalOpen(false)}
       />
     </div>
   );

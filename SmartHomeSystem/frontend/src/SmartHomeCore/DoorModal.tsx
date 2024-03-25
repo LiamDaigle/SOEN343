@@ -4,6 +4,10 @@ import DialogContentText from "@mui/material/DialogContentText";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./ControlsModalStyle.css";
+import DoorOpenCommand from "../AxiosCommands/Command Design Pattern/commands/DoorOpenCommand";
+import SHCInvoker from "../AxiosCommands/Command Design Pattern/SHCInvoker";
+import DoorCloseCommand from "../AxiosCommands/Command Design Pattern/commands/DoorCloseCommand";
+import GetAllDoorsCommand from "../AxiosCommands/Command Design Pattern/commands/GetAllDoorsCommand";
 
 interface FormDialogProps {
   open: boolean;
@@ -19,10 +23,10 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
       const fetchRoomsId = ["0", "1", "2", "3", "4"];
       const fetchRoomNames = [
         "Backyard",
-        "Garage",
         "Entrance",
-        "Bedroom",
+        "Garage",
         "LivingRoom",
+        "Bedroom",
       ];
 
       const finalRooms: { id: string; name: string }[] = fetchRoomsId.map(
@@ -36,19 +40,17 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
 
       for (const room of finalRooms) {
         try {
-          const doorsResponse = await axios.post(
-            "http://localhost:8080/api/rooms/findAllDoors",
-            {
-              id: room.id,
-            }
-          );
+          const getAllDoorsCommand = new GetAllDoorsCommand({id:room.id});
+          const invoker = new SHCInvoker(getAllDoorsCommand);
+          const doorsResponse: Array<object> =
+            await invoker.executeCommand();
 
           const roomName = room.name;
 
           roomsDoors.push({
             roomId: room.id,
             roomName: roomName,
-            doors: doorsResponse.data.map((door: any) => ({
+            doors: doorsResponse.map((door: any) => ({
               id: door.id,
               open: door.open,
             })),
@@ -72,6 +74,7 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
   ) => {
     try {
       const door = {
+        id: doorId,
         room: {
           id: roomId,
         },
@@ -79,10 +82,18 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
         autoLock: autoLock,
       };
 
-      const response = await axios.put(
-        `http://localhost:8080/api/doors/${doorId}`,
-        door
-      );
+      // Call open door command 
+      if (newStatus){
+        const doorOpenCommand = new DoorOpenCommand(door)
+        const invoker = new SHCInvoker(doorOpenCommand);
+        const doorOpened = await invoker.executeCommand();
+      }
+      // Call close door command
+      else if(!newStatus){
+        const doorCloseCommand = new DoorCloseCommand(door)
+        const invoker = new SHCInvoker(doorCloseCommand);
+        const doorClosed = await invoker.executeCommand();
+      }
 
       // Update the state accordingly
       const updatedRoomsDoors = roomsDoors.map((roomDoors) => {
@@ -119,7 +130,7 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
                     <th>Door ID</th>
                     <th>Status</th>
                     <th>Action</th>
-                    <th>AutoLock</th> {/* Add AutoLock column */}
+                    <th>AutoLock</th>
                   </tr>
                 </thead>
                 <tbody>

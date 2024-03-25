@@ -1,0 +1,14 @@
+Timestamp: 2024-03-21 16:32:18 
+Profile ID: 1
+Profile Name: U1
+Role: Parent
+Event Type: Logging In
+Event Description: User Just Logged In With this Profile
+end
+Timestamp: 2024-03-21 16:32:29 
+Profile ID: 1
+Profile Name: U1
+Role: Guest
+Event Type: Edit User Details
+Event Description: User Just Changed Information Details of The Profile
+end

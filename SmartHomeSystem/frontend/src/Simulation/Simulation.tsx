@@ -5,16 +5,16 @@ import Button from "../Common/Button";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Switch from "@mui/material/Switch";
-import ModeEditIcon from "@mui/icons-material/ModeEdit"; 
-import Modal from "@mui/material/Modal"; 
-import SimulationContextModal from "./SimulationContextModal"; 
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import Modal from "@mui/material/Modal";
+import SimulationContextModal from "./SimulationContextModal";
 import ProfileSelection from "../SmartHomeSimulator/ProfileSelection";
 
 const Simulation = (props: any) => {
   const [isSimulationOn, setSimulationOn] = useState(false);
   const [timeSpeed, setTimeSpeed] = useState(1);
-  const [contextDialogOpen, setContextDialogOpen] = useState(false); 
-  const [selectedRoom, setSelectedRoom] = useState("LivingRoom"); // Change the default room here
+  const [contextDialogOpen, setContextDialogOpen] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState(props.userData.profile.location);
   const [selectUserModal, setSelectUserModal] = useState(false);
 
   const toggleSimulation = () => {
@@ -34,8 +34,37 @@ const Simulation = (props: any) => {
     setContextDialogOpen(false);
   };
 
-  const [date, setDate] = useState<string>("");
-  const [time, setTime] = useState<string>("");
+  const [date, setDate] = useState<string>(() => {
+    const storedDate = localStorage.getItem("date");
+    if (storedDate) {
+      return storedDate;
+    } else {
+      return "2023-01-01";
+    }
+  });
+  const [time, setTime] = useState<string>(() => {
+    const storedTime = localStorage.getItem("time");
+    if (storedTime) {
+      return storedTime;
+    } else {
+      return "00:00";
+    }
+  });
+  const [temperature, setTemperature] = useState<string>(() => {
+    const storedTemperature = localStorage.getItem("temperature");
+    if (storedTemperature) {
+      return storedTemperature;
+    } else {
+      return "-10";
+    }
+  });
+
+  const [simulationSettings, setSimulationSettings] = useState<string>(() => {
+    const storedDate = localStorage.getItem("date") || "2023-01-01";
+    const storedTime = localStorage.getItem("time") || "00:00";
+    const storedTemperature = localStorage.getItem("temperature") || "-10";
+    return `${storedDate}, ${storedTime}, ${storedTemperature}`;
+});
 
   useEffect(() => {
     // Retrieve stored simulation toggle state
@@ -45,18 +74,58 @@ const Simulation = (props: any) => {
       setSimulationOn(storedIsSimulationOn);
     }
 
-    const storedDateTime = localStorage.getItem("dateTime");
-    if (storedDateTime) {
-      const { storedDate, storedTime } = JSON.parse(storedDateTime);
-      setDate(storedDate);
-      setTime(storedTime);
-    } else {
-      const currentDate = new Date().toISOString().split("T")[0];
-      const currentTime = new Date().toISOString().split("T")[1].substring(0, 5);
-      setDate(currentDate);
-      setTime(currentTime);
+    // Retrieve stored current location
+    const storedCurrentLocation = localStorage.getItem("currentLocation");
+    if (storedCurrentLocation) {
+      const storedSelectedRoom = JSON.parse(storedCurrentLocation);
+      setSelectedRoom(storedSelectedRoom);
     }
-  }, [open]);
+
+    const storedDate = localStorage.getItem("date");
+    if (storedDate) {
+      setTemperature(storedDate);
+    }
+
+    const storedTime = localStorage.getItem("time");
+    if (storedTime) {
+      setTemperature(storedTime);
+    }
+
+    const storedTemperature = localStorage.getItem("temperature");
+    if (storedTemperature) {
+      setTemperature(storedTemperature);
+    }
+
+    if (storedDate && storedTime) {
+      // Parse stored date and time as UTC
+      const storedDateTimeUTC = new Date(`${storedDate}T${storedTime}Z`);
+      console.log(storedDateTimeUTC)
+    
+      // Initialize counter
+      let counter = 0;
+
+      const interval = setInterval(() => {
+        // Increment the counter by 1 second (1000 milliseconds)
+        counter += 1000;
+
+        // Calculate the simulated time by adding the counter to the storedDateTimeUTC
+        const simulatedTime = new Date(storedDateTimeUTC.getTime() + counter * timeSpeed);
+
+        // Update date and time states
+        setDate(simulatedTime.toISOString().split("T")[0]);
+        setTime(simulatedTime.toISOString().split("T")[1].substring(0, 5));
+      }, 1000); // Update every second
+
+      return () => clearInterval(interval);
+    }
+    
+
+    // If data is not available, set defaults
+    setDate("2023-01-01");
+    setTime("00:00");
+    setTemperature("-10");
+
+  }, [isSimulationOn, timeSpeed]); 
 
   return (
     <div className="simulation-container">
@@ -70,7 +139,10 @@ const Simulation = (props: any) => {
           />
           <Typography>On</Typography>
         </Stack>
-        <ModeEditIcon style={{ cursor: "pointer" }} onClick={openContextDialog} />
+        <ModeEditIcon
+          style={{ cursor: "pointer" }}
+          onClick={openContextDialog}
+        />
         <div className="user-profile-picture">
           {/* Open dialog on button click */}
           <img
@@ -79,18 +151,29 @@ const Simulation = (props: any) => {
             style={{ width: "100%", borderRadius: "50%", cursor: "pointer" }}
             onClick={openContextDialog}
           />
-          <p className= "user-role-text" onClick={() => setSelectUserModal(true)}>{props.userData.profile.role}</p>
+          <p
+            className="user-role-text"
+            onClick={() => setSelectUserModal(true)}
+          >
+            {props.userData.profile.role}
+          </p>
         </div>
         <div className="user-location">
           <p>Location:</p>
           <p>{selectedRoom}</p>
         </div>
-        <div className="outside-temperature" style={{ display: isSimulationOn ? "block" : "none" }}>
+        <div
+          className="outside-temperature"
+          style={{ display: isSimulationOn ? "block" : "none" }}
+        >
           <p>Outside Temperature:</p>
-          <p>15C</p>
+          <p>{temperature}</p>
         </div>{" "}
         {/* TODO: change temperature */}
-        <div className="data-and-time" style={{ display: isSimulationOn ? "block" : "none" }}>
+        <div
+          className="data-and-time"
+          style={{ display: isSimulationOn ? "block" : "none" }}
+        >
           <p>{date}</p>
           <p>{time}</p>
         </div>
@@ -114,8 +197,8 @@ const Simulation = (props: any) => {
           inhabitant={props.userData.profile.role}
           currentRoom={selectedRoom}
           setCurrentRoom={setSelectedRoom}
-          userId={props.userData.id}
-          profileId={props.userData.profile.id}
+          userData={props.userData}
+          settings={simulationSettings} // to change
         />
       </Modal>
       <ProfileSelection

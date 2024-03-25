@@ -1,0 +1,11 @@
+.output-console-container {
+  padding: 5px;
+  border: 2px solid var(--accent-color);
+  height: 200px;
+  border-radius: 10px;
+  overflow: auto;
+}
+
+.output-console-container h3 {
+  text-align: center;
+}

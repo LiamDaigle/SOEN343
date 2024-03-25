@@ -7,6 +7,11 @@ import DialogContentText from "@mui/material/DialogContentText";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./ControlsModalStyle.css";
+import GetAllWindowsCommand from "../AxiosCommands/Command Design Pattern/commands/GetAllWindowsCommand";
+import WindowCloseCommand from "../AxiosCommands/Command Design Pattern/commands/WindowCloseCommand";
+import WindowOpenCommand from "../AxiosCommands/Command Design Pattern/commands/WindowOpenCommand";
+import SHCInvoker from "../AxiosCommands/Command Design Pattern/SHCInvoker";
+
 
 interface FormDialogProps {
   open: boolean;
@@ -29,10 +34,10 @@ const WindowModal: React.FC<FormDialogProps> = ({
     const fetchRoomsId = ["0", "1", "2", "3", "4"];
     const fetchRoomNames = [
       "Backyard",
-      "Garage",
       "Entrance",
-      "Bedroom",
+      "Garage",
       "LivingRoom",
+      "Bedroom",
     ];
     const finalRooms: { id: string; name: string }[] = fetchRoomsId.map(
       (roomId, index) => ({
@@ -45,19 +50,18 @@ const WindowModal: React.FC<FormDialogProps> = ({
 
     for (const room of finalRooms) {
       try {
-        const WindowsResponse = await axios.post(
-          "http://localhost:8080/api/rooms/findAllWindows",
-          {
-            id: room.id,
-          }
-        );
+      
+        const getAllWindowsCommand = new GetAllWindowsCommand({id:room.id});
+          const invoker = new SHCInvoker(getAllWindowsCommand);
+          const WindowsResponse: Array<object> =
+            await invoker.executeCommand();
 
         const roomName = room.name;
 
         roomsWindows.push({
           roomId: room.id,
           roomName: roomName,
-          Windows: WindowsResponse.data.map((window: any) => ({
+          Windows: WindowsResponse.map((window: any) => ({
             id: window.id,
             open: window.open,
           })),
@@ -76,15 +80,25 @@ const WindowModal: React.FC<FormDialogProps> = ({
   ) => {
     try {
       const window = {
+        id: windowId,
         room: {
           id: roomId,
         },
         open: newStatus,
       };
-      const response = await axios.put(
-        `http://localhost:8080/api/windows/${windowId}`,
-        window
-      );
+
+      // Call open window command 
+      if (newStatus){
+        const windowOpenCommand = new WindowOpenCommand(window)
+        const invoker = new SHCInvoker(windowOpenCommand);
+        const windowOpened = await invoker.executeCommand();
+      }
+      // Call close window command
+      else if(!newStatus){
+        const windowCloseCommand = new WindowCloseCommand(window)
+        const invoker = new SHCInvoker(windowCloseCommand);
+        const windowClosed = await invoker.executeCommand();
+      }
 
       // update the state accordingly
       const updatedRoomsWindows = roomsWindows.map((roomWindows) => {

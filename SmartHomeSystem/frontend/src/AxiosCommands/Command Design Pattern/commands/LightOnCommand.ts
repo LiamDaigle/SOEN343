@@ -1,4 +1,5 @@
 import LightReceiver from "../receivers/LightReceiver";
+import Command from "./interface/Command";
 
 class LightOnCommand implements Command{
     

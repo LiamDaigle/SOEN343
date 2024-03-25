@@ -33,7 +33,10 @@
 }
 
 .controls-modal button:hover {
-  background-color: #ddd;
+  cursor: pointer;
+  background-color: var(--secondary-color) !important;
+  border: 2px solid var(--accent-color);
+  color: var(--text-color);
 }
 
 .toggle {

@@ -8,6 +8,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { timestamp } from "../Common/getTime";
 
 interface FormDialogProps {
   open: boolean;
@@ -17,6 +18,7 @@ interface FormDialogProps {
   onLogin: () => void;
 }
 interface Profile {
+  role: any;
   id: string;
   name: string;
 }
@@ -48,8 +50,24 @@ const ProfileSelection: React.FC<FormDialogProps> = ({
     }
   }, [open, user.id]); // Add open and user.id to the dependency array
 
-  const handleProfileSelection = (profile: Profile) => {
+  const handleProfileSelection = async (profile: Profile) => {
     setSelectedProfile(profile);
+    console.log(profile);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/files/write",
+        {
+          data: `Timestamp: ${timestamp} \nProfile ID: ${profile.id}\nProfile Name: ${profile.name}\nRole: ${profile.role}\nEvent Type: Logging In\nEvent Description: User Just Logged In With this Profile\nend`, // Convert the profile object to a string
+        }
+      );
+      if (response.status !== 200) {
+        throw new Error("Failed to write profile data to file");
+      }
+      console.log("Profile data written to file successfully");
+    } catch (error) {
+      console.error("Error writing profile data to file:", error);
+    }
   };
 
   const handleLoginWithProfile = () => {
