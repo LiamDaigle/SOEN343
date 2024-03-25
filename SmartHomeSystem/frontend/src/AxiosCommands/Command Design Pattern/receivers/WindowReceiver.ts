@@ -11,6 +11,15 @@ class WindowReceiver{
         const result = await axios.put(this.baseUrl + `/${id}`, window);
         return result;
     }
+
+    static async updateBlocked(id:number, blocked:boolean){
+        const result = await axios.patch(this.baseUrl + `/${id}/blocked`, JSON.stringify(blocked),{
+            headers: {
+                "content-type": "application/json",
+            }
+        })
+        return result.data;
+    }
 }
 
 export default WindowReceiver;

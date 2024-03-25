@@ -28,6 +28,15 @@ class RoomReceiver{
         const result = await axios.post(this.baseUrl + "/findAllWindows", requestBody);
         return result.data;
     }
+
+    static async updateHvac(roomId:number, hvac: boolean){
+        const result = await axios.patch(this.baseUrl + `/${roomId}/hvac`, JSON.stringify(hvac), {
+            headers: {
+                "content-type": "application/json",
+            }
+        });
+        return result.data;
+    }
 }
 
 export default RoomReceiver;

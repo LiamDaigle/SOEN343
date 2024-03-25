@@ -87,4 +87,21 @@ public class RoomController {
         simulatorSubject.notifyObservers();
         return ResponseEntity.status(HttpStatus.OK).body("Room temperature updated successfully");
     }
+
+    @PatchMapping("/api/rooms/{roomId}/hvac")
+    public ResponseEntity<String> updateRoomHvac(@PathVariable("roomId") Long roomId, @RequestBody Boolean isHvacWorking) {
+        Optional<Room> optionalRoom = roomRepository.findById(roomId);
+
+        if (optionalRoom.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Room room = optionalRoom.get();
+        room.setIsHvacWorking(isHvacWorking);
+        roomRepository.save(room);
+        simulatorSubject.setHvacWorking(isHvacWorking);
+        simulatorSubject.setRoomId(roomId);
+        simulatorSubject.notifyObservers();
+        return ResponseEntity.status(HttpStatus.OK).body("Room temperature updated successfully");
+    }
 }
