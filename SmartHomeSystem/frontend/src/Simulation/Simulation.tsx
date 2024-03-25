@@ -140,7 +140,7 @@ const Simulation = (props: any) => {
           <Typography>On</Typography>
         </Stack>
         <ModeEditIcon
-          style={{ cursor: "pointer" }}
+          style={{ cursor: "pointer", display: isSimulationOn ? "block" : "none" }}
           onClick={openContextDialog}
         />
         <div className="user-profile-picture">

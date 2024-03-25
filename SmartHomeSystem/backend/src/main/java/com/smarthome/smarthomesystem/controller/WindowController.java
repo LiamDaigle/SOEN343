@@ -38,23 +38,23 @@ public class WindowController {
         return new ResponseEntity<>(windowMapper.mapTo(savedWindow), HttpStatus.OK);
     }
 
-    @PatchMapping(path = "/api/windows/{id}")
-    public ResponseEntity<WindowDto> blockWindowUpdate(@PathVariable("id") Long id, @RequestBody WindowDto updatedWindow) {
-        Optional<Window> optionalWindow = windowRepository.findById(id);
-
-        if (optionalWindow.isPresent()) {
-            Window window = optionalWindow.get();
-
-            // Update isBlocked
-            if (!window.getIsBlocked() && updatedWindow.getIsBlocked()) {
-                window.setBlocked(true);
-            }
-
-            // Save the updated window
-            Window savedWindow = windowRepository.save(window);
-            return ResponseEntity.ok(windowMapper.mapTo(savedWindow));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+//    @PatchMapping(path = "/api/windows/{id}")
+//    public ResponseEntity<WindowDto> blockWindowUpdate(@PathVariable("id") Long id, @RequestBody WindowDto updatedWindow) {
+//        Optional<Window> optionalWindow = windowRepository.findById(id);
+//
+//        if (optionalWindow.isPresent()) {
+//            Window window = optionalWindow.get();
+//
+//            // Update isBlocked
+//            if (!window.getIsBlocked() && updatedWindow.getIsBlocked()) {
+//                window.setBlocked(true);
+//            }
+//
+//            // Save the updated window
+//            Window savedWindow = windowRepository.save(window);
+//            return ResponseEntity.ok(windowMapper.mapTo(savedWindow));
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 }

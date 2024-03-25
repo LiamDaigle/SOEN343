@@ -16,9 +16,9 @@ public class WindowDto {
 
     private boolean isOpen;
 
-    public boolean getIsBlocked() {
-        return isBlocked;
-    }
+//    public boolean getIsBlocked() {
+//        return isBlocked;
+//    }
 
     private boolean isBlocked;
 
