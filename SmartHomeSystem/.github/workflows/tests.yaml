@@ -26,4 +26,4 @@ jobs:
       - name: Run Tests
         run: |
           cd SmartHomeSystem/backend
-          ./mvnw test -Dtest=com.smarthome.smarthomesystem.controller.*
+          mvnw test
