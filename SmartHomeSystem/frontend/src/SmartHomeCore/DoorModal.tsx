@@ -130,7 +130,7 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
       await axios.post(
         "http://localhost:8080/api/files/write",
         {
-          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Open Door\nEvent Description: User Just Open Door Id ${doorId} in ${roomName}\nend`,
+          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Open Door\nEvent Description: User Just Opened Door Id ${doorId} in ${roomName}\nend`,
         }
       );
     } catch (error) {
@@ -144,7 +144,7 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
       await axios.post(
         "http://localhost:8080/api/files/write",
         {
-          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Close Door\nEvent Description: User Just Open Door Id ${doorId} in ${roomName}\nend`,
+          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Close Door\nEvent Description: User Just Closed Door Id ${doorId} in ${roomName}\nend`,
         }
       );
     } catch (error) {
@@ -153,7 +153,7 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
   }
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={() => { onClose(); location.reload(); }}>
       <DialogContent className="dialog-container custom controls-modal">
         <DialogContentText className="dialog-subheading custom">
           All Doors

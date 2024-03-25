@@ -153,7 +153,7 @@ const LightModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
       await axios.post(
         "http://localhost:8080/api/files/write",
         {
-          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Turn Off Light\nEvent Description: User Just Turned On Light Id ${lightId} in ${roomName}\nend`,
+          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Turn Off Light\nEvent Description: User Just Turned Off Light Id ${lightId} in ${roomName}\nend`,
         }
       );
     } catch (error) {
@@ -181,7 +181,7 @@ const LightModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
       await axios.post(
         "http://localhost:8080/api/files/write",
         {
-          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Turn Off Light\nEvent Description: Auto Mode Turned On Light Id ${lightId} in ${roomName}\nend`,
+          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Turn Off Light\nEvent Description: Auto Mode Turned Off Light Id ${lightId} in ${roomName}\nend`,
         }
       );
     } catch (error) {
@@ -190,7 +190,7 @@ const LightModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
   }
   
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={() => { onClose(); location.reload(); }}>
       <DialogContent className="dialog-container custom controls-modal">
         <DialogContentText className="dialog-subheading custom">
           All Lights

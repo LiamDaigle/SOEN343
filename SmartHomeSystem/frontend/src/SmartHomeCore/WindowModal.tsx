@@ -158,7 +158,7 @@ const WindowModal: React.FC<FormDialogProps> = ({
   }
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={() => { onClose(); location.reload(); }}>
       <DialogContent className="dialog-container custom controls-modal">
         <DialogContentText className="dialog-subheading custom">
           All Windows
@@ -203,7 +203,7 @@ const WindowModal: React.FC<FormDialogProps> = ({
                             )
                           }
                         >
-                          {window.open ? "Open window" : "Close window"}
+                          {window.open ? "Close window" : "Open window"}
                         </button>
                       </td>
                     </tr>

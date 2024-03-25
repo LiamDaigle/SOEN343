@@ -332,24 +332,19 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
 
       <div style={{ margin: "10px 0" }}></div>
 
-      <button className="modal-buttons" onClick={() => {onClose; location.reload()}}>
+      <button className="modal-buttons" onClick={() => { onClose(); location.reload(); }}>
         Close
       </button>
-
-
     </div>
 
     <Dialog
       open={showWindowDialog}
-      onClose={() => {setShowWindowDialog(false); onClose; location.reload();}}
+      onClose={() => { setShowWindowDialog(false)}}
     >
       <DialogContent className="dialog-container custom controls-modal">
         <DialogContentText className="dialog-subheading custom">
           All Windows
         </DialogContentText>
-        <button className="modal-buttons" onClick={() => {onClose; location.reload()}}>
-        Close
-      </button>
         <div>
           {roomsWindows.map((roomWindows) => (
             <div key={roomWindows.roomId}>
