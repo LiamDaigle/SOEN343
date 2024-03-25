@@ -28,6 +28,8 @@ public class Room {
 
     private Boolean isHvacWorking;
 
+    private Boolean overrideZone;
+
     public void setHvacWorking(Boolean b) {
         isHvacWorking = b;
     }

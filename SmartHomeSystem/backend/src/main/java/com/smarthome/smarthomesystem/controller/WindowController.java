@@ -1,5 +1,6 @@
 package com.smarthome.smarthomesystem.controller;
 
+import com.smarthome.smarthomesystem.domain.Room;
 import com.smarthome.smarthomesystem.domain.Window;
 import com.smarthome.smarthomesystem.domain.dtos.WindowDto;
 import com.smarthome.smarthomesystem.mappers.Mapper;
@@ -27,14 +28,28 @@ public class WindowController {
         this.windowMapper = windowMapper;
     }
 
-    @PutMapping(path="/api/windows/{id}")
-    public ResponseEntity<WindowDto> fullWindowUpdate(@PathVariable("id") Long id, @RequestBody WindowDto window){
+    @PutMapping(path = "/api/windows/{id}")
+    public ResponseEntity<WindowDto> fullWindowUpdate(@PathVariable("id") Long id, @RequestBody WindowDto window) {
 
-        if(!windowRepository.existsById(id))
+        if (!windowRepository.existsById(id))
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         window.setId(id);
         Window savedWindow = windowRepository.save(windowMapper.mapFrom(window));
         return new ResponseEntity<>(windowMapper.mapTo(savedWindow), HttpStatus.OK);
+    }
+
+    @PatchMapping("/api/windows/{windowId}/blocked")
+    public ResponseEntity<String> updateWindowBlocked(@PathVariable("windowId") Long windowId, @RequestBody Boolean isBlocked) {
+        Optional<Window> optionalWindow = windowRepository.findById(windowId);
+
+        if (optionalWindow.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Window window = optionalWindow.get();
+        window.setBlocked(isBlocked);
+        windowRepository.save(window);
+        return ResponseEntity.ok("Window blocked value updated successfully");
     }
 }

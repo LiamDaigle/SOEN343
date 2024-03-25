@@ -21,9 +21,5 @@ public class RoomDto {
 
     private Boolean isHvacWorking;
 
-//    private List<Window> windows;
-//
-//    private List<Light> lights;
-//
-//    private List<Door> doors;
+    private Boolean overrideZone;
 }

@@ -6,10 +6,12 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { timestamp } from "../Common/getTime";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
 interface Profile {
+  role: any;
   id: string;
   name: string;
 }
@@ -71,13 +73,20 @@ const LoginModal: React.FC<FormDialogProps> = ({ open, onClose, onLogin }) => {
     setSelectedProfile(profile);
   };
 
-  const handleLoginWithProfile = () => {
+  const handleLoginWithProfile = async () => {
     console.log("Logging in with profile:", selectedProfile);
     console.log(selectedProfile);
     localStorage.setItem(
       "selectedUserProfile",
       JSON.stringify(selectedProfile)
     );
+    try {
+      await axios.post("http://localhost:8080/api/files/write", {
+        data: `Timestamp: ${timestamp} \nProfile ID: ${selectedProfile.id}\nProfile Name: ${selectedProfile.name}\nRole: ${selectedProfile.role}\nEvent Type: Log In\nEvent Description: User Just Logged In\nend`,
+      });
+    } catch (error) {
+      console.error("Error writing Block Window data to file:", error);
+    }
     onLogin();
     navigate("/");
     onClose();

@@ -168,7 +168,10 @@ const SHHLandingPage = (props: any) => {
         <Typography style={{ color: "black" }}>Off</Typography>
         <Switch
           checked={isOn}
-          onChange={() => setIsOn(!isOn)}
+          onChange={() => {
+            localStorage.setItem("SHH_on", `${!isOn}`);
+            setIsOn(!isOn);
+          }}
           color="warning"
         />
         <Typography style={{ color: "black", marginRight: "1vw" }}>
