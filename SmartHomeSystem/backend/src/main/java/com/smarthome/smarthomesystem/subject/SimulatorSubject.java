@@ -1,13 +1,22 @@
 package com.smarthome.smarthomesystem.subject;
 
+import com.smarthome.smarthomesystem.domain.Room;
 import com.smarthome.smarthomesystem.observer.Observer;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SimulatorSubject implements Subject {
     private List<Observer> observers = new ArrayList<>();
+
+    private Double outsideTemperature;
+
+    @Setter
     private Double temperature;
+
+    private Long roomId;
+
 
     @Override
     public void registerObserver(Observer observer) {
@@ -22,12 +31,31 @@ public class SimulatorSubject implements Subject {
     @Override
     public void notifyObservers() {
         for (Observer observer : observers) {
-            observer.update(temperature);
+            observer.update(outsideTemperature, temperature, roomId);
         }
+    }
+
+    public Double getOutsideTemperature() {
+        return outsideTemperature;
+    }
+
+    public void setOutsideTemperature(Double outsideTemperature) {
+        this.outsideTemperature = outsideTemperature;
+    }
+
+    public Double getTemperature() {
+        return temperature;
     }
 
     public void setTemperature(Double temperature) {
         this.temperature = temperature;
-        notifyObservers();
+    }
+
+    public Long getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
     }
 }

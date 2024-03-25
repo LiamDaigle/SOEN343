@@ -57,19 +57,18 @@ const WindowModal: React.FC<FormDialogProps> = ({
 
     for (const room of finalRooms) {
       try {
-        const WindowsResponse = await axios.post(
-          "http://localhost:8080/api/rooms/findAllWindows",
-          {
-            id: room.id,
-          }
-        );
+      
+        const getAllWindowsCommand = new GetAllWindowsCommand({id:room.id});
+          const invoker = new SHCInvoker(getAllWindowsCommand);
+          const WindowsResponse: Array<object> =
+            await invoker.executeCommand();
 
         const roomName = room.name;
 
         roomsWindows.push({
           roomId: room.id,
           roomName: roomName,
-          Windows: WindowsResponse.data.map((window: any) => ({
+          Windows: WindowsResponse.map((window: any) => ({
             id: window.id,
             open: window.open,
           })),
@@ -89,6 +88,7 @@ const WindowModal: React.FC<FormDialogProps> = ({
   ) => {
     try {
       const window = {
+        id: windowId,
         room: {
           id: roomId,
         },

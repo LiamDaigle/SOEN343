@@ -6,6 +6,11 @@ class RoomReceiver{
 
     private constructor(){}
 
+    static async findAll(){
+        const result = await axios.get(this.baseUrl + "/findAll");
+        return result.data;
+    }
+
     static async findByName(requestBody:object){
         const result = await axios.post(this.baseUrl + "/findByName", requestBody);
         return result.data;

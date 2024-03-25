@@ -47,19 +47,17 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
 
       for (const room of finalRooms) {
         try {
-          const doorsResponse = await axios.post(
-            "http://localhost:8080/api/rooms/findAllDoors",
-            {
-              id: room.id,
-            }
-          );
+          const getAllDoorsCommand = new GetAllDoorsCommand({id:room.id});
+          const invoker = new SHCInvoker(getAllDoorsCommand);
+          const doorsResponse: Array<object> =
+            await invoker.executeCommand();
 
           const roomName = room.name;
 
           roomsDoors.push({
             roomId: room.id,
             roomName: roomName,
-            doors: doorsResponse.data.map((door: any) => ({
+            doors: doorsResponse.map((door: any) => ({
               id: door.id,
               open: door.open,
             })),
@@ -84,6 +82,7 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
   ) => {
     try {
       const door = {
+        id: doorId,
         room: {
           id: roomId,
         },
@@ -169,7 +168,7 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
                     <th>Door ID</th>
                     <th>Status</th>
                     <th>Action</th>
-                    <th>AutoLock</th> {/* Add AutoLock column */}
+                    <th>AutoLock</th>
                   </tr>
                 </thead>
                 <tbody>

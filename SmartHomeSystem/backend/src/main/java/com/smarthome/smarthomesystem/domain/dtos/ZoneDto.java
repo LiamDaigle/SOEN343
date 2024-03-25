@@ -1,6 +1,5 @@
 package com.smarthome.smarthomesystem.domain.dtos;
 
-import com.smarthome.smarthomesystem.domain.Room;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,17 +9,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class WindowDto {
+public class ZoneDto {
 
     private Long id;
 
-    private boolean isOpen;
+    private String name;
 
-//    public boolean getIsBlocked() {
-//        return isBlocked;
-//    }
+    private String rooms;
 
-    private boolean isBlocked;
+    private Double temperature;
 
-    private Room room;
+    private Double desiredTemperature;
+
+    private Boolean isHvacWorking;
 }

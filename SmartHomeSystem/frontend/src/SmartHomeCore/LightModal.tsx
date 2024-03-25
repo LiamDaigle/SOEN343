@@ -7,6 +7,8 @@ import axios from "axios";
 import "./ControlsModalStyle.css";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import LightOffCommand from "../AxiosCommands/Command Design Pattern/commands/LightOffCommand";
+import LightOnCommand from "../AxiosCommands/Command Design Pattern/commands/LightOnCommand";
 import SHCInvoker from "../AxiosCommands/Command Design Pattern/SHCInvoker";
 import GetAllLightsCommand from "../AxiosCommands/Command Design Pattern/commands/GetAllLightsCommand";
 import { timestamp } from "../Common/getTime";
@@ -52,20 +54,17 @@ const LightModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
 
     for (const room of finalRooms) {
       try {
-        const lightsResponse = await axios.post(
-          "http://localhost:8080/api/rooms/findAllLights",
-          {
-            id: room.id,
-            name: room.name,
-          }
-        );
+        const getAllLightsCommand = new GetAllLightsCommand({id:room.id});
+        const invoker = new SHCInvoker(getAllLightsCommand);
+        const lightsResponse: Array<object> =
+          await invoker.executeCommand();
 
         const roomName = room.name;
 
         roomsLights.push({
           roomId: room.id,
           roomName: roomName,
-          lights: lightsResponse.data.map((light: any) => ({
+          lights: lightsResponse.map((light: any) => ({
             id: light.id,
             on: light.on,
           })),
@@ -86,6 +85,7 @@ const LightModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
   ) => {
     try {
       const light = {
+        id: lightId,
         room: {
           id: roomId,
         },

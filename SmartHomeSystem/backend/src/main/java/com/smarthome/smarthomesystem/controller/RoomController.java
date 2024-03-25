@@ -10,15 +10,12 @@ import com.smarthome.smarthomesystem.repositories.DoorRepository;
 import com.smarthome.smarthomesystem.repositories.LightRepository;
 import com.smarthome.smarthomesystem.repositories.RoomRepository;
 import com.smarthome.smarthomesystem.repositories.WindowRepository;
+import com.smarthome.smarthomesystem.subject.SimulatorSubject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Map;
@@ -41,10 +38,18 @@ public class RoomController {
 
     private Mapper<Room, RoomDto> roomMapper;
 
-    public RoomController(Mapper<Room, RoomDto> roomMapper){
+    private final SimulatorSubject simulatorSubject;
+
+
+    public RoomController(Mapper<Room, RoomDto> roomMapper, SimulatorSubject simulatorSubject){
         this.roomMapper = roomMapper;
+        this.simulatorSubject = simulatorSubject;
     }
 
+    @GetMapping(path="/api/rooms/findAll")
+    public ResponseEntity<?> findAll(){
+        return ResponseEntity.ok(roomRepository.findAll());
+    }
     @PostMapping(path="/api/rooms/findByName")
     public RoomDto findByName(@RequestBody Map<String, String> nameMapping){
         Room returnedRoom = roomRepository.findByName(nameMapping.get("name"));
@@ -77,7 +82,9 @@ public class RoomController {
         Room room = optionalRoom.get();
         room.setTemperature(newTemperature);
         roomRepository.save(room);
-
+        simulatorSubject.setTemperature(newTemperature);
+        simulatorSubject.setRoomId(roomId);
+        simulatorSubject.notifyObservers();
         return ResponseEntity.status(HttpStatus.OK).body("Room temperature updated successfully");
     }
 }

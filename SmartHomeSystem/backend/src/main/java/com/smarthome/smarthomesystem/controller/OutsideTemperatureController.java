@@ -26,7 +26,8 @@ public class OutsideTemperatureController {
     @PostMapping("/temperature")
     public ResponseEntity<String> saveOutsideTemperature(@RequestBody String temperature) {
         temperatureControlService.saveTemperature(Double.parseDouble(temperature));
-        simulatorSubject.setTemperature(Double.parseDouble(temperature));
+        simulatorSubject.setOutsideTemperature(Double.parseDouble(temperature));
+        simulatorSubject.notifyObservers();
         return ResponseEntity.ok("Outside temperature saved successfully.");
     }
 }
