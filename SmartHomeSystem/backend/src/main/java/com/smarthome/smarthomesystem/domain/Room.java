@@ -34,4 +34,25 @@ public class Room {
         isHvacWorking = b;
     }
 
+
+    public Double getDesiredTemperature() {
+        return desiredTemperature;
+    }
+
+    public void setDesiredTemperature(Double desiredTemperature) {
+        this.desiredTemperature = desiredTemperature;
+    }
+
+    public Double getTemperature() {
+        return temperature;
+    }
+
+    public void setTemperature(Double temperature) {
+        this.temperature = temperature;
+    }
+
+    public Boolean getIsHvacWorking() {
+        return isHvacWorking;
+    }
+
 }

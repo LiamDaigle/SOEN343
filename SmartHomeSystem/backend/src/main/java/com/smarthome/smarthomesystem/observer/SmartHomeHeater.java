@@ -7,15 +7,18 @@ import com.smarthome.smarthomesystem.repositories.WindowRepository;
 import com.smarthome.smarthomesystem.service.FileService;
 import com.smarthome.smarthomesystem.service.TemperatureControlService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class SmartHomeHeater implements Observer {
 
     private final FileService fileService;
+    private TemperatureControlService tempControl;
 
     @Autowired
     private WindowRepository windoRepo;
@@ -28,6 +31,12 @@ public class SmartHomeHeater implements Observer {
         this.fileService = fileService;
 
     }
+
+    @Autowired
+    public void setTempControl(TemperatureControlService tempControl) {
+        this.tempControl = tempControl;
+    }
+
 
     // temperature is inside temperature
     @Override
@@ -75,7 +84,15 @@ public class SmartHomeHeater implements Observer {
             }
         }
 
+        Room optionalRoom = roomRepo.findById(roomId).orElse(null);
 
+        // Call the updateRoomTemperature() method
+        if (optionalRoom != null && tempControl != null) {
+            tempControl.updateRoomTemperature(optionalRoom);
+        } else {
+            System.out.println("Room or TemperatureControlService is null.");
+        }
     }
+
 }
 
