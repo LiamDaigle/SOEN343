@@ -9,7 +9,8 @@
 
 .dialog-subheading.custom {
   font-size: 20px;
-  color: var(--secondary-color);
+  /* color: var(--secondary-color); */
+  color: black;
   font-weight: 700;
 }
 
