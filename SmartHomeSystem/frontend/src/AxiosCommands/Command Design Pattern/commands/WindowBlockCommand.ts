@@ -10,7 +10,7 @@ class WindowBlockCommand implements Command{
     }
 
     execute(): object {
-            this.requestBody.block = true;
+            this.requestBody.blocked = true;
             return WindowReceiver.fullUpdate(this.requestBody);
     }
 }

@@ -91,7 +91,7 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
           roomName: roomName,
           Windows: WindowsResponse.map((window: any) => ({
             id: window.id,
-            open: window.open,
+            isBlocked: window.isBlocked,
           })),
         });
       } catch (error) {
@@ -99,6 +99,7 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
       }
     }
     setRoomsWindows(roomsWindows);
+    console.log(roomsWindows)
   };
 
   const fetchCSVData = async () => {
@@ -124,8 +125,10 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
         room: {
           id: roomId,
         },
-        open: newStatus,
+        blocked: newStatus,
       };
+
+      console.log(newStatus)
 
       // Call block window command 
       if (newStatus){
@@ -147,7 +150,7 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
         if (roomWindows.roomId === roomId) {
           const updatedWindows = roomWindows.Windows.map((window: any) => {
             if (window.id === windowId) {
-              return { ...window, block: newStatus };
+              return { ...window, isBlocked: newStatus };
             }
             return window;
           });
@@ -176,7 +179,7 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
         }
       );
       console.log("Location updated successfully:", response.data);
-      setCurrentRoom(selectedTempRoom); // Update parent state with selected room
+      setCurrentRoom(selectedTempRoom); 
       writePlaceInhabitantToFile();
       // onClose();
     } catch (error: any) {
@@ -204,7 +207,6 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
     // Save the selected date, time, and temperature to local storage
     localStorage.setItem("date", selectedDate);
     localStorage.setItem("time", selectedTime);
-
     localStorage.setItem("temperature", selectedTemperature);
 
     writeSimulationSettingsToFile();
@@ -227,12 +229,13 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
   }
 
   const writeBlockWindowToFile = async (roomName, windowId) => {
+    console.log(windowId.toString(), " and ", roomName)
     
     try {
       await axios.post(
         "http://localhost:8080/api/files/write",
         {
-          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Block Window\nEvent Description: User Just Blocked Window ${windowId} in ${roomName}\nend`,
+          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Block Window\nEvent Description: User Just Blocked Window Id ${windowId} in ${roomName}\nend`,
         }
       );
     } catch (error) {
@@ -241,16 +244,16 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
   }
 
   const writeUnblockWindowToFile = async (roomName, windowId) => {
-    
+    console.log(windowId.toString(), " and ", roomName)
     try {
       await axios.post(
         "http://localhost:8080/api/files/write",
         {
-          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Unblock Window\nEvent Description: User Just Unlocked Window ${windowId} in ${roomName}\nend`,
+          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Unblock Window\nEvent Description: User Just Unblocked Window Id ${windowId} in ${roomName}\nend`,
         }
       );
     } catch (error) {
-      console.error("Error writing Block Window data to file:", error);
+      console.error("Error writing Unblock Window data to file:", error);
     }
   }
 
@@ -364,7 +367,7 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
                   {roomWindows.Windows.map((window: any) => (
                     <tr key={window.id}>
                       <td>{`window ${window.id}`}</td>
-                      <td>{window.block ? "Blocked" : "Unblocked"}</td>
+                      <td>{window.isBlocked ? "Blocked" : "Unblocked"}</td>
                       <td>
                         <button
                           disabled={
@@ -384,11 +387,11 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
                               roomWindows.roomId,
                               roomWindows.roomName,
                               window.id,
-                              !window.block
+                              !window.isBlocked
                             )
                           }
                         >
-                          {window.open ? "Block window" : "Unblock window"}
+                          {window.isBlocked ? "Unblock window" : "Block window"}
                         </button>
                       </td>
                     </tr>

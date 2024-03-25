@@ -59,10 +59,10 @@ const Simulation = (props: any) => {
     }
   });
 
-  const [simulationSettings, setSimulationSettings] = useState<string>(() => {
+  const [simulationSettings] = useState<string>(() => {
     const storedDate = localStorage.getItem("date") || "2023-01-01";
     const storedTime = localStorage.getItem("time") || "00:00";
-    const storedTemperature = localStorage.getItem("temperature") || "-10";
+    const storedTemperature = localStorage.getItem("temperature") || "10";
     return `${storedDate}, ${storedTime}, ${storedTemperature}`;
 });
 
@@ -118,12 +118,6 @@ const Simulation = (props: any) => {
 
       return () => clearInterval(interval);
     }
-    
-
-    // If data is not available, set defaults
-    setDate("2023-01-01");
-    setTime("00:00");
-    setTemperature("-10");
 
   }, [isSimulationOn, timeSpeed]); 
 

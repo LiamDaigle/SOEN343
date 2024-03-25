@@ -10,7 +10,7 @@ class WindowUnblockCommand implements Command{
     }
 
     execute(): object {
-            this.requestBody.block = false;
+            this.requestBody.blocked = false;
             return WindowReceiver.fullUpdate(this.requestBody);
     }
 }
