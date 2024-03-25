@@ -4,12 +4,17 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  TextField,
+  Dialog,
+  DialogContent,
+  DialogContentText
 } from "@mui/material";
 import "./SimulationContextModal.css";
-import exampleLayout from "../assets/exampleHouseLayout.json";
 import axios from "axios";
-import RoomReceiver from "../AxiosCommands/Command Design Pattern/receivers/RoomReceiver";
+import GetAllWindowsCommand from "../AxiosCommands/Command Design Pattern/commands/GetAllWindowsCommand";
+import WindowBlockCommand from "../AxiosCommands/Command Design Pattern/commands/WindowBlockCommand";
+import WindowUnblockCommand from "../AxiosCommands/Command Design Pattern/commands/WindowUnblockCommand";
+import SHCInvoker from "../AxiosCommands/Command Design Pattern/SHCInvoker";
+
 import { timestamp } from "../Common/getTime";
 
 
@@ -33,12 +38,12 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
   settings,
 }) => {
   const [rooms, setRooms] = useState<string[]>([]);
-  const [windowBlocked, setWindowBlocked] = useState<boolean>(false);
-  const [selectedWindowRoom, setSelectedWindowRoom] = useState<string>("");
+  const [roomsWindows, setRoomsWindows] = useState<any[]>([]);
   const [selectedTempRoom, setSelectedTempRoom] = useState<string>(currentRoom);
   const [simulationSettings, setSimulationSettings] =
     useState<string>(settings);
   const [csvData, setCSVData] = useState<string[][]>([]);
+  const [showWindowDialog, setShowWindowDialog] = useState(false);
 
   // Ensure userData and its properties are defined before accessing
   const userId = userData.id || "";
@@ -47,72 +52,116 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
   const profileRole = userData?.profile?.role || "";
 
   useEffect(() => {
-    fetchLayout();
+    fetchWindowsRooms();
     fetchCSVData();
   }, []);
 
-  const fetchLayout = () => {
+  const fetchWindowsRooms = async () => {
+    const fetchRoomsId = ["0", "1", "2", "3", "4"];
+    const fetchRoomNames = [
+      "Backyard",
+      "Entrance",
+      "Garage",
+      "LivingRoom",
+      "Bedroom",
+    ];
+    const finalRooms: { id: string; name: string }[] = fetchRoomsId.map(
+      (roomId, index) => ({
+        id: roomId,
+        name: fetchRoomNames[index],
+      })
+    );
+
+    setRooms(fetchRoomNames);
+
+    const roomsWindows: any[] = [];
+
+    for (const room of finalRooms) {
+      try {
+      
+        const getAllWindowsCommand = new GetAllWindowsCommand({id:room.id});
+          const invoker = new SHCInvoker(getAllWindowsCommand);
+          const WindowsResponse: Array<object> =
+            await invoker.executeCommand();
+
+        const roomName = room.name;
+
+        roomsWindows.push({
+          roomId: room.id,
+          roomName: roomName,
+          Windows: WindowsResponse.map((window: any) => ({
+            id: window.id,
+            isBlocked: window.isBlocked,
+          })),
+        });
+      } catch (error) {
+        console.error(`Error fetching Windows for room ${room}:`, error);
+      }
+    }
+    setRoomsWindows(roomsWindows);
+    console.log(roomsWindows)
+  };
+
+  const fetchCSVData = async () => {
     try {
-      const layout = exampleLayout.layout;
-      setRooms(getRoomsFromLayout(layout));
-      setSelectedWindowRoom(getRoomsWithWindowsFromLayout(layout)[0] || "");
+      const response = await axios.get(
+        "http://localhost:8080/api/files/csvData"
+      );
+      setCSVData(response.data);
     } catch (error) {
-      console.error("Error fetching layout:", error);
+      console.error("Error fetching CSV data:", error);
     }
   };
 
-  const getRoomsFromLayout = (layout: string[][]) => {
-    const rooms: string[] = [];
-    layout.forEach((row) => {
-      row.forEach((room) => {
-        if (room && !rooms.includes(room)) {
-          rooms.push(room);
-        }
-      });
-    });
-    return rooms;
-  };
-
-  const getRoomsWithWindowsFromLayout = (layout: string[][]) => {
-    const roomsWithWindows: string[] = [];
-    layout.forEach((row) => {
-      row.forEach((room) => {
-        if (room && !roomsWithWindows.includes(room) && hasWindow(room)) {
-          roomsWithWindows.push(room);
-        }
-      });
-    });
-    return roomsWithWindows;
-  };
-
-  const hasWindow = (room: string) => {
-    const roomData = exampleLayout[room as keyof typeof exampleLayout];
-    return roomData && "windows" in roomData && roomData.windows > 0;
-  };
-
-  const handleBlockWindow = async () => {
-    console.log(`Blocking window in ${selectedWindowRoom}`);
-
+  const toggleWindow = async (
+    roomId: string,
+    roomName: string,
+    windowId: number,
+    newStatus: boolean
+  ) => {
     try {
-      // Retrieve the window ID based on the selected room
-      const windowIdResponse = await RoomReceiver.findByName({
-        name: selectedWindowRoom,
-      });
-      const windowId = windowIdResponse.id;
+      const window = {
+        id: windowId,
+        room: {
+          id: roomId,
+        },
+        blocked: newStatus,
+      };
 
-      // Make PATCH request to block the window
-      await axios.patch(`http://localhost:8080/api/windows/${windowId}`, {
-        isBlocked: true,
-      });
+      console.log(newStatus)
 
-      console.log("Window blocked successfully");
-      writeBlockWindowToFile();
-      onClose();
+      // Call block window command 
+      if (newStatus){
+        const windowBlockCommand = new WindowBlockCommand(window)
+        const invoker = new SHCInvoker(windowBlockCommand);
+        const windowBlocked = await invoker.executeCommand();
+        writeBlockWindowToFile(roomName, windowId);
+      }
+      // Call unblock window command
+      else if(!newStatus){
+        const windowUnblockCommand = new WindowUnblockCommand(window)
+        const invoker = new SHCInvoker(windowUnblockCommand);
+        const windowUnblocked = await invoker.executeCommand();
+        writeUnblockWindowToFile(roomName, windowId);
+      }
+
+      // update the state accordingly
+      const updatedRoomsWindows = roomsWindows.map((roomWindows) => {
+        if (roomWindows.roomId === roomId) {
+          const updatedWindows = roomWindows.Windows.map((window: any) => {
+            if (window.id === windowId) {
+              return { ...window, isBlocked: newStatus };
+            }
+            return window;
+          });
+          return { ...roomWindows, Windows: updatedWindows };
+        }
+        return roomWindows;
+      });
+      setRoomsWindows(updatedRoomsWindows);
     } catch (error) {
-      console.error("Error blocking window:", error);
-      alert("Failed to block window. Please try again.");
+      console.error("Error toggling window:", error);
     }
-    location.reload();
   };
 
   const handlePlaceInhabitant = async () => {
@@ -130,9 +179,9 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
         }
       );
       console.log("Location updated successfully:", response.data);
-      setCurrentRoom(selectedTempRoom); // Update parent state with selected room
+      setCurrentRoom(selectedTempRoom); 
       writePlaceInhabitantToFile();
-      onClose();
+      // onClose();
     } catch (error: any) {
       console.error(
         "Error updating location:",
@@ -143,16 +192,6 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
     location.reload();
   };
 
-  const fetchCSVData = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:8080/api/files/csvData"
-      );
-      setCSVData(response.data);
-    } catch (error) {
-      console.error("Error fetching CSV data:", error);
-    }
-  };
 
   const handleSave = async () => {
     // Split the selected value into date/time and temperature
@@ -168,7 +207,6 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
     // Save the selected date, time, and temperature to local storage
     localStorage.setItem("date", selectedDate);
     localStorage.setItem("time", selectedTime);
-
     localStorage.setItem("temperature", selectedTemperature);
 
     writeSimulationSettingsToFile();
@@ -190,17 +228,31 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
     }
   }
 
-  const writeBlockWindowToFile = async () => {
+  const writeBlockWindowToFile = async (roomName, windowId) => {
     
     try {
       await axios.post(
         "http://localhost:8080/api/files/write",
         {
-          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Block Window\nEvent Description: User Just Blocked Window in ${selectedWindowRoom}\nend`,
+          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Block Window\nEvent Description: User Just Blocked Window Id ${windowId} in ${roomName}\nend`,
         }
       );
     } catch (error) {
       console.error("Error writing Block Window data to file:", error);
+    }
+  }
+
+  const writeUnblockWindowToFile = async (roomName, windowId) => {
+    console.log(windowId.toString(), " and ", roomName)
+    try {
+      await axios.post(
+        "http://localhost:8080/api/files/write",
+        {
+          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Unblock Window\nEvent Description: User Just Unblocked Window Id ${windowId} in ${roomName}\nend`,
+        }
+      );
+    } catch (error) {
+      console.error("Error writing Unblock Window data to file:", error);
     }
   }
 
@@ -221,6 +273,7 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
   if (!open) return null;
 
   return (
+    <>
     <div className="simulation-context-modal">
       <h2>Edit Simulation Context</h2>
       <div>
@@ -266,41 +319,86 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
       <button className="modal-buttons" onClick={handlePlaceInhabitant}>
         Place Inhabitant
       </button>
-      <label className="block-window">
-        Do you want to block a window?
-        <input
-          type="checkbox"
-          checked={windowBlocked}
-          onChange={() => setWindowBlocked(!windowBlocked)}
-        />
-      </label>
-      <div className={`block-window-in ${windowBlocked ? "" : "invisible"}`}>
-        <label>Block Window in the:</label>
-        <FormControl fullWidth variant="standard" margin="dense">
-          <InputLabel>Select Room:</InputLabel>
-          <Select
-            value={selectedWindowRoom}
-            onChange={(e) => setSelectedWindowRoom(e.target.value as string)}
-          >
-            {getRoomsWithWindowsFromLayout(exampleLayout.layout).map((room) => (
-              <MenuItem key={room} value={room}>
-                {room}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </div>
-      <button className="modal-buttons" onClick={onClose}>
+
+      <div style={{ margin: "10px 0" }}></div>
+
+      <label>Block/Unblock Windows Option</label>
+
+      <div style={{ margin: "10px 0" }}></div>
+
+      <button className="modal-buttons" onClick={() => setShowWindowDialog(true)}>
+        Manage Windows 
+      </button>
+
+      <div style={{ margin: "10px 0" }}></div>
+
+      <button className="modal-buttons" onClick={() => { onClose(); location.reload(); }}>
         Close
       </button>
-      <button
-        className={`modal-buttons ${!windowBlocked ? "invisible" : ""}`}
-        onClick={handleBlockWindow}
-        disabled={!windowBlocked}
-      >
-        {windowBlocked ? "Block Window" : ""}
-      </button>
     </div>
+
+    <Dialog
+      open={showWindowDialog}
+      onClose={() => { setShowWindowDialog(false)}}
+    >
+      <DialogContent className="dialog-container custom controls-modal">
+        <DialogContentText className="dialog-subheading custom">
+          All Windows
+        </DialogContentText>
+        <div>
+          {roomsWindows.map((roomWindows) => (
+            <div key={roomWindows.roomId}>
+              <h2>{roomWindows.roomName}</h2>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Window ID</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {roomWindows.Windows.map((window: any) => (
+                    <tr key={window.id}>
+                      <td>{`window ${window.id}`}</td>
+                      <td>{window.isBlocked ? "Blocked" : "Unblocked"}</td>
+                      <td>
+                        <button
+                          disabled={
+                            (userData.role === "Children" ||
+                              userData.role === "Guest") &&
+                            userData.location != roomWindows.roomName
+                          }
+                          className={`common-btn ${
+                            (userData.role === "Children" ||
+                              userData.role === "Guest") &&
+                            userData.location != roomWindows.roomName
+                              ? "disabled-button"
+                              : "common-btn"
+                          }`}
+                          onClick={() =>
+                            toggleWindow(
+                              roomWindows.roomId,
+                              roomWindows.roomName,
+                              window.id,
+                              !window.isBlocked
+                            )
+                          }
+                        >
+                          {window.isBlocked ? "Unblock window" : "Block window"}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ))}
+        </div>
+      </DialogContent>
+    </Dialog>  
+
+    </>
   );
 };
 
