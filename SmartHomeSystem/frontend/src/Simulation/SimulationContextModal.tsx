@@ -10,6 +10,8 @@ import "./SimulationContextModal.css";
 import exampleLayout from "../assets/exampleHouseLayout.json";
 import axios from "axios";
 import RoomReceiver from "../AxiosCommands/Command Design Pattern/receivers/RoomReceiver";
+import { timestamp } from "../Common/getTime";
+
 
 interface SimulationContextModalProps {
   open: boolean;
@@ -17,8 +19,7 @@ interface SimulationContextModalProps {
   inhabitant: string;
   currentRoom: string;
   setCurrentRoom: React.Dispatch<React.SetStateAction<string>>;
-  userId: any;
-  profileId: any;
+  userData: any;
   settings: string;
 }
 
@@ -28,8 +29,7 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
   inhabitant,
   currentRoom,
   setCurrentRoom,
-  userId,
-  profileId,
+  userData,
   settings,
 }) => {
   const [rooms, setRooms] = useState<string[]>([]);
@@ -39,6 +39,12 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
   const [simulationSettings, setSimulationSettings] =
     useState<string>(settings);
   const [csvData, setCSVData] = useState<string[][]>([]);
+
+  // Ensure userData and its properties are defined before accessing
+  const userId = userData.id || "";
+  const profileId = userData.profile?.id || "";
+  const profileName = userData.profile?.name || "";
+  const profileRole = userData?.profile?.role || "";
 
   useEffect(() => {
     fetchLayout();
@@ -100,11 +106,13 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
       });
 
       console.log("Window blocked successfully");
+      writeBlockWindowToFile();
       onClose();
     } catch (error) {
       console.error("Error blocking window:", error);
       alert("Failed to block window. Please try again.");
     }
+    location.reload();
   };
 
   const handlePlaceInhabitant = async () => {
@@ -123,6 +131,7 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
       );
       console.log("Location updated successfully:", response.data);
       setCurrentRoom(selectedTempRoom); // Update parent state with selected room
+      writePlaceInhabitantToFile();
       onClose();
     } catch (error: any) {
       console.error(
@@ -162,10 +171,52 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
 
     localStorage.setItem("temperature", selectedTemperature);
 
-    //
+    writeSimulationSettingsToFile();
 
     location.reload();
   };
+
+  const writePlaceInhabitantToFile = async () => {
+    
+    try {
+      await axios.post(
+        "http://localhost:8080/api/files/write",
+        {
+          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Move Inhabitant\nEvent Description: User Just Moved Inhabitant to ${selectedTempRoom}\nend`,
+        }
+      );
+    } catch (error) {
+      console.error("Error writing Move Inhabitant data to file:", error);
+    }
+  }
+
+  const writeBlockWindowToFile = async () => {
+    
+    try {
+      await axios.post(
+        "http://localhost:8080/api/files/write",
+        {
+          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Block Window\nEvent Description: User Just Blocked Window in ${selectedWindowRoom}\nend`,
+        }
+      );
+    } catch (error) {
+      console.error("Error writing Block Window data to file:", error);
+    }
+  }
+
+  const writeSimulationSettingsToFile = async () => {
+    
+    try {
+      await axios.post(
+        "http://localhost:8080/api/files/write",
+        {
+          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Edit Simulation Settings\nEvent Description: User Just Changed Simulation Date, Time, and Outside Temperature\nend`,
+        }
+      );
+    } catch (error) {
+      console.error("Error writing Simulation Settings data to file:", error);
+    }
+  }
 
   if (!open) return null;
 
