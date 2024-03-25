@@ -197,9 +197,8 @@ const Simulation = (props: any) => {
           inhabitant={props.userData.profile.role}
           currentRoom={selectedRoom}
           setCurrentRoom={setSelectedRoom}
-          userId={props.userData.id}
-          profileId={props.userData.profile.id}
-          settings={temperature} // to change
+          userData={props.userData}
+          settings={simulationSettings} // to change
         />
       </Modal>
       <ProfileSelection
