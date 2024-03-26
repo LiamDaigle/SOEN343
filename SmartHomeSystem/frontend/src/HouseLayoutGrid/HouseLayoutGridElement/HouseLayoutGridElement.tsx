@@ -27,6 +27,7 @@ import axios from "axios";
 import RoomUpdateHvacCommand from "../../AxiosCommands/Command Design Pattern/commands/RoomUpdateHvacCommand";
 import { Button } from "@mui/material";
 import WindowBlockedCommand from "../../AxiosCommands/Command Design Pattern/commands/WindowBlockedCommand";
+import OutputWriteReceiver from "../../AxiosCommands/Command Design Pattern/receivers/OutputWriteReceiver";
 
 interface Props {
   isEmpty: boolean;
@@ -163,6 +164,10 @@ const HouseLayoutGridElement = (props: Props) => {
                 invoker.setCommand(updateWindow);
                 invoker.executeCommand();
               });
+              OutputWriteReceiver.write(
+                "Unblock Window",
+                `User unblocked window in ${name}`
+              );
             }}
           >
             Unblock Window
@@ -190,6 +195,11 @@ const HouseLayoutGridElement = (props: Props) => {
                 invoker.setCommand(updateWindow);
                 invoker.executeCommand();
               });
+
+              OutputWriteReceiver.write(
+                "Block Window",
+                `User Blocked window in ${name}`
+              );
             }}
           >
             Block Window
@@ -224,6 +234,11 @@ const HouseLayoutGridElement = (props: Props) => {
                     invoker.setCommand(updateDoor);
                     invoker.executeCommand();
                   });
+
+                  OutputWriteReceiver.write(
+                    "Closing Door",
+                    `User closed door in ${name}`
+                  );
                 }}
                 size={50}
                 className="icon"
@@ -249,6 +264,11 @@ const HouseLayoutGridElement = (props: Props) => {
                     invoker.setCommand(updateDoor);
                     invoker.executeCommand();
                   });
+
+                  OutputWriteReceiver.write(
+                    "Opening Door",
+                    `User opened door in ${name}`
+                  );
                 }}
                 size={50}
                 className="icon"
@@ -275,6 +295,11 @@ const HouseLayoutGridElement = (props: Props) => {
                     invoker.setCommand(updateWindow);
                     invoker.executeCommand();
                   });
+
+                  OutputWriteReceiver.write(
+                    "Closing Window",
+                    `User closed window in ${name}`
+                  );
                 }}
                 size={50}
                 className="icon"
@@ -303,6 +328,11 @@ const HouseLayoutGridElement = (props: Props) => {
                     invoker.setCommand(updateWindow);
                     invoker.executeCommand();
                   });
+
+                  OutputWriteReceiver.write(
+                    "Open Window",
+                    `User opened window in ${name}`
+                  );
                 }}
                 size={50}
                 className="icon"
@@ -342,6 +372,11 @@ const HouseLayoutGridElement = (props: Props) => {
                     invoker.setCommand(updateLight);
                     invoker.executeCommand();
                   });
+
+                  OutputWriteReceiver.write(
+                    "Turn Light Off",
+                    `User turned off lights in ${name}`
+                  );
                 }}
                 size={50}
                 className="icon"
@@ -367,6 +402,11 @@ const HouseLayoutGridElement = (props: Props) => {
                     invoker.setCommand(updateLight);
                     invoker.executeCommand();
                   });
+
+                  OutputWriteReceiver.write(
+                    "Turn Light On",
+                    `User turned on lights in ${name}`
+                  );
                 }}
                 size={50}
                 className="icon"
@@ -399,6 +439,11 @@ const HouseLayoutGridElement = (props: Props) => {
                   invoker.setCommand(new RoomUpdateHvacCommand(roomId, false));
                   const result = await invoker.executeCommand();
                   console.log(result);
+
+                  OutputWriteReceiver.write(
+                    "Turn Heating Off",
+                    `User turned off heating in ${name}`
+                  );
                 }}
               />
             ) : (
@@ -423,6 +468,11 @@ const HouseLayoutGridElement = (props: Props) => {
                   invoker.setCommand(new RoomUpdateHvacCommand(roomId, true));
                   const result = await invoker.executeCommand();
                   console.log(result);
+
+                  OutputWriteReceiver.write(
+                    "Turn Heating On",
+                    `User turned on heating in ${name}`
+                  );
                 }}
               />
             )}
