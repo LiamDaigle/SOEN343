@@ -21,7 +21,9 @@ const Simulation = (props: any) => {
     return savedSpeed ? parseFloat(savedSpeed) : 1;
   });
   const [contextDialogOpen, setContextDialogOpen] = useState(false);
-  const [selectedRoom, setSelectedRoom] = useState(props.userData.profile.location);
+  const [selectedRoom, setSelectedRoom] = useState(
+    props.userData.profile.location
+  );
   const [selectUserModal, setSelectUserModal] = useState(false);
   const [date, setDate] = useState<string>(() => {
     const storedDate = localStorage.getItem("date");
@@ -66,39 +68,83 @@ const Simulation = (props: any) => {
     localStorage.setItem("timeSpeed", String(timeSpeed));
   }, [timeSpeed]);
 
+  useEffect(() => {
+    // Update time every second if simulation is on
+    let interval: any = null;
+    if (isSimulationOn) {
+      interval = setInterval(() => {
+        setTime((prevTime) => {
+          const [hoursStr, minutesStr, secondsStr] = prevTime
+            .split(":")
+            .map((str) => parseInt(str));
+          let hours = hoursStr || 0;
+          let minutes = minutesStr || 0;
+          let seconds = secondsStr || 0;
+
+          // Calculate next time based on time speed
+          let increment = Math.max(Math.floor(1 * timeSpeed), 1); // Ensure there's at least 1 second per interval
+          seconds += increment;
+
+          // Adjust minutes and hours if needed
+          if (seconds >= 60) {
+            seconds -= 60;
+            minutes += 1;
+          }
+          if (minutes >= 60) {
+            minutes -= 60;
+            hours += 1;
+          }
+          if (hours >= 24) {
+            hours -= 24;
+          }
+
+          // Format time
+          const nextTime = `${hours.toString().padStart(2, "0")}:${minutes
+            .toString()
+            .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
+          // Update the time state
+          localStorage.setItem("time", nextTime);
+          return nextTime;
+        });
+      }, 1000 / timeSpeed); // Adjust the interval based on timeSpeed
+    } else {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [isSimulationOn, timeSpeed]);
+
+  useEffect(() => {
+    const storedTime = localStorage.getItem("time");
+    if (storedTime) {
+      setTime(storedTime);
+    } else {
+      setTime("00:00");
+    }
+  }, []);
+
   const toggleSimulation = () => {
     const newValue = !isSimulationOn;
     setSimulationOn(newValue);
     // Call API to update isOpen in the database
-    axios.put(`http://localhost:8080/api/simulation/0/toggle`, { isOn: newValue })
-      .then(response => console.log(response.data))
-      .catch(error => console.error('Error toggling simulation:', error));
+    axios
+      .put(`http://localhost:8080/api/simulation/0/toggle`, { isOn: newValue })
+      .then((response) => console.log(response.data))
+      .catch((error) => console.error("Error toggling simulation:", error));
   };
 
   const handleTimeSpeedChange = (value: number) => {
+    const roundedValue = Math.round(value * 10) / 10;
+
     setTimeSpeed(value);
-    writeSpeedToFile(value);
     // Call API to update speed in the database
-    axios.patch(`http://localhost:8080/api/simulation/0/speed`, 
-    value,
-    { headers: { "Content-Type": "application/json" } })
-      .then(response => console.log(response.data))
-      .catch(error => console.error('Error updating speed:', error));
+    axios
+      .patch(`http://localhost:8080/api/simulation/0/speed`, value, {
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((response) => console.log(response.data))
+      .catch((error) => console.error("Error updating speed:", error));
   };
-
-  const writeSpeedToFile = async (speedValue) => {
-
-    try {
-      await axios.post(
-        "http://localhost:8080/api/files/write",
-        {
-          data: `Speed has been set to `+ speedValue,
-        }
-      );
-    } catch (error) {
-      console.error("Error writing Speed Off data to file:", error);
-    }
-  }
 
   const openContextDialog = () => {
     setContextDialogOpen(true);
@@ -121,7 +167,10 @@ const Simulation = (props: any) => {
           <Typography>On</Typography>
         </Stack>
         <ModeEditIcon
-          style={{ cursor: "pointer", display: isSimulationOn ? "block" : "none" }}
+          style={{
+            cursor: "pointer",
+            display: isSimulationOn ? "block" : "none",
+          }}
           onClick={openContextDialog}
         />
         <div className="user-profile-picture">
@@ -151,7 +200,8 @@ const Simulation = (props: any) => {
           <p>{temperature}</p>
         </div>{" "}
         {/* TODO: change temperature */}
-        <div           className="data-and-time"
+        <div
+          className="data-and-time"
           style={{ display: isSimulationOn ? "block" : "none" }}
         >
           <p>{date}</p>
@@ -193,4 +243,3 @@ const Simulation = (props: any) => {
 };
 
 export default Simulation;
-
