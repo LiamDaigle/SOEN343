@@ -81,7 +81,6 @@ public class TemperatureControlService {
         boolean is_simulation_on = simulation.getOn();
         double speed = simulation.getSpeed();
         long consoleSpeed = (long) (1/speed);
-        fileService.writeToFile("Simulation speed is set to: "+ speed + "x");
 
         HVACState currentState;
         double count = 0;
@@ -96,8 +95,11 @@ public class TemperatureControlService {
 
         if (Math.abs(temperatureDifference) >= 1.0) {
             currentState = HVACState.ON;
-            fileService.writeToFile("HVAC is ON");
-            fileService.writeToFile("Room Temperature is " + roomTemperature);
+        }
+
+        if(getSimulationStatus()){
+            fileService.writeToFile("Simulation speed is set to: "+ speed + "x");
+            fileService.writeToFile("Desired Temperature is "+desiredTemperature);
         }
 
         while (getSimulationStatus() && count<20) {
@@ -143,12 +145,11 @@ public class TemperatureControlService {
             fileService.writeToFile("Room Temperature: " + roomTemperature);
             Simulation simulationUpdate = simulationRepo.getSimulation(0L);
             is_simulation_on = simulationUpdate.getOn();
-            System.out.println("is simulation on? "+ is_simulation_on);
             room.setTemperature(roomTemperature);
             roomRepository.save(room);
             count++;
         }
-        fileService.writeToFile("Simulation turned off.");
+        fileService.writeToFile("Simulation Off.");
     }
 
     private double getOutsideTemperature() {

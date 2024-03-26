@@ -10,6 +10,7 @@ import com.smarthome.smarthomesystem.repositories.DoorRepository;
 import com.smarthome.smarthomesystem.repositories.LightRepository;
 import com.smarthome.smarthomesystem.repositories.RoomRepository;
 import com.smarthome.smarthomesystem.repositories.WindowRepository;
+import com.smarthome.smarthomesystem.service.TemperatureControlService;
 import com.smarthome.smarthomesystem.subject.SimulatorSubject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +40,13 @@ public class RoomController {
     private Mapper<Room, RoomDto> roomMapper;
 
     private final SimulatorSubject simulatorSubject;
+
+    private TemperatureControlService tempControl;
+
+    @Autowired
+    public void setTempControl(TemperatureControlService tempControl) {
+        this.tempControl = tempControl;
+    }
 
 
     public RoomController(Mapper<Room, RoomDto> roomMapper, SimulatorSubject simulatorSubject){
@@ -86,6 +94,13 @@ public class RoomController {
         simulatorSubject.setTemperature(newTemperature);
         simulatorSubject.setRoomId(roomId);
         simulatorSubject.notifyObservers();
+
+        // Call the updateRoomTemperature() method
+        if ( tempControl != null) {
+            tempControl.updateRoomTemperature(room);
+        } else {
+            System.out.println("TemperatureControlService is null.");
+        }
         return ResponseEntity.status(HttpStatus.OK).body("Room temperature updated successfully");
     }
 

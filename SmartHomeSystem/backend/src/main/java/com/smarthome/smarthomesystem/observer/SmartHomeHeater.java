@@ -84,14 +84,6 @@ public class SmartHomeHeater implements Observer {
             }
         }
 
-        Room optionalRoom = roomRepo.findById(roomId).orElse(null);
-
-        // Call the updateRoomTemperature() method
-        if (optionalRoom != null && tempControl != null) {
-            tempControl.updateRoomTemperature(optionalRoom);
-        } else {
-            System.out.println("Room or TemperatureControlService is null.");
-        }
     }
 
 }

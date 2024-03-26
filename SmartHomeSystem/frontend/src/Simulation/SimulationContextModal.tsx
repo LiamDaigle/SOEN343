@@ -198,10 +198,9 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
     const [selectedDate, selectedTime, selectedTemperature] =
       simulationSettings.split(", ");
     console.log(typeof parseFloat(selectedTemperature));
-
     const response = await axios.post(
       "http://localhost:8080/api/temperature",
-      selectedTemperature
+      parseFloat(selectedTemperature)
     );
 
     // Save the selected date, time, and temperature to local storage
