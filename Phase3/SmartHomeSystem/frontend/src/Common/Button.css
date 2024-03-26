@@ -1,0 +1,8 @@
+.common-btn {
+  background-color: var(--accent-color);
+  color: var(--additional-color);
+  width: 100px;
+  height: 40px;
+  font-weight: 700;
+  border-radius: 10px;
+}

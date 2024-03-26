@@ -1,0 +1,55 @@
+.dialog-container.custom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border: 2px solid var(--accent-color);
+  box-shadow: 0 0px 20px 20px var(--accent-color);
+}
+
+.dialog-subheading.custom {
+  font-size: 20px;
+  color: var(--secondary-color);
+  font-weight: 700;
+}
+
+.form.custom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.button.custom {
+  background-color: var(--accent-color);
+  color: var(--additional-color);
+  margin: 5px;
+}
+
+.button.custom:hover {
+  cursor: pointer;
+  background-color: var(--secondary-color) !important;
+  border: 2px solid var(--accent-color);
+  color: var(--text-color);
+}
+
+
+.dialog-actions.custom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-btn {
+  width: 200px;
+  font-size: 14px;
+  color: var(--primary-color);
+  outline: none;
+  border: none;
+  border-radius: 5px;
+}
+.profile-btn:hover,
+.selected {
+  cursor: pointer;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}

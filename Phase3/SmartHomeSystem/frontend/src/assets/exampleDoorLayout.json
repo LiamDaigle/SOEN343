@@ -1,0 +1,9 @@
+{
+    "id": 0,
+    "room": {
+        "id": 0,
+        "name": "Backyard"
+    },
+    "open": true,
+    "autoLock": false
+}

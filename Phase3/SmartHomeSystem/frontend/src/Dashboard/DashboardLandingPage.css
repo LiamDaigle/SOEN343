@@ -1,0 +1,13 @@
+.dashboard-content-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dashboard-content-container > * {
+  margin: 20px;
+}
+
+.tab-and-output > * {
+  margin: 16px 0px;
+}
