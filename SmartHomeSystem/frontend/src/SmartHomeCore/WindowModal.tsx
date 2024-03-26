@@ -28,10 +28,9 @@ const WindowModal: React.FC<FormDialogProps> = ({
   const [roomsWindows, setRoomsWindows] = useState<any[]>([]);
 
   // Ensure userData and its properties are defined before accessing
-  const userId = userData.id || "";
-  const profileId = userData.profile?.id || "";
-  const profileName = userData.profile?.name || "";
-  const profileRole = userData?.profile?.role || "";
+  const profileId = userData.id || "";
+  const profileName = userData.name || "";
+  const profileRole = userData.role || "";
 
   useEffect(() => {
     fetchWindowsByRoom();
@@ -158,7 +157,7 @@ const WindowModal: React.FC<FormDialogProps> = ({
   }
 
   return (
-    <Dialog open={open} onClose={() => { onClose(); location.reload(); }}>
+    <Dialog open={open} onClose={onClose}>
       <DialogContent className="dialog-container custom controls-modal">
         <DialogContentText className="dialog-subheading custom">
           All Windows
