@@ -15,10 +15,13 @@ import "../SmartHomeSimulator/Form.css";
 import ZoneModal from "./ZoneModal/ZoneModal";
 
 import { timestamp } from "../Common/getTime";
+import SHCInvoker from "../AxiosCommands/Command Design Pattern/SHCInvoker";
+import FindRoomCommand from "../AxiosCommands/Command Design Pattern/commands/FindRoomCommand";
 
 const SHHLandingPage = (props: any) => {
   const [permissionMsg, setPermissionMsg] = useState("");
   const [room, setRoom] = useState("");
+  const [roomOverride, setRoomOverride] = useState(false);
   const [temperature, setTemperature] = useState("");
   const [isOn, setIsOn] = useState(true);
   const [zoneModalOpen, setZoneModalOpen] = useState(false);
@@ -61,8 +64,14 @@ const SHHLandingPage = (props: any) => {
   }, []);
 
   // Function to handle room selection change
-  const handleChange = (event: SelectChangeEvent<string>) => {
+  const handleChange = async (event: SelectChangeEvent<string>) => {
     const newRoom = event.target.value;
+
+    const invoker = new SHCInvoker(new FindRoomCommand({ name: newRoom }));
+    const result = await invoker.executeCommand();
+
+    setRoomOverride(result.overrideZone);
+
     setRoom(newRoom);
     fetchRoomTemperature(newRoom);
   };
@@ -236,7 +245,8 @@ const SHHLandingPage = (props: any) => {
           </Button>
           {room && (
             <p style={{ color: "black" }}>
-              Current temperature in {room}: {roomTemp} degrees Celcius
+              Current temperature in {roomOverride ? "(Overriden)" : ""} {room}:{" "}
+              {roomTemp} degrees Celcius
             </p>
           )}
         </>

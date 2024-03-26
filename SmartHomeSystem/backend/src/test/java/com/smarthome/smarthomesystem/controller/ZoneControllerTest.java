@@ -12,8 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -51,5 +55,18 @@ public class ZoneControllerTest {
         verify(zoneRepository, times(1)).save(any(Zone.class));
     }
 
-    // Add more test methods for other endpoints
+    @Test
+    public void testUpdateTemperature() throws Exception {
+        Zone zone = new Zone();
+        zone.setId(1L);
+        zone.setName("Living Room");
+        zone.setTemperature(12.0);
+
+        when(zoneRepository.save(any(Zone.class))).thenReturn(zone);
+        when(zoneRepository.findById(any(Long.class))).thenReturn(Optional.of(zone));
+
+        mockMvc.perform(patch("/api/zones/1/temperature")
+                .contentType("application/json")
+                .content("15")).andExpect(status().isOk());
+    }
 }

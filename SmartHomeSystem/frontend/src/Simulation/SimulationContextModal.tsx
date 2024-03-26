@@ -192,7 +192,6 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
     location.reload();
   };
 
-
   const handleSave = async () => {
     // Split the selected value into date/time and temperature
     const [selectedDate, selectedTime, selectedTemperature] =
@@ -242,7 +241,7 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
   }
 
   const writeUnblockWindowToFile = async (roomName, windowId) => {
-    console.log(windowId.toString(), " and ", roomName)
+
     try {
       await axios.post(
         "http://localhost:8080/api/files/write",
