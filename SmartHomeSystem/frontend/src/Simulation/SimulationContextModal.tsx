@@ -196,8 +196,7 @@ const SimulationContextModal: React.FC<SimulationContextModalProps> = ({
     // Split the selected value into date/time and temperature
     const [selectedDate, selectedTime, selectedTemperature] =
       simulationSettings.split(", ");
-    console.log(parseFloat(selectedTemperature));
-
+    console.log(typeof parseFloat(selectedTemperature));
     const response = await axios.post(
       "http://localhost:8080/api/temperature",
       parseFloat(selectedTemperature)
