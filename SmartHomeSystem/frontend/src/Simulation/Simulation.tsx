@@ -10,6 +10,7 @@ import Modal from "@mui/material/Modal";
 import SimulationContextModal from "./SimulationContextModal";
 import ProfileSelection from "../SmartHomeSimulator/ProfileSelection";
 import axios from "axios";
+import { getTime, timestamp } from "../Common/getTime";
 
 const Simulation = (props: any) => {
   const [isSimulationOn, setSimulationOn] = useState(() => {
@@ -108,6 +109,7 @@ const Simulation = (props: any) => {
           return nextTime;
         });
       }, 1000 / timeSpeed); // Adjust the interval based on timeSpeed
+
     } else {
       clearInterval(interval);
     }
@@ -133,9 +135,20 @@ const Simulation = (props: any) => {
       .catch((error) => console.error("Error toggling simulation:", error));
   };
 
+  const writeSpeedToFile = async (speedValue) => {
+
+    try {
+      await axios.post("http://localhost:8080/api/files/write", {
+        data: `${timestamp} - Speed has been set to ` + speedValue + "\n",
+      });
+    } catch (error) {
+      console.error("Error writing Speed Off data to file:", error);
+    }
+  };
+
   const handleTimeSpeedChange = (value: number) => {
     const roundedValue = Math.round(value * 10) / 10;
-
+    writeSpeedToFile(value);
     setTimeSpeed(value);
     // Call API to update speed in the database
     axios
