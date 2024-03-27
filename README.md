@@ -11,6 +11,11 @@
 
 # Smart Home System
 
+## Video Demo For Sprint 3
+Please note that there are few things we could not show in the video because of the video size and the limit we had with zoom recording. We are willing to show them to you during the lab this week
+LINK:
+https://youtu.be/UQIsmzmCTmk
+
 ## Introduction
 A "Smart Home" system is a combination of hardware and software designed to automate tasks and services within a household. This technology provides homeowners with the ability to control various aspects of their homes remotely, enhancing convenience and efficiency in their daily lives. Examples include automating heating, lighting, ventilation, climate control, and other appliances connected to the Internet. However, orchestrating these connected devices poses challenges such as modularity, feature interaction, debugging, and understanding of the programming involved.
 
