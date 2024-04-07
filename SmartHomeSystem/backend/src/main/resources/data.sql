@@ -27,3 +27,5 @@ INSERT INTO lights (id, is_on, room_id) VALUES (5, true, 3);
 INSERT INTO lights (id, is_on, room_id) VALUES (6, true, 4);
 
 INSERT INTO simulation(id, is_On, speed) VALUES (0, false, 1);
+
+INSERT INTO home(id, is_away_mode_on) VALUES (0, false);
