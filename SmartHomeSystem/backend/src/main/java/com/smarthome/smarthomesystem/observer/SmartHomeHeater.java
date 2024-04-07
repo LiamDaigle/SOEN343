@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class SmartHomeHeater implements Observer {
+    private boolean isAwayMode = false;
 
     private final FileService fileService;
     private TemperatureControlService tempControl;
@@ -37,10 +38,19 @@ public class SmartHomeHeater implements Observer {
         this.tempControl = tempControl;
     }
 
-
+    @Override
+    public void updateAwayMode(boolean isAwayMode) {
+        this.isAwayMode = isAwayMode;
+    }
     // temperature is inside temperature
     @Override
     public void update(Double outsideTemperature, Double temperature, Long roomId) {
+
+        if (isAwayMode) {
+            // TODO: Logic to handle when away mode is on
+            return;
+        }
+
         System.out.println("Heater temperature updated to: " + temperature);
        // If the temperature inside the home is <= zero degrees
         if (temperature != null && temperature <= 0 ) {

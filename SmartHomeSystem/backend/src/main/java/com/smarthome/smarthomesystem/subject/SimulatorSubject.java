@@ -32,7 +32,7 @@ public class SimulatorSubject implements Subject {
 
     public void setAwayMode(boolean isAwayMode) {
         this.isAwayMode = isAwayMode;
-        notifyObservers();
+        notifyObserversAboutAwayMode();
     }
 
     @Override
@@ -51,6 +51,14 @@ public class SimulatorSubject implements Subject {
             observer.update(outsideTemperature, temperature, roomId);
         }
     }
+    @Override
+    public void notifyObserversAboutAwayMode() {
+        for (Observer observer : observers) {
+            observer.updateAwayMode(isAwayMode);
+            System.out.println("observer: " + observer.toString());
+        }
+    }
+
 
     public Double getOutsideTemperature() {
         return outsideTemperature;
