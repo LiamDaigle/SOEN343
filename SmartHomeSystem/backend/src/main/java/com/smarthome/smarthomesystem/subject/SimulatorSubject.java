@@ -16,6 +16,7 @@ public class SimulatorSubject implements Subject {
     @Setter
     private Double temperature;
 
+
     private Long roomId;
 
     public void setHvacWorking(Boolean hvacWorking) {
@@ -23,6 +24,7 @@ public class SimulatorSubject implements Subject {
     }
 
     private Boolean isHvacWorking;
+
 
 
     @Override
@@ -41,6 +43,7 @@ public class SimulatorSubject implements Subject {
             observer.update(outsideTemperature, temperature, roomId);
         }
     }
+
 
     public Double getOutsideTemperature() {
         return outsideTemperature;
