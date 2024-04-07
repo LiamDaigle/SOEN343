@@ -26,7 +26,6 @@ public class SimulatorSubject implements Subject {
 
     private Boolean isHvacWorking;
 
-
     @Override
     public void registerObserver(Observer observer) {
         observers.add(observer);
@@ -51,6 +50,7 @@ public class SimulatorSubject implements Subject {
     public void setHasMotionDetectors(Boolean hasMotionDetectors) {
         this.hasMotionDetectors = hasMotionDetectors;
     }
+
     public Double getOutsideTemperature() {
         return outsideTemperature;
     }

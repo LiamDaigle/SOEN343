@@ -5,4 +5,8 @@ import com.smarthome.smarthomesystem.observer.Observer;
 public interface Subject {
     void registerObserver(Observer observer);
     void removeObserver(Observer observer);
-    void notifyObservers();}
+    void notifyObservers();
+
+    }
+
+
