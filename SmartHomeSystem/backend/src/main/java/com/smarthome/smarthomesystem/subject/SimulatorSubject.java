@@ -16,6 +16,8 @@ public class SimulatorSubject implements Subject {
     @Setter
     private Double temperature;
 
+    private boolean isAwayMode;
+
     private Long roomId;
 
     public void setHvacWorking(Boolean hvacWorking) {
@@ -24,6 +26,14 @@ public class SimulatorSubject implements Subject {
 
     private Boolean isHvacWorking;
 
+    public boolean isAwayMode() {
+        return isAwayMode;
+    }
+
+    public void setAwayMode(boolean isAwayMode) {
+        this.isAwayMode = isAwayMode;
+        notifyObservers();
+    }
 
     @Override
     public void registerObserver(Observer observer) {
