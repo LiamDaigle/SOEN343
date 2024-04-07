@@ -26,6 +26,12 @@ const SHHLandingPage = (props: any) => {
   const [isOn, setIsOn] = useState(true);
   const [zoneModalOpen, setZoneModalOpen] = useState(false);
   const [roomTemp, setRoomTemp] = useState("");
+  const [subscribeSHP, setSubscribeSHP] = useState(false);
+
+  const [awayModeOn, setAwayModeOn] = useState(() => {
+    const storedAwayMode = localStorage.getItem("awayModeSHP");
+    return storedAwayMode ? JSON.parse(storedAwayMode) : false;
+  });
 
   // Ensure props.userData and its properties are defined before accessing
   const userId = props.userData?.user?.id || "";
@@ -61,6 +67,8 @@ const SHHLandingPage = (props: any) => {
   // Call setPermissionMessage only once after the initial render
   useEffect(() => {
     setPermissionMessage();
+
+    // 
   }, []);
 
   // Function to handle room selection change
@@ -192,6 +200,13 @@ const SHHLandingPage = (props: any) => {
         >
           Zones
         </Button>
+        <Button
+          className="button custom"
+          onClick={() => setSubscribeSHP(!subscribeSHP)}
+        >
+          {subscribeSHP ? "Unsubscribe to SHP" : "Subscribe to SHP"}
+        </Button>
+
       </div>
 
       {isOn ? (
