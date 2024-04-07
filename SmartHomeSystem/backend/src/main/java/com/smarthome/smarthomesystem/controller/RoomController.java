@@ -120,4 +120,31 @@ public class RoomController {
         simulatorSubject.notifyObservers();
         return ResponseEntity.status(HttpStatus.OK).body("Room temperature updated successfully");
     }
+
+    @GetMapping("/api/rooms/{roomId}/hasMotionDetectors")
+    public ResponseEntity<Boolean> getHasMotionDetectors(@PathVariable("roomId") Long roomId){
+        Optional<Room> room = roomRepository.findById(roomId);
+
+        if(room.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(room.get().getHasMotionDetector(), HttpStatus.OK);
+    }
+
+    @PatchMapping("/api/rooms/{roomId}/hasMotionDetectors")
+    public ResponseEntity<String> updateRoomHasMotionDetectors(@PathVariable("roomId") Long roomId, @RequestBody Boolean hasMotionDetectors) {
+        Optional<Room> optionalRoom = roomRepository.findById(roomId);
+
+        if (optionalRoom.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Room room = optionalRoom.get();
+        room.setHasMotionDetector(hasMotionDetectors);
+        roomRepository.save(room);
+        simulatorSubject.setHasMotionDetectors(hasMotionDetectors);
+        simulatorSubject.setRoomId(roomId);
+        simulatorSubject.notifyObservers();
+        return ResponseEntity.status(HttpStatus.OK).body("Motion Detectors updated successfully");
+    }
 }

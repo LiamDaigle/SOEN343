@@ -19,4 +19,6 @@ public class Home {
     private Long id;
 
     private boolean isAwayModeOn;
+
+    private Integer timeToCallPolice;
 }
