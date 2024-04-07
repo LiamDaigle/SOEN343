@@ -47,7 +47,6 @@ public class SmartHomeHeater implements Observer {
     public void update(Double outsideTemperature, Double temperature, Long roomId) {
 
         if (isAwayMode) {
-            // TODO: Logic to handle when away mode is on
             return;
         }
 

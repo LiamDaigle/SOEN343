@@ -5,6 +5,7 @@ import com.smarthome.smarthomesystem.domain.dtos.HomeDto;
 import com.smarthome.smarthomesystem.mappers.Mapper;
 import com.smarthome.smarthomesystem.repositories.HomeRepository;
 import com.smarthome.smarthomesystem.subject.SimulatorSubject;
+import com.smarthome.smarthomesystem.subject.SmartHomeSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class HomeController {
     private Mapper<Home, HomeDto> homeMapper;
 
     @Autowired
-    private SimulatorSubject simulatorSubject;
+    private SmartHomeSecurity smartHomeSecurity;
 
     public HomeController(Mapper<Home, HomeDto> homeMapper){
         this.homeMapper = homeMapper;
@@ -48,7 +49,7 @@ public class HomeController {
         home.get().setAwayModeOn(newAwayMode);
         homeRepository.save(home.get());
 
-        simulatorSubject.setAwayMode(newAwayMode); // Notify observers about away mode change
+        smartHomeSecurity.setAwayMode(newAwayMode); // Notify observers about away mode change
 
         return new ResponseEntity<>(newAwayMode, HttpStatus.OK);
     }
