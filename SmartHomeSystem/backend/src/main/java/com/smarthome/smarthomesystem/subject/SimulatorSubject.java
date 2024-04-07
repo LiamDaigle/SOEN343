@@ -18,12 +18,13 @@ public class SimulatorSubject implements Subject {
 
     private Long roomId;
 
+    private Boolean hasMotionDetectors;
+
     public void setHvacWorking(Boolean hvacWorking) {
         isHvacWorking = hvacWorking;
     }
 
     private Boolean isHvacWorking;
-
 
     @Override
     public void registerObserver(Observer observer) {
@@ -40,6 +41,14 @@ public class SimulatorSubject implements Subject {
         for (Observer observer : observers) {
             observer.update(outsideTemperature, temperature, roomId);
         }
+    }
+
+    public Boolean getHasMotionDetectors() {
+        return hasMotionDetectors;
+    }
+
+    public void setHasMotionDetectors(Boolean hasMotionDetectors) {
+        this.hasMotionDetectors = hasMotionDetectors;
     }
 
     public Double getOutsideTemperature() {

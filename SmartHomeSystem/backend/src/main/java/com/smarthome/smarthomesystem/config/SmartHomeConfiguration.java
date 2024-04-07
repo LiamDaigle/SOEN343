@@ -5,6 +5,7 @@ import com.smarthome.smarthomesystem.service.TemperatureControlService;
 import com.smarthome.smarthomesystem.subject.SimulatorSubject;
 import com.smarthome.smarthomesystem.observer.SmartHomeHeater;
 import com.smarthome.smarthomesystem.service.FileService;
+import com.smarthome.smarthomesystem.subject.SmartHomeSecurity;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,9 +18,13 @@ public class SmartHomeConfiguration {
     }
 
     @Bean
-    public SmartHomeHeater smartHomeHeater(FileService fileService, SimulatorSubject simulatorSubject) {
-        SmartHomeHeater smartHomeHeater = new SmartHomeHeater(fileService);
-        simulatorSubject.registerObserver(smartHomeHeater);
-        return smartHomeHeater;
+    public SmartHomeSecurity smartHomeSecurity() {return new SmartHomeSecurity();}
+
+    @Bean
+    public SmartHomeHeater smartHomeHeater(FileService fileService, SimulatorSubject simulatorSubject, SmartHomeSecurity smartHomeSecurity) {
+            SmartHomeHeater smartHomeHeater = new SmartHomeHeater(fileService);
+            simulatorSubject.registerObserver(smartHomeHeater);
+            smartHomeSecurity.registerObserver(smartHomeHeater);
+            return smartHomeHeater;
     }
 }

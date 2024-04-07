@@ -37,6 +37,22 @@ class RoomReceiver{
         });
         return result.data;
     }
+
+    static async updateMotionDetectors(roomId:number, hasMotionDetectors: boolean){
+        //http://localhost:8080/api/rooms/0/hasMotionDetectors
+        const result = await axios.patch(this.baseUrl + `/${roomId}/hasMotionDetectors`, JSON.stringify(hasMotionDetectors), {
+            headers: {
+                "content-type": "application/json",
+            }
+        })
+        return result.data;
+    }
+
+    static async getMotionDetectors(roomId:number){
+        //http://localhost:8080/api/rooms/0/hasMotionDetectors
+        const result = await axios.get(this.baseUrl + `/${roomId}/hasMotionDetectors`);
+        return result.data;
+    }
 }
 
 export default RoomReceiver;

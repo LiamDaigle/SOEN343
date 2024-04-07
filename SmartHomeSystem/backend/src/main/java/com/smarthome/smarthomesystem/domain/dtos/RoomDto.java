@@ -22,4 +22,6 @@ public class RoomDto {
     private Boolean isHvacWorking;
 
     private Boolean overrideZone;
+
+    private Boolean hasMotionDetector;
 }

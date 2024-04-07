@@ -15,6 +15,15 @@ class HomeReceiver{
         const result = await axios.post(this.baseUrl + `/switchIsAway`);
         return result;
     }
+
+    static async setTime(time:number){
+        const result = await axios.post(this.baseUrl + "/setTime", JSON.stringify(time), {
+            headers:{
+                "content-type": "application/json",
+            }
+        });
+        return result;
+    }
 }
 
 export default HomeReceiver;
