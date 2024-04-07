@@ -1,13 +1,10 @@
-
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Typography,
-} from "@mui/material";
-import axios from "axios";
+import { Switch, Typography } from "@mui/material";
 import "../SmartHomeSimulator/Form.css";
 
 import { timestamp } from "../Common/getTime";
+import SHCInvoker from "../AxiosCommands/Command Design Pattern/SHCInvoker";
+import SwitchIsAwayModeCommand from "../AxiosCommands/Command Design Pattern/commands/SwitchIsAwayModeCommand";
 
 const SHPLandingPage = (props: any) => {
   const [permissionMsg, setPermissionMsg] = useState("");
@@ -19,8 +16,8 @@ const SHPLandingPage = (props: any) => {
   const profileName = props.userData?.profile?.name || "";
   const profileRole = props.userData?.profile?.role || "";
 
-   // Function to set permissions of SHP
-   const setPermissions = () => {
+  // Function to set permissions of SHP
+  const setPermissions = () => {
     if (profileRole === "Parent") {
       setPermissionMsg(
         "All permissions granted to operate the SHP from home, or remotely"
@@ -43,7 +40,7 @@ const SHPLandingPage = (props: any) => {
   useEffect(() => {
     setPermissions();
   }, []);
-  
+
   return (
     <div
       className="SHP-container"
@@ -51,15 +48,37 @@ const SHPLandingPage = (props: any) => {
         backgroundColor: "white",
         border: "1px solid black",
         padding: "1rem",
-      }}>
+      }}
+    >
       {permissionMsg && <p style={{ color: "black" }}>{permissionMsg}</p>}
-
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <Typography style={{ color: "black" }}>Off</Typography>
+        <Switch
+          checked={isOn}
+          onChange={async () => {
+            localStorage.setItem("SHP_on", `${!isOn}`);
+            setIsOn(!isOn);
+            const invoker = new SHCInvoker(new SwitchIsAwayModeCommand());
+            const result = await invoker.executeCommand();
+            console.log(result.data === true ? "Turned On" : "Turned Off");
+          }}
+          color="warning"
+        />
+        <Typography style={{ color: "black", marginRight: "1vw" }}>
+          On
+        </Typography>
+      </div>
       {isOn && (
         <>
-        {/* The UI components and functionality will be added here based on the user's permissions */}
+          {/* The UI components and functionality will be added here based on the user's permissions */}
         </>
       )}
-
     </div>
   );
 };
