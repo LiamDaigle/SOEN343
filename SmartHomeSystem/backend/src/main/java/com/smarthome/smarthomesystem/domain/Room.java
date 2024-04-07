@@ -30,6 +30,8 @@ public class Room {
 
     private Boolean overrideZone;
 
+    private Boolean hasMotionDetector;
+
     public void setHvacWorking(Boolean b) {
         isHvacWorking = b;
     }

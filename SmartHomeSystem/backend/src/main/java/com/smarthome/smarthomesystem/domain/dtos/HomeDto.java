@@ -14,4 +14,6 @@ public class HomeDto {
     private Long id;
 
     private boolean isAwayModeOn;
+
+    private Integer timeToCallPolice;
 }

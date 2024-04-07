@@ -9,9 +9,7 @@ import com.smarthome.smarthomesystem.subject.SmartHomeSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -52,5 +50,15 @@ public class HomeController {
         smartHomeSecurity.setAwayMode(newAwayMode); // Notify observers about away mode change
 
         return new ResponseEntity<>(newAwayMode, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/api/home/setTime")
+    public ResponseEntity<String> setTime(@RequestBody Integer time){
+        Optional<Home> home = homeRepository.findById(0L);
+        if(home.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        home.get().setTimeToCallPolice(time);
+        homeRepository.save(home.get());
+        return new ResponseEntity<>("Timer changed to: " + time + " seconds", HttpStatus.OK);
     }
 }
