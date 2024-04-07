@@ -3,6 +3,7 @@ import "./TabComponent.css";
 import SHSLandingPage from "../SmartHomeSimulator/SHSLandingPage";
 import SHCLandingPage from "../SmartHomeCore/SHCLandingPage";
 import SHHLandingPage from "../SmartHomeHeating/SHHLandingPage";
+import SHPLandingPage from "../SmartHomeSecurity/SHPLandingPage";
 
 const TabComponent = (props: any) => {
   const [activeTab, setActiveTab] = useState(0);
@@ -31,7 +32,7 @@ const TabComponent = (props: any) => {
         )}
         {activeTab === 1 && (<SHHLandingPage userData={props.userData}/>)}
         {activeTab === 2 && (<SHCLandingPage userData={props.userData}/>)}
-        {activeTab === 3 && <p>Content of SHP Tab</p>}
+        {activeTab === 3 && (<SHPLandingPage userData={props.userData}/>)}
       </div>
     </div>
   );
