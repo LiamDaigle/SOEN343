@@ -9,6 +9,7 @@ import RoomGetMotionDetectorsCommand from "../AxiosCommands/Command Design Patte
 import RoomUpdateMotionDetectorsCommand from "../AxiosCommands/Command Design Pattern/commands/RoomUpdateMotionDetectors";
 import MotionDetectorModal from "./MotionDetectorModal";
 import HomeSetTimeCommands from "../AxiosCommands/Command Design Pattern/commands/HomeSetTimeCommand";
+import axios from "axios";
 
 const SHPLandingPage = (props: any) => {
   const [permissionMsg, setPermissionMsg] = useState("");
@@ -25,7 +26,7 @@ const SHPLandingPage = (props: any) => {
   const profileRole = props.userData?.profile?.role || "";
 
   // Function to set permissions of SHP
-  const setPermissions = () => {
+  const setPermissions = async () => {
     if (profileRole === "Parent") {
       setPermissionMsg(
         "All permissions granted to operate the SHP from home, or remotely"
@@ -49,12 +50,31 @@ const SHPLandingPage = (props: any) => {
     setPermissions();
   }, []);
 
-  const submitTime = () => {
+  const submitTime = async () => {
     setRenderTimeError(awayModeTimeError);
+
     if (awayModeTimeError) return;
     const invoker = new SHCInvoker(new HomeSetTimeCommands(awayModeTime));
     invoker.executeCommand();
+    try {
+      await axios.post("http://localhost:8080/api/files/write", {
+        data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Time To Call The Police\nEvent Description: User Just Set a Time To Call the Police in ${awayModeTime}\n`,
+      });
+    } catch (error) {
+      console.error("Error writing  SHP data to file:", error);
+    }
   };
+
+  const actionDetail = isOn ? "Turned Off" : "Turned On";
+  const logMessage = `
+  Timestamp: ${timestamp}
+  Profile ID: ${profileId}
+  Profile Name: ${profileName}
+  Role: ${profileRole}
+  Event Type: Away Mode
+  Event Description: User ${actionDetail} SHP
+`;
+
   return (
     <div
       className="SHP-container"
@@ -80,7 +100,13 @@ const SHPLandingPage = (props: any) => {
             setIsOn(!isOn);
             const invoker = new SHCInvoker(new SwitchIsAwayModeCommand());
             const result = await invoker.executeCommand();
-            console.log(result.data === true ? "Turned On" : "Turned Off");
+            try {
+              await axios.post("http://localhost:8080/api/files/write", {
+                data: logMessage,
+              });
+            } catch (error) {
+              console.error("Error writing  SHP data to file:", error);
+            }
           }}
           color="warning"
         />
