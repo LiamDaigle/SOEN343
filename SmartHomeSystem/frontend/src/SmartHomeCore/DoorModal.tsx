@@ -9,6 +9,8 @@ import SHCInvoker from "../AxiosCommands/Command Design Pattern/SHCInvoker";
 import DoorCloseCommand from "../AxiosCommands/Command Design Pattern/commands/DoorCloseCommand";
 import GetAllDoorsCommand from "../AxiosCommands/Command Design Pattern/commands/GetAllDoorsCommand";
 import { timestamp } from "../Common/getTime";
+import DoorGetByIdCommand from "../AxiosCommands/Command Design Pattern/commands/DoorGetByIdCommand";
+import RoomFindAllCommand from "../AxiosCommands/Command Design Pattern/commands/RoomFindAllCommand";
 
 interface FormDialogProps {
   open: boolean;
@@ -26,19 +28,13 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
 
   useEffect(() => {
     const fetchDoorsByRoom = async () => {
-      const fetchRoomsId = ["0", "1", "2", "3", "4"];
-      const fetchRoomNames = [
-        "Backyard",
-        "Entrance",
-        "Garage",
-        "LivingRoom",
-        "Bedroom",
-      ];
+      const invoker = new SHCInvoker(new RoomFindAllCommand());
+      const allRooms = await invoker.executeCommand();
 
-      const finalRooms: { id: string; name: string }[] = fetchRoomsId.map(
-        (roomId, index) => ({
-          id: roomId,
-          name: fetchRoomNames[index],
+      const finalRooms: { id: string; name: string }[] = allRooms.map(
+        (room) => ({
+          id: room.id,
+          name: room.name,
         })
       );
 
@@ -46,10 +42,9 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
 
       for (const room of finalRooms) {
         try {
-          const getAllDoorsCommand = new GetAllDoorsCommand({id:room.id});
+          const getAllDoorsCommand = new GetAllDoorsCommand(room);
           const invoker = new SHCInvoker(getAllDoorsCommand);
-          const doorsResponse: Array<object> =
-            await invoker.executeCommand();
+          const doorsResponse: Array<object> = await invoker.executeCommand();
 
           const roomName = room.name;
 
@@ -89,18 +84,21 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
         autoLock: autoLock,
       };
 
-      // Call open door command 
-      if (newStatus){
-        const doorOpenCommand = new DoorOpenCommand(door)
-        const invoker = new SHCInvoker(doorOpenCommand);
+      const invoker = new SHCInvoker(new DoorGetByIdCommand(door.id));
+      const result = await invoker.executeCommand();
+      const fetchDoor = result.data;
+      // Call open door command
+      if (newStatus) {
+        const invoker = new SHCInvoker(new DoorOpenCommand(fetchDoor));
         const doorOpened = await invoker.executeCommand();
+        console.log(doorOpened);
         writeOpenDoorToFile(roomName, doorId);
       }
       // Call close door command
-      else if(!newStatus){
-        const doorCloseCommand = new DoorCloseCommand(door)
-        const invoker = new SHCInvoker(doorCloseCommand);
+      else if (!newStatus) {
+        const invoker = new SHCInvoker(new DoorCloseCommand(fetchDoor));
         const doorClosed = await invoker.executeCommand();
+        console.log(doorClosed);
         writeCloseDoorToFile(roomName, doorId);
       }
 
@@ -120,36 +118,30 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
       setRoomsDoors(updatedRoomsDoors);
     } catch (error) {
       console.error("Error toggling door:", error);
+    } finally {
+      location.reload();
     }
   };
 
   const writeOpenDoorToFile = async (roomName, doorId) => {
-    
     try {
-      await axios.post(
-        "http://localhost:8080/api/files/write",
-        {
-          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Open Door\nEvent Description: User Just Opened Door Id ${doorId} in ${roomName}\nend`,
-        }
-      );
+      await axios.post("http://localhost:8080/api/files/write", {
+        data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Open Door\nEvent Description: User Just Opened Door Id ${doorId} in ${roomName}\nend`,
+      });
     } catch (error) {
       console.error("Error writing Open Door data to file:", error);
     }
-  }
+  };
 
   const writeCloseDoorToFile = async (roomName, doorId) => {
-
     try {
-      await axios.post(
-        "http://localhost:8080/api/files/write",
-        {
-          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Close Door\nEvent Description: User Just Closed Door Id ${doorId} in ${roomName}\nend`,
-        }
-      );
+      await axios.post("http://localhost:8080/api/files/write", {
+        data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Close Door\nEvent Description: User Just Closed Door Id ${doorId} in ${roomName}\nend`,
+      });
     } catch (error) {
       console.error("Error writing Close Door data to file:", error);
     }
-  }
+  };
 
   return (
     <Dialog open={open} onClose={onClose}>

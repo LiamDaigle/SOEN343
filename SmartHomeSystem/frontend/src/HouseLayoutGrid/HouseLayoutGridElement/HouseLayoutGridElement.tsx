@@ -79,79 +79,78 @@ const HouseLayoutGridElement = (props: Props) => {
         const occupied = profilesResponse.data.some(
           (profile) => profile.location === name
         );
-        setMotionDetected(occupied);
         setIsOccupied(occupied);
+        setMotionDetected(occupied);
+        const invoker = new SHCInvoker(new FindRoomCommand({ name: name }));
+        const room = await invoker.executeCommand();
+
+        const result = await axios.get(
+          `http://localhost:8080/api/rooms/${room.id}/hasMotionDetectors`
+        );
+        setHasMotionDetector(result.data);
+
+        if (result.data) {
+          OutputWriteReceiver.write(
+            "Motion Detected",
+            `Motion detected in ${name}`
+          );
+        }
       } catch (error) {
         console.error("Error fetching profiles:", error);
         // Handle error if necessary
       }
+    };
 
+    const fetchRoomData = async () => {
       const invoker = new SHCInvoker(new FindRoomCommand({ name: name }));
       const room = await invoker.executeCommand();
 
-      console.log("room: ");
-      console.log(room);
+      invoker.setCommand(new GetAllDoorsCommand(room));
+      const doors = await invoker.executeCommand();
 
-      const result = await axios.get(
-        `http://localhost:8080/api/rooms/${room.id}/hasMotionDetectors`
-      );
-      console.log("Motion Detector:");
-      console.log(result.data);
-      setHasMotionDetector(result.data);
-    };
-
-    fetchData();
-  }, [props.user.id]);
-
-  useEffect(() => {
-    const fetchDoorsByRoom = async () => {
-      const fetchRoomsId = ["0", "1", "2", "3", "4"];
-      const fetchRoomNames = [
-        "Backyard",
-        "Entrance",
-        "Garage",
-        "LivingRoom",
-        "Bedroom",
-      ];
-
-      const finalRooms: { id: string; name: string }[] = fetchRoomsId.map(
-        (roomId, index) => ({
-          id: roomId,
-          name: fetchRoomNames[index],
-        })
-      );
-
-      const roomsDoors: any[] = [];
-
-      for (const room of finalRooms) {
-        try {
-          const doorsResponse = await axios.post(
-            "http://localhost:8080/api/rooms/findAllDoors",
-            {
-              id: room.id,
-            }
-          );
-
-          const roomName = room.name;
-
-          roomsDoors.push({
-            roomId: room.id,
-            roomName: roomName,
-            doors: doorsResponse.data.map((door: any) => ({
-              id: door.id,
-              open: door.open,
-            })),
-          });
-        } catch (error) {
-          console.error(`Error fetching doors for room ${room}:`, error);
+      for (let i = 0; i < doors.length; i++) {
+        const door = doors[i];
+        if (door.open == true) {
+          setDoorOpen(true);
+          break;
         }
       }
 
-      setRoomsDoors(roomsDoors);
+      invoker.setCommand(new GetAllWindowsCommand(room));
+      const windows = await invoker.executeCommand();
+
+      for (let i = 0; i < windows.length; i++) {
+        const window = windows[i];
+        console.log(window);
+        if (window.open) {
+          setWindowOpen(true);
+        }
+        if (window.isBlocked) {
+          setWindowBlocked(true);
+        }
+      }
+
+      invoker.setCommand(new GetAllLightsCommand(room));
+      const lights = await invoker.executeCommand();
+
+      for (let i = 0; i < lights.length; i++) {
+        const light = lights[i];
+        if (light.on == true) {
+          setLightOn(true);
+          break;
+        }
+      }
+
+      setHeatingOn(localStorage.getItem("SHH_on") == "true");
+
+      addEventListener("heating", () => {
+        setHeatingOn(localStorage.getItem("SHH_on") == "true");
+      });
     };
 
-    fetchDoorsByRoom();
-  }, []);
+    fetchData();
+    fetchRoomData();
+  }, [props.user.id]);
 
   return (
     <td key={name} className={css}>
@@ -186,6 +185,7 @@ const HouseLayoutGridElement = (props: Props) => {
                 "Unblock Window",
                 `User unblocked window in ${name}`
               );
+              location.reload();
             }}
           >
             Unblock Window
@@ -218,6 +218,7 @@ const HouseLayoutGridElement = (props: Props) => {
                 "Block Window",
                 `User Blocked window in ${name}`
               );
+              location.reload();
             }}
           >
             Block Window
@@ -232,138 +233,18 @@ const HouseLayoutGridElement = (props: Props) => {
         <>
           <div className="icon-row">
             {doorOpen ? (
-              <FaDoorOpen
-                onClick={async () => {
-                  console.log("Door Closed");
-                  setDoorOpen(false);
-
-                  const findRoomCommand = new FindRoomCommand({ name: name });
-                  const invoker = new SHCInvoker(findRoomCommand);
-                  const room = await invoker.executeCommand();
-
-                  const getAllDoorsCommand = new GetAllDoorsCommand(room);
-                  invoker.setCommand(getAllDoorsCommand);
-                  const doorList: Array<object> =
-                    await invoker.executeCommand();
-
-                  doorList.forEach((door) => {
-                    console.log(door);
-                    const updateDoor = new DoorCloseCommand(door);
-                    invoker.setCommand(updateDoor);
-                    invoker.executeCommand();
-                  });
-
-                  OutputWriteReceiver.write(
-                    "Closing Door",
-                    `User closed door in ${name}`
-                  );
-                }}
-                size={50}
-                className="icon"
-              />
+              <FaDoorOpen size={50} className="icon" />
             ) : (
-              <FaDoorClosed
-                onClick={async () => {
-                  console.log("Door Opened");
-                  setDoorOpen(true);
-
-                  const findRoomCommand = new FindRoomCommand({ name: name });
-                  const invoker = new SHCInvoker(findRoomCommand);
-                  const room = await invoker.executeCommand();
-
-                  const getAllDoorsCommand = new GetAllDoorsCommand(room);
-                  invoker.setCommand(getAllDoorsCommand);
-                  const doorList: Array<object> =
-                    await invoker.executeCommand();
-
-                  doorList.forEach((door) => {
-                    console.log(door);
-                    const updateDoor = new DoorOpenCommand(door);
-                    invoker.setCommand(updateDoor);
-                    invoker.executeCommand();
-                  });
-
-                  OutputWriteReceiver.write(
-                    "Opening Door",
-                    `User opened door in ${name}`
-                  );
-                }}
-                size={50}
-                className="icon"
-              />
+              <FaDoorClosed size={50} className="icon" />
             )}
-            {windowOpen ? (
-              <GiWindow
-                onClick={async () => {
-                  console.log("Window Closed");
-                  setWindowOpen(false);
-
-                  const findRoomCommand = new FindRoomCommand({ name: name });
-                  const invoker = new SHCInvoker(findRoomCommand);
-                  const room = await invoker.executeCommand();
-
-                  const getAllWindowsCommand = new GetAllWindowsCommand(room);
-                  invoker.setCommand(getAllWindowsCommand);
-                  const windowList: Array<object> =
-                    await invoker.executeCommand();
-
-                  windowList.forEach((window) => {
-                    console.log(window);
-                    const updateWindow = new WindowCloseCommand(window);
-                    invoker.setCommand(updateWindow);
-                    invoker.executeCommand();
-                  });
-
-                  OutputWriteReceiver.write(
-                    "Closing Window",
-                    `User closed window in ${name}`
-                  );
-                }}
-                size={50}
-                className="icon"
-              />
+            {windowBlocked ? <TbWindowOff size={50} className="icon" /> : <></>}
+            {windowOpen && !windowBlocked ? (
+              <GiWindow size={50} className="icon" />
             ) : (
               <></>
             )}
             {!windowOpen && !windowBlocked ? (
-              <GiWindowBars
-                onClick={async () => {
-                  console.log("Window Opened");
-                  setWindowOpen(true);
-
-                  const findRoomCommand = new FindRoomCommand({ name: name });
-                  const invoker = new SHCInvoker(findRoomCommand);
-                  const room = await invoker.executeCommand();
-
-                  const getAllWindowsCommand = new GetAllWindowsCommand(room);
-                  invoker.setCommand(getAllWindowsCommand);
-                  const windowList: Array<object> =
-                    await invoker.executeCommand();
-
-                  windowList.forEach((window) => {
-                    console.log(window);
-                    const updateWindow = new WindowOpenCommand(window);
-                    invoker.setCommand(updateWindow);
-                    invoker.executeCommand();
-                  });
-
-                  OutputWriteReceiver.write(
-                    "Open Window",
-                    `User opened window in ${name}`
-                  );
-                }}
-                size={50}
-                className="icon"
-              />
-            ) : (
-              <></>
-            )}
-            {!windowOpen && windowBlocked ? (
-              <TbWindowOff
-                size={50}
-                className="icon"
-                onClick={() => setWindowOpen(true)}
-              />
+              <GiWindowBars size={50} className="icon" />
             ) : (
               <></>
             )}
@@ -380,65 +261,9 @@ const HouseLayoutGridElement = (props: Props) => {
           </div>
           <div className="icon-row">
             {lightOn ? (
-              <FaRegLightbulb
-                onClick={async () => {
-                  console.log("Turned Light Off");
-                  setLightOn(false);
-
-                  const findRoomCommand = new FindRoomCommand({ name: name });
-                  const invoker = new SHCInvoker(findRoomCommand);
-                  const room = await invoker.executeCommand();
-
-                  const getAllLightsCommand = new GetAllLightsCommand(room);
-                  invoker.setCommand(getAllLightsCommand);
-                  const lightList: Array<object> =
-                    await invoker.executeCommand();
-
-                  lightList.forEach((light) => {
-                    console.log(light);
-                    const updateLight = new LightOffCommand(light);
-                    invoker.setCommand(updateLight);
-                    invoker.executeCommand();
-                  });
-
-                  OutputWriteReceiver.write(
-                    "Turn Light Off",
-                    `User turned off lights in ${name}`
-                  );
-                }}
-                size={50}
-                className="icon"
-              />
+              <FaRegLightbulb size={50} className="icon" />
             ) : (
-              <FaLightbulb
-                onClick={async () => {
-                  console.log("Turned Light On");
-                  setLightOn(true);
-
-                  const findRoomCommand = new FindRoomCommand({ name: name });
-                  const invoker = new SHCInvoker(findRoomCommand);
-                  const room = await invoker.executeCommand();
-
-                  const getAllLightsCommand = new GetAllLightsCommand(room);
-                  invoker.setCommand(getAllLightsCommand);
-                  const lightList: Array<object> =
-                    await invoker.executeCommand();
-
-                  lightList.forEach((light) => {
-                    console.log(light);
-                    const updateLight = new LightOnCommand(light);
-                    invoker.setCommand(updateLight);
-                    invoker.executeCommand();
-                  });
-
-                  OutputWriteReceiver.write(
-                    "Turn Light On",
-                    `User turned on lights in ${name}`
-                  );
-                }}
-                size={50}
-                className="icon"
-              />
+              <FaLightbulb size={50} className="icon" />
             )}
             {isOccupied ? (
               <BsPersonFill size={50} className="icon" /> // Using BsPersonFill when room is occupied
@@ -446,63 +271,9 @@ const HouseLayoutGridElement = (props: Props) => {
               <BsPerson size={50} className="icon" />
             )}
             {heatingOn ? (
-              <TbAirConditioning
-                size={50}
-                className="icon"
-                onClick={async () => {
-                  const isSHHOn = localStorage.getItem("SHH_on");
-                  if (isSHHOn === "false") {
-                    console.log("Cannot modify heating, SHH is turned off.");
-                    return;
-                  }
-                  console.log("Set heating to off");
-                  setHeatingOn(false);
-
-                  const findRoomCommand = new FindRoomCommand({ name: name });
-                  const invoker = new SHCInvoker(findRoomCommand);
-                  const room = await invoker.executeCommand();
-                  const roomId = room.id;
-                  console.log(roomId);
-
-                  invoker.setCommand(new RoomUpdateHvacCommand(roomId, false));
-                  const result = await invoker.executeCommand();
-                  console.log(result);
-
-                  OutputWriteReceiver.write(
-                    "Turn Heating Off",
-                    `User turned off heating in ${name}`
-                  );
-                }}
-              />
+              <TbAirConditioning size={50} className="icon" />
             ) : (
-              <TbAirConditioningDisabled
-                size={50}
-                className="icon"
-                onClick={async () => {
-                  const isSHHOn = localStorage.getItem("SHH_on");
-                  if (isSHHOn === "false") {
-                    console.log("Cannot modify heating, SHH is turned off.");
-                    return;
-                  }
-                  console.log("Set heating to on");
-                  setHeatingOn(true);
-
-                  const findRoomCommand = new FindRoomCommand({ name: name });
-                  const invoker = new SHCInvoker(findRoomCommand);
-                  const room = await invoker.executeCommand();
-                  const roomId = room.id;
-                  console.log(roomId);
-
-                  invoker.setCommand(new RoomUpdateHvacCommand(roomId, true));
-                  const result = await invoker.executeCommand();
-                  console.log(result);
-
-                  OutputWriteReceiver.write(
-                    "Turn Heating On",
-                    `User turned on heating in ${name}`
-                  );
-                }}
-              />
+              <TbAirConditioningDisabled size={50} className="icon" />
             )}
           </div>
         </>

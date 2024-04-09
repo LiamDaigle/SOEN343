@@ -20,6 +20,11 @@ class WindowReceiver{
         })
         return result.data;
     }
+
+    static async getById(id:number){
+        const result = await axios.get(this.baseUrl + `/${id}`)
+        return result;
+    }
 }
 
 export default WindowReceiver;

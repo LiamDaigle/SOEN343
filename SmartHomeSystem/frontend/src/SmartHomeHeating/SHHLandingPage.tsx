@@ -61,6 +61,8 @@ const SHHLandingPage = (props: any) => {
   // Call setPermissionMessage only once after the initial render
   useEffect(() => {
     setPermissionMessage();
+
+    setIsOn(localStorage.getItem("SHH_on") === "true");
   }, []);
 
   // Function to handle room selection change
@@ -121,7 +123,6 @@ const SHHLandingPage = (props: any) => {
     }
 
     try {
-
       // Find the roomId based on the selected room name
       const roomResponse = await axios.post(
         "http://localhost:8080/api/rooms/findByName",
@@ -180,6 +181,7 @@ const SHHLandingPage = (props: any) => {
           onChange={() => {
             localStorage.setItem("SHH_on", `${!isOn}`);
             setIsOn(!isOn);
+            dispatchEvent(new Event("heating"));
           }}
           color="warning"
         />

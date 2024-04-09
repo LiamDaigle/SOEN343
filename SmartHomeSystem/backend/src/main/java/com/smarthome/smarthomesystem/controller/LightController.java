@@ -7,10 +7,9 @@ import com.smarthome.smarthomesystem.repositories.LightRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 public class LightController {
@@ -33,5 +32,15 @@ public class LightController {
         light.setId(id);
         Light savedLight = lightRepository.save(lightMapper.mapFrom(light));
         return new ResponseEntity<>(lightMapper.mapTo(savedLight), HttpStatus.OK);
+    }
+
+    @GetMapping(path="/api/lights/{id}")
+    public ResponseEntity<LightDto> getLightById(@PathVariable("id") Long id){
+        Optional<Light> light = lightRepository.findById(id);
+
+        if(!light.isPresent())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(lightMapper.mapTo(light.get()), HttpStatus.OK);
     }
 }

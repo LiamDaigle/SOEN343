@@ -11,6 +11,11 @@ class LightReceiver{
         const result = await axios.put(this.baseUrl + `/${id}`, light);
         return result;
     }
+
+    static async getById(id:number){
+        const result = await axios.get(this.baseUrl + `/${id}`)
+        return result;
+    }
 }
 
 export default LightReceiver;
