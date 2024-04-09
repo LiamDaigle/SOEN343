@@ -151,6 +151,7 @@ const ZoneModal: React.FC<ZoneModalProps> = ({ open, onClose }) => {
       const invoker = new SHCInvoker(new ZoneAddZoneCommand(requestBody));
       const result = await invoker.executeCommand();
       console.log(result);
+      location.reload();
     };
 
     return (

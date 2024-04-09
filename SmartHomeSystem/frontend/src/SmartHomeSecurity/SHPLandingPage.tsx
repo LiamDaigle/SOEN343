@@ -92,6 +92,9 @@ const SHPLandingPage = (props: any) => {
           alignItems: "center",
         }}
       >
+        <Typography style={{ color: "black", marginRight: "1vw" }}>
+          Away Mode:{" "}
+        </Typography>
         <Typography style={{ color: "black" }}>Off</Typography>
         <Switch
           checked={isOn}
@@ -136,7 +139,9 @@ const SHPLandingPage = (props: any) => {
               }}
               placeholder="Enter time to call police in seconds"
             ></TextField>
-            {renderTimeError && "Error: Input Should be an Integer"}
+            {renderTimeError
+              ? "Error: Input Should be an Integer"
+              : `Time for police to arrive: ${awayModeTime}s`}
             <Button onClick={submitTime}>Submit</Button>
           </div>
           {/* The UI components and functionality will be added here based on the user's permissions */}
