@@ -12,6 +12,8 @@ import { BsFillPeopleFill } from "react-icons/bs"; // people for if there is mor
 import { TbAirConditioning } from "react-icons/tb";
 import { TbAirConditioningDisabled } from "react-icons/tb";
 import { GiGrass } from "react-icons/gi"; //Grass for representing outside
+import { MdSensors } from "react-icons/md";
+import { MdSensorsOff } from "react-icons/md";
 import SHCInvoker from "../../AxiosCommands/Command Design Pattern/SHCInvoker";
 import LightOffCommand from "../../AxiosCommands/Command Design Pattern/commands/LightOffCommand";
 import FindRoomCommand from "../../AxiosCommands/Command Design Pattern/commands/FindRoomCommand";
@@ -63,6 +65,8 @@ const HouseLayoutGridElement = (props: Props) => {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [roomsDoors, setRoomsDoors] = useState<any[]>([]);
   const [heatingOn, setHeatingOn] = useState(true);
+  const [hasMotionDetector, setHasMotionDetector] = useState(false);
+  const [motionDetected, setMotionDetected] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,11 +79,25 @@ const HouseLayoutGridElement = (props: Props) => {
         const occupied = profilesResponse.data.some(
           (profile) => profile.location === name
         );
+        setMotionDetected(occupied);
         setIsOccupied(occupied);
       } catch (error) {
         console.error("Error fetching profiles:", error);
         // Handle error if necessary
       }
+
+      const invoker = new SHCInvoker(new FindRoomCommand({ name: name }));
+      const room = await invoker.executeCommand();
+
+      console.log("room: ");
+      console.log(room);
+
+      const result = await axios.get(
+        `http://localhost:8080/api/rooms/${room.id}/hasMotionDetectors`
+      );
+      console.log("Motion Detector:");
+      console.log(result.data);
+      setHasMotionDetector(result.data);
     };
 
     fetchData();
@@ -346,6 +364,16 @@ const HouseLayoutGridElement = (props: Props) => {
                 className="icon"
                 onClick={() => setWindowOpen(true)}
               />
+            ) : (
+              <></>
+            )}
+            {hasMotionDetector && motionDetected ? (
+              <MdSensors size={50} className="icon" />
+            ) : (
+              <></>
+            )}
+            {hasMotionDetector && !motionDetected ? (
+              <MdSensorsOff size={50} className="icon" />
             ) : (
               <></>
             )}
