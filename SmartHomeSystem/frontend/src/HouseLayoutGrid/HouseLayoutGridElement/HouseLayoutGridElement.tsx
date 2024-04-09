@@ -81,7 +81,15 @@ const HouseLayoutGridElement = (props: Props) => {
         );
         setIsOccupied(occupied);
         setMotionDetected(occupied);
-        if (occupied) {
+        const invoker = new SHCInvoker(new FindRoomCommand({ name: name }));
+        const room = await invoker.executeCommand();
+
+        const result = await axios.get(
+          `http://localhost:8080/api/rooms/${room.id}/hasMotionDetectors`
+        );
+        setHasMotionDetector(result.data);
+
+        if (result.data) {
           OutputWriteReceiver.write(
             "Motion Detected",
             `Motion detected in ${name}`
@@ -96,11 +104,6 @@ const HouseLayoutGridElement = (props: Props) => {
     const fetchRoomData = async () => {
       const invoker = new SHCInvoker(new FindRoomCommand({ name: name }));
       const room = await invoker.executeCommand();
-
-      const result = await axios.get(
-        `http://localhost:8080/api/rooms/${room.id}/hasMotionDetectors`
-      );
-      setHasMotionDetector(result.data);
 
       invoker.setCommand(new GetAllDoorsCommand(room));
       const doors = await invoker.executeCommand();
@@ -118,9 +121,12 @@ const HouseLayoutGridElement = (props: Props) => {
 
       for (let i = 0; i < windows.length; i++) {
         const window = windows[i];
-        if (window.open == true) {
+        console.log(window);
+        if (window.open) {
           setWindowOpen(true);
-          break;
+        }
+        if (window.isBlocked) {
+          setWindowBlocked(true);
         }
       }
 
@@ -134,6 +140,12 @@ const HouseLayoutGridElement = (props: Props) => {
           break;
         }
       }
+
+      setHeatingOn(localStorage.getItem("SHH_on") == "true");
+
+      addEventListener("heating", () => {
+        setHeatingOn(localStorage.getItem("SHH_on") == "true");
+      });
     };
 
     fetchData();
@@ -173,6 +185,7 @@ const HouseLayoutGridElement = (props: Props) => {
                 "Unblock Window",
                 `User unblocked window in ${name}`
               );
+              location.reload();
             }}
           >
             Unblock Window
@@ -205,6 +218,7 @@ const HouseLayoutGridElement = (props: Props) => {
                 "Block Window",
                 `User Blocked window in ${name}`
               );
+              location.reload();
             }}
           >
             Block Window
@@ -223,18 +237,14 @@ const HouseLayoutGridElement = (props: Props) => {
             ) : (
               <FaDoorClosed size={50} className="icon" />
             )}
-            {windowOpen ? <GiWindow size={50} className="icon" /> : <></>}
-            {!windowOpen && !windowBlocked ? (
-              <GiWindowBars size={50} className="icon" />
+            {windowBlocked ? <TbWindowOff size={50} className="icon" /> : <></>}
+            {windowOpen && !windowBlocked ? (
+              <GiWindow size={50} className="icon" />
             ) : (
               <></>
             )}
-            {!windowOpen && windowBlocked ? (
-              <TbWindowOff
-                size={50}
-                className="icon"
-                onClick={() => setWindowOpen(true)}
-              />
+            {!windowOpen && !windowBlocked ? (
+              <GiWindowBars size={50} className="icon" />
             ) : (
               <></>
             )}
