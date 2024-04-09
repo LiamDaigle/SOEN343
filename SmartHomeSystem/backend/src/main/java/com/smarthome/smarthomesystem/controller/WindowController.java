@@ -1,7 +1,9 @@
 package com.smarthome.smarthomesystem.controller;
 
+import com.smarthome.smarthomesystem.domain.Light;
 import com.smarthome.smarthomesystem.domain.Room;
 import com.smarthome.smarthomesystem.domain.Window;
+import com.smarthome.smarthomesystem.domain.dtos.LightDto;
 import com.smarthome.smarthomesystem.domain.dtos.WindowDto;
 import com.smarthome.smarthomesystem.mappers.Mapper;
 import com.smarthome.smarthomesystem.repositories.WindowRepository;
@@ -51,5 +53,15 @@ public class WindowController {
         window.setBlocked(isBlocked);
         windowRepository.save(window);
         return ResponseEntity.ok("Window blocked value updated successfully");
+    }
+
+    @GetMapping(path="/api/windows/{id}")
+    public ResponseEntity<WindowDto> getLightById(@PathVariable("id") Long id){
+        Optional<Window> window = windowRepository.findById(id);
+
+        if(!window.isPresent())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(windowMapper.mapTo(window.get()), HttpStatus.OK);
     }
 }

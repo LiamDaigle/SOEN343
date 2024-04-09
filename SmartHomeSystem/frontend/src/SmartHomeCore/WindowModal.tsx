@@ -13,6 +13,8 @@ import WindowOpenCommand from "../AxiosCommands/Command Design Pattern/commands/
 import SHCInvoker from "../AxiosCommands/Command Design Pattern/SHCInvoker";
 
 import { timestamp } from "../Common/getTime";
+import WindowGetByIdCommand from "../AxiosCommands/Command Design Pattern/commands/WindowGetByIdCommand";
+import RoomFindAllCommand from "../AxiosCommands/Command Design Pattern/commands/RoomFindAllCommand";
 
 interface FormDialogProps {
   open: boolean;
@@ -37,30 +39,21 @@ const WindowModal: React.FC<FormDialogProps> = ({
   }, []);
 
   const fetchWindowsByRoom = async () => {
-    const fetchRoomsId = ["0", "1", "2", "3", "4"];
-    const fetchRoomNames = [
-      "Backyard",
-      "Entrance",
-      "Garage",
-      "LivingRoom",
-      "Bedroom",
-    ];
-    const finalRooms: { id: string; name: string }[] = fetchRoomsId.map(
-      (roomId, index) => ({
-        id: roomId,
-        name: fetchRoomNames[index],
-      })
-    );
+    const invoker = new SHCInvoker(new RoomFindAllCommand());
+    const allRooms = await invoker.executeCommand();
+
+    const finalRooms: { id: string; name: string }[] = allRooms.map((room) => ({
+      id: room.id,
+      name: room.name,
+    }));
 
     const roomsWindows: any[] = [];
 
     for (const room of finalRooms) {
       try {
-      
-        const getAllWindowsCommand = new GetAllWindowsCommand({id:room.id});
-          const invoker = new SHCInvoker(getAllWindowsCommand);
-          const WindowsResponse: Array<object> =
-            await invoker.executeCommand();
+        const getAllWindowsCommand = new GetAllWindowsCommand(room);
+        const invoker = new SHCInvoker(getAllWindowsCommand);
+        const WindowsResponse: Array<object> = await invoker.executeCommand();
 
         const roomName = room.name;
 
@@ -94,18 +87,21 @@ const WindowModal: React.FC<FormDialogProps> = ({
         open: newStatus,
       };
 
-      // Call open window command 
-      if (newStatus){
-        const windowOpenCommand = new WindowOpenCommand(window)
-        const invoker = new SHCInvoker(windowOpenCommand);
+      const invoker = new SHCInvoker(new WindowGetByIdCommand(window.id));
+      const result = await invoker.executeCommand();
+      const fetchWindow = result.data;
+      // Call open window command
+      if (newStatus) {
+        const invoker = new SHCInvoker(new WindowOpenCommand(fetchWindow));
         const windowOpened = await invoker.executeCommand();
+        console.log(windowOpened);
         writeOpenWindowToFile(roomName, windowId);
       }
       // Call close window command
-      else if(!newStatus){
-        const windowCloseCommand = new WindowCloseCommand(window)
-        const invoker = new SHCInvoker(windowCloseCommand);
+      else if (!newStatus) {
+        const invoker = new SHCInvoker(new WindowCloseCommand(fetchWindow));
         const windowClosed = await invoker.executeCommand();
+        console.log(windowClosed);
         writeCloseWindowToFile(roomName, windowId);
       }
 
@@ -125,36 +121,31 @@ const WindowModal: React.FC<FormDialogProps> = ({
       setRoomsWindows(updatedRoomsWindows);
     } catch (error) {
       console.error("Error toggling window:", error);
+    } finally {
+      location.reload();
     }
   };
 
   const writeOpenWindowToFile = async (roomName, windowId) => {
-    
     try {
-      await axios.post(
-        "http://localhost:8080/api/files/write",
-        {
-          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Open Window\nEvent Description: User Just Opened Window Id ${windowId} in ${roomName}\nend`,
-        }
-      );
+      await axios.post("http://localhost:8080/api/files/write", {
+        data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Open Window\nEvent Description: User Just Opened Window Id ${windowId} in ${roomName}\nend`,
+      });
     } catch (error) {
       console.error("Error writing Open Window data to file:", error);
     }
-  }
+  };
 
   const writeCloseWindowToFile = async (roomName, windowId) => {
-    console.log(windowId.toString(), " and ", roomName)
+    console.log(windowId.toString(), " and ", roomName);
     try {
-      await axios.post(
-        "http://localhost:8080/api/files/write",
-        {
-          data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Close Window\nEvent Description: User Just Closed Window Id ${windowId} in ${roomName}\nend`,
-        }
-      );
+      await axios.post("http://localhost:8080/api/files/write", {
+        data: `Timestamp: ${timestamp} \nProfile ID: ${profileId}\nProfile Name: ${profileName}\nRole: ${profileRole}\nEvent Type: Close Window\nEvent Description: User Just Closed Window Id ${windowId} in ${roomName}\nend`,
+      });
     } catch (error) {
       console.error("Error writing Close Window data to file:", error);
     }
-  }
+  };
 
   return (
     <Dialog open={open} onClose={onClose}>
