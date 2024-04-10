@@ -1,0 +1,68 @@
+
+.modalContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width:40%;
+    border-style: solid;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+}
+
+.addZoneButton, .cancelZoneButton{
+    align-self: flex-end;
+    margin-bottom: 10vh;
+}
+
+.cancelZoneButton{
+    margin:0px;
+    margin-bottom: 2vh;
+}
+.zoneListContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.zone {
+    border-style: solid;
+    width:80%;
+    margin-bottom: 5vh;
+}
+
+.room-selected {
+    background-color: rgb(32, 235, 32);
+}
+
+.room, .room-selected {
+    border-style:solid;
+    margin-bottom:2vh;
+    cursor:pointer;
+}
+
+.addingRoomsContainer{
+    display: flex;
+    margin-top:2vh;
+    width:100%;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.roomSelectorContainer{
+    overflow: auto;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-top:2vh;
+    padding-bottom:2vh;
+    border-style: solid;
+    width:40%;
+    height:30vh;
+}
+
+.submitBtn{
+    margin-top:2vh;
+}

@@ -1,0 +1,54 @@
+.user-profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid var(--accent-color);
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+}
+
+.user-profile-picture {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.user-profile-picture p {
+  color: var(--text-color);
+}
+
+.user-location,
+.outside-temperature,
+.data-and-time {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.outside-temperature p,
+.data-and-time p {
+  color: var(--text-color);
+}
+
+/* Customize Avatar component */
+.Avatar {
+  border: 5px solid var(--secondary-color);
+}
+
+.common-btn {
+  background-color: var(--accent-color);
+  color: var(--primary-color);
+  width: 110px;
+  height: 40px;
+  font-weight: 700;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  margin: 10px;
+}
+
+.common-btn:hover {
+  cursor: pointer;
+  background-color: var(--secondary-color) !important;
+  border: 2px solid var(--accent-color);
+  color: var(--text-color);
+}
