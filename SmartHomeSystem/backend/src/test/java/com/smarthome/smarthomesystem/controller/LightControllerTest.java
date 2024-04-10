@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 
 public class LightControllerTest {
-
+    //Tests for the LightController class
     @Mock
     private LightRepository lightRepository;
     @Mock
@@ -55,6 +55,7 @@ public class LightControllerTest {
 
     @Test
     public void testTurnLightOnUpdate(){
+        //Test for updating the light's on property to true
         when(lightRepository.existsById(Mockito.anyLong())).thenReturn(true);
 
         Light expected = new Light();
@@ -72,6 +73,7 @@ public class LightControllerTest {
 
     @Test
     public void testTurnLightOffUpdate(){
+        //Test for updating the light's on property to false
         when(lightRepository.existsById(Mockito.anyLong())).thenReturn(true);
 
         Light expected = new Light();
@@ -89,6 +91,7 @@ public class LightControllerTest {
 
     @Test
     public void testLightNotFound(){
+        //Test for if a light is not found
         when(lightRepository.existsById(Mockito.anyLong())).thenReturn(false);
 
         ResponseEntity response = lightController.fullLightUpdate(lightDto.getId(),lightDto);

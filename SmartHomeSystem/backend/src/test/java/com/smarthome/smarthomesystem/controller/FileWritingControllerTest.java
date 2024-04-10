@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class FileWritingControllerTest {
-
+    //Test for FileWritingController class
     @Mock
     private FileService fileService;
 
@@ -37,6 +37,8 @@ public class FileWritingControllerTest {
 
     @Test
     void testReadLogs() {
+        //Test the read logs functionality
+
         // Arrange
         List<String> logs = new ArrayList<>();
         logs.add("Log 1");
@@ -55,6 +57,8 @@ public class FileWritingControllerTest {
 
     @Test
     void testUploadCSVFile() throws IOException {
+        //Test the functionality for uploading a CSV file
+
         // Arrange
         String filename = "exampleTemperature.csv";
         byte[] content = "Test content".getBytes(StandardCharsets.UTF_8);
@@ -73,6 +77,9 @@ public class FileWritingControllerTest {
 
     @Test
     void testGetCSVData() {
+        //Test the functionality for retrieving a CSV file
+
+
         // Arrange
         List<String[]> csvData = new ArrayList<>();
         csvData.add(new String[]{"value1", "value2"});

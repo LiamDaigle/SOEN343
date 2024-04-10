@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class OutsideTemperatureControllerTest {
+    //Test for OutsideTemperatureController class
 
     @Mock
     private TemperatureControlService temperatureControlService;
@@ -32,6 +33,8 @@ public class OutsideTemperatureControllerTest {
 
     @Test
     void testSaveOutsideTemperature() {
+        //Test that attempts to save the outside temperature of the simulation
+
         // Arrange
         String temperature = "25.5";
         double parsedTemperature = Double.parseDouble(temperature);

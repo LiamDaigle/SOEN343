@@ -23,6 +23,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class DoorControllerTest {
+    //Tests for the DoorController class
     @Mock
     private DoorRepository doorRepository;
 
@@ -55,6 +56,7 @@ public class DoorControllerTest {
 
     @Test
     public void testOpenDoorUpdate(){
+        //Test that updates the door's open property to open
         when(doorRepository.existsById(Mockito.anyLong())).thenReturn(true);
 
         Door expected = new Door();
@@ -71,6 +73,7 @@ public class DoorControllerTest {
     }
     @Test
     public void testCloseDoorUpdate(){
+        //Test that updates the door's open property to closed
         when(doorRepository.existsById(Mockito.anyLong())).thenReturn(true);
 
         Door expected = new Door();
@@ -88,6 +91,7 @@ public class DoorControllerTest {
     }
     @Test
     public void testDoorNotFound(){
+        //Test if a door is not found
         when(doorRepository.existsById(Mockito.anyLong())).thenReturn(false);
 
         ResponseEntity response =  doorController.fullDoorUpdate(doorDto.getId(), doorDto);

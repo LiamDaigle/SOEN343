@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 
 public class HomeControllerTest {
-
+    //Tests for the HomeController class
     @Mock
     private HomeRepository homeRepository;
     @Mock
@@ -48,6 +48,7 @@ public class HomeControllerTest {
 
     @Test
     public void testSwitchAwayMode(){
+        //Test switching away mode from false to true
         when(homeRepository.findById(anyLong())).thenReturn(optionalHome);
         when(optionalHome.isEmpty()).thenReturn(false);
         when(optionalHome.get()).thenReturn(home);
@@ -61,6 +62,7 @@ public class HomeControllerTest {
     }
     @Test
     public void testSetTime(){
+        //Test the setTime functionality to set the time for police to arrive after motion detected in away mode
         when(homeRepository.findById(anyLong())).thenReturn(optionalHome);
         when(optionalHome.isEmpty()).thenReturn(false);
         when(optionalHome.get()).thenReturn(home);
