@@ -195,56 +195,64 @@ const SHHLandingPage = (props: any) => {
           Zones
         </Button>
       </div>
+      {isOn ? (
+        <>
+          {permissionMsg && <p style={{ color: "black" }}>{permissionMsg}</p>}
+          <FormControl fullWidth variant="standard" margin="dense">
+            <InputLabel id="room-label">Select Room</InputLabel>
+            <Select
+              labelId="room-label"
+              id="room"
+              name="room"
+              value={room}
+              onChange={handleChange}
+            >
+              <MenuItem value="Backyard" disabled={disableCheck("Backyard")}>
+                Backyard
+              </MenuItem>
+              <MenuItem value="Garage" disabled={disableCheck("Garage")}>
+                Garage
+              </MenuItem>
+              <MenuItem
+                value="LivingRoom"
+                disabled={disableCheck("LivingRoom")}
+              >
+                Living Room
+              </MenuItem>
+              <MenuItem value="Bedroom" disabled={disableCheck("Bedroom")}>
+                Bedroom
+              </MenuItem>
+              <MenuItem value="Entrance" disabled={disableCheck("Entrance")}>
+                Entrance
+              </MenuItem>
+            </Select>
+          </FormControl>
 
-      {permissionMsg && <p style={{ color: "black" }}>{permissionMsg}</p>}
-      <FormControl fullWidth variant="standard" margin="dense">
-        <InputLabel id="room-label">Select Room</InputLabel>
-        <Select
-          labelId="room-label"
-          id="room"
-          name="room"
-          value={room}
-          onChange={handleChange}
-        >
-          <MenuItem value="Backyard" disabled={disableCheck("Backyard")}>
-            Backyard
-          </MenuItem>
-          <MenuItem value="Garage" disabled={disableCheck("Garage")}>
-            Garage
-          </MenuItem>
-          <MenuItem value="LivingRoom" disabled={disableCheck("LivingRoom")}>
-            Living Room
-          </MenuItem>
-          <MenuItem value="Bedroom" disabled={disableCheck("Bedroom")}>
-            Bedroom
-          </MenuItem>
-          <MenuItem value="Entrance" disabled={disableCheck("Entrance")}>
-            Entrance
-          </MenuItem>
-        </Select>
-      </FormControl>
-
-      <TextField
-        type="number"
-        value={temperature}
-        onChange={(e) => setTemperature(e.target.value)}
-        placeholder="Set Room Temperature"
-        variant="outlined"
-        fullWidth
-        margin="dense"
-      />
-      <Button
-        className="button custom"
-        type="submit"
-        onClick={setRoomTemperature}
-      >
-        Submit
-      </Button>
-      {room && (
-        <p style={{ color: "black" }}>
-          Current temperature in {roomOverride ? "(Overriden)" : ""} {room}:{" "}
-          {roomTemp} degrees Celcius
-        </p>
+          <TextField
+            type="number"
+            value={temperature}
+            onChange={(e) => setTemperature(e.target.value)}
+            placeholder="Set Room Temperature"
+            variant="outlined"
+            fullWidth
+            margin="dense"
+          />
+          <Button
+            className="button custom"
+            type="submit"
+            onClick={setRoomTemperature}
+          >
+            Submit
+          </Button>
+          {room && (
+            <p style={{ color: "black" }}>
+              Current temperature in {roomOverride ? "(Overriden)" : ""} {room}:{" "}
+              {roomTemp} degrees Celcius
+            </p>
+          )}
+        </>
+      ) : (
+        <p>Turn on SHH to use...</p>
       )}
       <ZoneModal
         open={zoneModalOpen}
