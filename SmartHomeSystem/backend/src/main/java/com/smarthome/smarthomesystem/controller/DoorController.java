@@ -34,6 +34,7 @@ public class DoorController {
         door.setId(id);
         Door savedDoor = doorRepository.save(doorMapper.mapFrom(door));
         return new ResponseEntity<>(doorMapper.mapTo(savedDoor), HttpStatus.OK);
+
     }
 
     @GetMapping(path="/api/doors/{id}")

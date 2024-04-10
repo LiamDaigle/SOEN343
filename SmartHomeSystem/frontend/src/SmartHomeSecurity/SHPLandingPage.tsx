@@ -10,6 +10,12 @@ import RoomUpdateMotionDetectorsCommand from "../AxiosCommands/Command Design Pa
 import MotionDetectorModal from "./MotionDetectorModal";
 import HomeSetTimeCommands from "../AxiosCommands/Command Design Pattern/commands/HomeSetTimeCommand";
 import axios from "axios";
+import GetIsAwayModeOnCommand from "../AxiosCommands/Command Design Pattern/commands/GetIsAwayModeOnCommand";
+import RoomFindAllCommand from "../AxiosCommands/Command Design Pattern/commands/RoomFindAllCommand";
+import DoorCloseCommand from "../AxiosCommands/Command Design Pattern/commands/DoorCloseCommand";
+import GetAllDoorsCommand from "../AxiosCommands/Command Design Pattern/commands/GetAllDoorsCommand";
+import GetAllWindowsCommand from "../AxiosCommands/Command Design Pattern/commands/GetAllWindowsCommand";
+import WindowCloseCommand from "../AxiosCommands/Command Design Pattern/commands/WindowCloseCommand";
 
 const SHPLandingPage = (props: any) => {
   const [permissionMsg, setPermissionMsg] = useState("");
@@ -31,7 +37,11 @@ const SHPLandingPage = (props: any) => {
       setPermissionMsg(
         "All permissions granted to operate the SHP from home, or remotely"
       );
-      setIsOn(true);
+      const invoker = new SHCInvoker(new GetIsAwayModeOnCommand());
+      const result = await invoker.executeCommand();
+      console.log("Result:");
+      console.log(result);
+      setIsOn(result.data);
     } else if (profileRole === "Stranger") {
       setPermissionMsg(
         "Non-identified users have no permissions no matter where they are located"
@@ -103,6 +113,31 @@ const SHPLandingPage = (props: any) => {
             setIsOn(!isOn);
             const invoker = new SHCInvoker(new SwitchIsAwayModeCommand());
             const result = await invoker.executeCommand();
+
+            const SHPOn = localStorage.getItem("SHP_on") == "true";
+            if (SHPOn) {
+              invoker.setCommand(new RoomFindAllCommand());
+              const rooms = await invoker.executeCommand();
+
+              rooms.map(async (room) => {
+                invoker.setCommand(new GetAllDoorsCommand(room));
+                const doors = await invoker.executeCommand();
+
+                doors.map((door) => {
+                  invoker.setCommand(new DoorCloseCommand(door));
+                  invoker.executeCommand();
+                });
+
+                invoker.setCommand(new GetAllWindowsCommand(room));
+                const windows = await invoker.executeCommand();
+
+                windows.map((window) => {
+                  invoker.setCommand(new WindowCloseCommand(window));
+                  invoker.executeCommand();
+                });
+              });
+            }
+
             try {
               await axios.post("http://localhost:8080/api/files/write", {
                 data: logMessage,
@@ -110,6 +145,7 @@ const SHPLandingPage = (props: any) => {
             } catch (error) {
               console.error("Error writing  SHP data to file:", error);
             }
+            location.reload();
           }}
           color="warning"
         />
