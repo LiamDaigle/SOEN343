@@ -86,7 +86,8 @@ const WindowModal: React.FC<FormDialogProps> = ({
         },
         open: newStatus,
       };
-
+      const SHPOn = localStorage.getItem("SHP_on") == "true";
+      if (SHPOn) return;
       const invoker = new SHCInvoker(new WindowGetByIdCommand(window.id));
       const result = await invoker.executeCommand();
       const fetchWindow = result.data;

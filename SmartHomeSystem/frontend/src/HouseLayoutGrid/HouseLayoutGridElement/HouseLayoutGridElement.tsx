@@ -159,7 +159,10 @@ const HouseLayoutGridElement = (props: Props) => {
       setHeatingOn(localStorage.getItem("SHH_on") == "true");
 
       addEventListener("heating", () => {
-        setHeatingOn(localStorage.getItem("SHH_on") == "true");
+        const isShhOn = localStorage.getItem("SHH_on") == "true";
+        setHeatingOn(isShhOn);
+        invoker.setCommand(new RoomUpdateHvacCommand(room.id, isShhOn));
+        invoker.executeCommand();
       });
     };
 
