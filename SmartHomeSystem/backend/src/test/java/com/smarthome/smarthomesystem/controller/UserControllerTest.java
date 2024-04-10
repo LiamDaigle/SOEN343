@@ -21,6 +21,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class UserControllerTest {
+    //Test for the UserController class
 
     @Mock
     private UserRepository userRepository;
@@ -54,6 +55,7 @@ class UserControllerTest {
 
     @Test
     void testLoginUser_ValidCredentials() {
+        //Test that covers whether the user has valid credentials or not
         when(userRepository.findByEmail(testUser.getEmail())).thenReturn(Optional.of(testUser));
         ResponseEntity<?> responseEntity = userController.loginUser(testUser);
         assertEquals(ResponseEntity.ok(testUser), responseEntity);
@@ -62,6 +64,7 @@ class UserControllerTest {
 
     @Test
     void testRegisterUser_Success() {
+        //Test that represents a successful registration scenario
         when(userRepository.findByUsername(testUser.getUsername())).thenReturn(Optional.empty());
         when(userRepository.findByEmail(testUser.getEmail())).thenReturn(Optional.empty());
 
@@ -73,6 +76,7 @@ class UserControllerTest {
 
     @Test
     void testRegisterUser_UsernameTaken() {
+        //Test that represents a non successful registration scenario where the username is already in use
         when(userRepository.findByUsername(testUser.getUsername())).thenReturn(Optional.of(testUser));
 
         ResponseEntity<?> responseEntity = userController.registerUser(testUser);
@@ -83,6 +87,7 @@ class UserControllerTest {
 
     @Test
     void testRegisterUser_EmailTaken() {
+        //Test that represents a non successful registration scenario where the email is already in use
         when(userRepository.findByUsername(testUser.getUsername())).thenReturn(Optional.empty());
         when(userRepository.findByEmail(testUser.getEmail())).thenReturn(Optional.of(testUser));
 
@@ -94,6 +99,7 @@ class UserControllerTest {
 
     @Test
     void testAddProfileToUser() {
+        //Test that sees if it can add a profile to a given user
         when(userRepository.findById(testUser.getId())).thenReturn(Optional.of(testUser));
         when(profileRepository.save(testProfile)).thenReturn(testProfile);
 
@@ -105,6 +111,7 @@ class UserControllerTest {
 
     @Test
     void testGetUserProfiles() {
+        //Test that sees if it can get a certain user
         when(userRepository.findById(testUser.getId())).thenReturn(Optional.of(testUser));
         when(profileRepository.findByUser(testUser)).thenReturn(Collections.singletonList(testProfile));
 
@@ -116,6 +123,7 @@ class UserControllerTest {
 
     @Test
     void testDeleteProfileFromUserByUsername() {
+        //Test that sees if it can delte a profile from a user
         when(userRepository.findById(testUser.getId())).thenReturn(Optional.of(testUser));
         when(profileRepository.findByUser(testUser)).thenReturn(Collections.singletonList(testProfile));
 
@@ -127,6 +135,7 @@ class UserControllerTest {
 
     @Test
     void testUpdateProfile() {
+        //Test that updates a users profile
         when(userRepository.findById(testUser.getId())).thenReturn(Optional.of(testUser));
         when(profileRepository.findById(testProfile.getId())).thenReturn(Optional.of(testProfile));
         Profile updatedProfile = new Profile();
@@ -142,7 +151,4 @@ class UserControllerTest {
         assertEquals(updatedProfile.getLocation(), testProfile.getLocation());
         verify(profileRepository).save(testProfile);
     }
-
-
-    // Add more test methods for other controller methods
 }

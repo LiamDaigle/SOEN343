@@ -3,7 +3,7 @@ package com.smarthome.smarthomesystem;
 import com.smarthome.smarthomesystem.domain.User;
 
 public final class TestDataUtil {
-
+    //Util class used for creating test users
     private TestDataUtil(){}
 
     public static User createTestUser1() {

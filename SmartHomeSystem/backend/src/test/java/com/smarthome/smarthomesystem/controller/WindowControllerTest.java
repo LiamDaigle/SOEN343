@@ -24,6 +24,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class WindowControllerTest {
+    //Tests for the WindowController class
     @Mock
     private WindowRepository windowRepository;
     @Mock
@@ -53,6 +54,7 @@ public class WindowControllerTest {
 
     @Test
     public void testTurnWindowOpenUpdate(){
+        //Test that updates the window's open property to open
         when(windowRepository.existsById(Mockito.anyLong())).thenReturn(true);
 
         Window expected = new Window();
@@ -70,6 +72,7 @@ public class WindowControllerTest {
 
     @Test
     public void testTurnWindowOffUpdate(){
+        //Test that updates the window's open property to closed
         when(windowRepository.existsById(Mockito.anyLong())).thenReturn(true);
 
         Window expected = new Window();
@@ -87,6 +90,7 @@ public class WindowControllerTest {
 
     @Test
     public void testWindowNotFound(){
+        //Test that covers if a window is not found
         when(windowRepository.existsById(Mockito.anyLong())).thenReturn(false);
 
         ResponseEntity response = windowController.fullWindowUpdate(windowDto.getId(),windowDto);

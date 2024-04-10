@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class RoomControllerTest {
+    //Tests for the RoomController class
 
     @Mock
     RoomRepository roomRepository;
@@ -56,6 +57,7 @@ public class RoomControllerTest {
 
     @Test
     public void testFindByName(){
+        //Test that finds a room by using its name property
         when(roomRepository.findByName(room.getName())).thenReturn(room);
         when(roomMapper.mapTo(room)).thenReturn(roomDto);
         Map<String,String> map = new HashMap<>();
@@ -71,6 +73,7 @@ public class RoomControllerTest {
     }
     @Test
     public void testGetAllLights(){
+        //Test that gets all lights associated with a room
         Light lightZero = new Light();
         lightZero.setId(0L);
         lightZero.setRoom(room);
@@ -102,6 +105,7 @@ public class RoomControllerTest {
     }
     @Test
     public void testGetAllDoors(){
+        //Test that gets all doors associated with a room
         Door doorZero = new Door();
         doorZero.setId(0L);
         doorZero.setRoom(room);
@@ -135,6 +139,7 @@ public class RoomControllerTest {
     }
     @Test
     public void testGetAllWindows(){
+        //Test that gets all windows associated with a room
         Window windowZero = new Window();
         windowZero.setId(0L);
         windowZero.setRoom(room);

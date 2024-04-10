@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ZoneController.class)
 public class ZoneControllerTest {
-
+    //Test for the ZoneController class
     @Autowired
     private MockMvc mockMvc;
 
@@ -41,6 +41,7 @@ public class ZoneControllerTest {
 
     @Test
     public void testAddZone() throws Exception {
+        //Test the functionality for adding a zone
         Zone zone = new Zone();
         zone.setId(1L);
         zone.setName("Living Room");
@@ -57,6 +58,7 @@ public class ZoneControllerTest {
 
     @Test
     public void testUpdateTemperature() throws Exception {
+        //Test that updates the temperature of a given room
         Zone zone = new Zone();
         zone.setId(1L);
         zone.setName("Living Room");

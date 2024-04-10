@@ -24,6 +24,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class SmartHomeHeaterTest {
+    //Test for the SmartHomeHeater class
     @Mock
     private DoorRepository doorRepository;
 
@@ -56,6 +57,7 @@ public class SmartHomeHeaterTest {
 
     @Test
     public void testOpenDoorUpdate(){
+        //Test that updates a door's open property to open and saves it
         when(doorRepository.existsById(Mockito.anyLong())).thenReturn(true);
 
         Door expected = new Door();
@@ -72,6 +74,7 @@ public class SmartHomeHeaterTest {
     }
     @Test
     public void testCloseDoorUpdate(){
+        //Test that updates a door's open property to closed and saves it
         when(doorRepository.existsById(Mockito.anyLong())).thenReturn(true);
 
         Door expected = new Door();
@@ -89,6 +92,7 @@ public class SmartHomeHeaterTest {
     }
     @Test
     public void testDoorNotFound(){
+        //Test that covers if a door cannot be found
         when(doorRepository.existsById(Mockito.anyLong())).thenReturn(false);
 
         ResponseEntity response =  doorController.fullDoorUpdate(doorDto.getId(), doorDto);
