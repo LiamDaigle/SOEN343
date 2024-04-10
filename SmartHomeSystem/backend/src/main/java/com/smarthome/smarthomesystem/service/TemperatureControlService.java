@@ -1,8 +1,10 @@
 package com.smarthome.smarthomesystem.service;
 
+import com.smarthome.smarthomesystem.domain.Home;
 import com.smarthome.smarthomesystem.domain.OutsideTemperature;
 import com.smarthome.smarthomesystem.domain.Room;
 import com.smarthome.smarthomesystem.domain.Simulation;
+import com.smarthome.smarthomesystem.repositories.HomeRepository;
 import com.smarthome.smarthomesystem.repositories.OutsideTemperatureRepository;
 import com.smarthome.smarthomesystem.repositories.RoomRepository;
 import com.smarthome.smarthomesystem.repositories.SimulationRepository;
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
 import com.smarthome.smarthomesystem.service.FileService;
+
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 
@@ -19,6 +23,9 @@ public class TemperatureControlService {
     @Autowired
     private final RoomRepository roomRepository;
 
+    @Autowired
+    private final HomeRepository homeRepository;
+
     private FileService fileService;
 
     private static OutsideTemperatureRepository temperatureRepository = null;
@@ -26,11 +33,12 @@ public class TemperatureControlService {
     private static OutsideTemperature outsideTemperatureInstance;
 
     @Autowired
-    private TemperatureControlService(RoomRepository roomRepository, OutsideTemperatureRepository temperatureRepository, FileService fileService, SimulationRepository simulationRepository) {
+    private TemperatureControlService(RoomRepository roomRepository, HomeRepository homeRepository, OutsideTemperatureRepository temperatureRepository, FileService fileService, SimulationRepository simulationRepository) {
         this.roomRepository = roomRepository;
         this.temperatureRepository = temperatureRepository;
         this.fileService = fileService;
         this.simulationRepo = simulationRepository;
+        this.homeRepository = homeRepository;
 
     }
 
@@ -84,6 +92,7 @@ public class TemperatureControlService {
 
         HVACState currentState;
         double count = 0;
+        double startingTemperature = roomTemperature;
 
         if (hvacWorking) {
             currentState = HVACState.ON;
@@ -102,7 +111,7 @@ public class TemperatureControlService {
             fileService.writeToFile("Desired Temperature is "+desiredTemperature);
         }
 
-        while (getSimulationStatus() && count<20) {
+        while (getSimulationStatus() && count < 120) {
             try {
                 TimeUnit.SECONDS.sleep(consoleSpeed);
             } catch (InterruptedException e) {
@@ -141,6 +150,26 @@ public class TemperatureControlService {
             }
 
             roomTemperature = Math.round(roomTemperature * 1000.0) / 1000.0;
+
+            if(roomTemperature >= 135){
+                fileService.writeToFile("Temperature made it to 135 degrees Celsius... turning off away mode");
+                Optional<Home> homeOptional = homeRepository.findById(0L);
+                if(homeOptional.isPresent()){
+                    Home home = homeOptional.get();
+                    home.setAwayModeOn(false);
+                    homeRepository.save(home);
+                }
+            }
+
+            if(count <= 60 && (roomTemperature - startingTemperature) >= 15){
+                fileService.writeToFile("Temperature increased by more than 15 in the last minute... turning off away mode");
+                Optional<Home> homeOptional = homeRepository.findById(0L);
+                if(homeOptional.isPresent()){
+                    Home home = homeOptional.get();
+                    home.setAwayModeOn(false);
+                    homeRepository.save(home);
+                }
+            }
 
             fileService.writeToFile("Room Temperature: " + roomTemperature);
             Simulation simulationUpdate = simulationRepo.getSimulation(0L);

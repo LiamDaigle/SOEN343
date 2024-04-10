@@ -195,7 +195,6 @@ const SHHLandingPage = (props: any) => {
           Zones
         </Button>
       </div>
-
       {isOn ? (
         <>
           {permissionMsg && <p style={{ color: "black" }}>{permissionMsg}</p>}
@@ -253,9 +252,7 @@ const SHHLandingPage = (props: any) => {
           )}
         </>
       ) : (
-        <Typography style={{ color: "black" }}>
-          Turn SHH on to use the module
-        </Typography>
+        <p>Turn on SHH to use...</p>
       )}
       <ZoneModal
         open={zoneModalOpen}

@@ -84,6 +84,8 @@ const DoorModal: React.FC<FormDialogProps> = ({ open, onClose, userData }) => {
         autoLock: autoLock,
       };
 
+      const SHPOn = localStorage.getItem("SHP_on") == "true";
+      if (SHPOn) return;
       const invoker = new SHCInvoker(new DoorGetByIdCommand(door.id));
       const result = await invoker.executeCommand();
       const fetchDoor = result.data;
