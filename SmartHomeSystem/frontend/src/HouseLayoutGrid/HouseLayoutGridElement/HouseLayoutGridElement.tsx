@@ -107,20 +107,19 @@ const HouseLayoutGridElement = (props: Props) => {
       const invoker = new SHCInvoker(new FindRoomCommand({ name: name }));
       const room = await invoker.executeCommand();
 
-      // check for the isawaymode
       invoker.setCommand(new GetIsAwayModeOnCommand());
-      const isAwayModeOn:boolean = await invoker.executeCommand();
+      const result = await invoker.executeCommand();
 
-      console.log(isAwayModeOn);
+      const awayMode = result.data;
 
       invoker.setCommand(new GetAllDoorsCommand(room));
       const doors = await invoker.executeCommand();
 
       for (let i = 0; i < doors.length; i++) {
         const door = doors[i];
-        if (isAwayModeOn == true){
+        if (awayMode) {
           setDoorOpen(false);
-          break; 
+          break;
         }
         if (door.open == true) {
           setDoorOpen(true);
@@ -134,9 +133,9 @@ const HouseLayoutGridElement = (props: Props) => {
       for (let i = 0; i < windows.length; i++) {
         const window = windows[i];
         console.log(window);
-        if (isAwayModeOn == true){
+        if (awayMode) {
           setWindowOpen(false);
-          break; 
+          break;
         }
         if (window.open) {
           setWindowOpen(true);

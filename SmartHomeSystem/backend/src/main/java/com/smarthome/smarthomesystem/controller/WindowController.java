@@ -30,11 +30,6 @@ public class WindowController {
         this.windowMapper = windowMapper;
     }
 
-    @GetMapping(path="/api/windows/findAll")
-    public ResponseEntity<?> findAll(){
-        return ResponseEntity.ok(windowRepository.findAll());
-    }
-
     @PutMapping(path = "/api/windows/{id}")
     public ResponseEntity<WindowDto> fullWindowUpdate(@PathVariable("id") Long id, @RequestBody WindowDto window) {
 

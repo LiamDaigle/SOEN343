@@ -37,11 +37,6 @@ public class DoorController {
 
     }
 
-    @GetMapping(path="/api/doors/findAll")
-    public ResponseEntity<?> findAll(){
-        return ResponseEntity.ok(doorRepository.findAll());
-    }
-
     @GetMapping(path="/api/doors/{id}")
     public ResponseEntity<DoorDto> getLightById(@PathVariable("id") Long id){
         Optional<Door> door = doorRepository.findById(id);
