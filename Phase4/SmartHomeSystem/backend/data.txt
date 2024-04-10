@@ -1,0 +1,7 @@
+Timestamp: 1/1/2023 09:01:29 
+Profile ID: 1
+Profile Name: Ahmad
+Role: Parent
+Event Type: Edit Simulation Settings
+Event Description: User Just Changed Simulation Date, Time, and Outside Temperature
+end
