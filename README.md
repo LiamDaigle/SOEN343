@@ -1,13 +1,12 @@
 # SOEN 343: Software Architecture and Design Project
 
-## Team Members:
-- [Ahmad Elmahallawy](https://github.com/Ahmad-Elmahallawy) - 40193418
-- [Liam Daigle](https://github.com/LiamDaigle) - 40207583
-- [Clara Gagnon](https://github.com/clarag02) - 40208598
-- [Gulnoor Kaur](https://github.com/gul2223) - 40114998
-- [Vanessa DiPietrantonio](https://github.com/vanessadp17) - 40189938
-- [Jessica Beauchemin](https://github.com/JBeauche) - 40188873
-
+## Team Members (Name, Student ID, GitHub Name):
+- [Ahmad Elmahallawy](https://github.com/Ahmad-Elmahallawy) - 40193418 - Ahmad-Elmahallawy
+- [Liam Daigle](https://github.com/LiamDaigle) - 40207583 - LiamDaigle
+- [Clara Gagnon](https://github.com/clarag02) - 40208598 - clarag02
+- [Gulnoor Kaur](https://github.com/gul2223) - 40114998 - gul2223
+- [Vanessa DiPietrantonio](https://github.com/vanessadp17) - 40189938 - vanessadp17
+- [Jessica Beauchemin](https://github.com/JBeauche) - 40188873 - JBeauche
 
 # Smart Home System
 
